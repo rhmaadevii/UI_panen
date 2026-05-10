@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panenku - Alamat Saya</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #C5E1A5; min-height: 100vh; }
+
+        .header { background: white; padding: 25px 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .header-title { color: #558B2F; font-size: 32px; font-weight: 600; }
+
+        .main-content { padding: 30px 20px; max-width: 700px; margin: 0 auto; }
+
+        .address-card {
+            background: #F1F8E9; border: 2px solid #C5E1A5; border-radius: 16px;
+            padding: 25px; margin-bottom: 20px; position: relative;
+            transition: all 0.2s; cursor: pointer;
+        }
+        .address-card:hover { border-color: #8BC34A; box-shadow: 0 4px 12px rgba(139, 195, 74, 0.2); }
+        .address-card.selected { border-color: #558B2F; background: #E8F5E9; }
+
+        .address-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .address-label-text { font-size: 16px; font-weight: 700; color: #333; }
+        .address-actions { display: flex; gap: 10px; }
+        .action-btn {
+            width: 38px; height: 38px; border: none; background: #C5E1A5;
+            border-radius: 8px; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; font-size: 16px;
+            transition: background 0.2s;
+        }
+        .action-btn:hover { background: #AED581; }
+        .action-btn.edit { color: #F9A825; }
+        .action-btn.delete { color: #E53935; }
+
+        .address-text { color: #555; font-size: 14px; line-height: 1.7; margin-bottom: 15px; }
+        .address-phone { display: flex; align-items: center; gap: 10px; color: #555; font-size: 14px; }
+        .phone-icon { font-size: 18px; }
+
+        .add-address-btn {
+            width: 100%; background: transparent; border: 2px dashed #8BC34A;
+            border-radius: 16px; padding: 20px; color: #558B2F;
+            font-size: 16px; font-weight: 600; cursor: pointer;
+            font-family: 'Poppins', sans-serif; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .add-address-btn:hover { background: rgba(139, 195, 74, 0.1); border-color: #558B2F; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); display: none;
+            align-items: center; justify-content: center; z-index: 300; padding: 20px;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-content {
+            background: white; border-radius: 16px; padding: 25px;
+            width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto;
+        }
+        .modal-title { font-size: 20px; font-weight: 600; color: #333; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; font-size: 13px; font-weight: 500; color: #555; margin-bottom: 5px; }
+        .form-input {
+            width: 100%; padding: 12px 15px; border: 2px solid #E0E0E0;
+            border-radius: 10px; font-family: 'Poppins', sans-serif;
+            font-size: 14px; transition: border-color 0.2s;
+        }
+        .form-input:focus { outline: none; border-color: #8BC34A; }
+        .form-textarea { resize: vertical; min-height: 80px; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { flex: 1; padding: 12px; border: none; border-radius: 10px;
+            font-family: 'Poppins', sans-serif; font-size: 14px;
+            font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-cancel { background: #E0E0E0; color: #555; }
+        .btn-cancel:hover { background: #BDBDBD; }
+        .btn-save { background: #558B2F; color: white; }
+        .btn-save:hover { background: #33691E; }
+
+        .toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-20px);
+            background: #333; color: white; padding: 12px 24px; border-radius: 8px;
+            font-size: 14px; opacity: 0; transition: all 0.3s; z-index: 400; pointer-events: none;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        @media (max-width: 480px) {
+            .header-title { font-size: 26px; }
+            .address-card { padding: 18px; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- BAGIAN 1: HTML (TAMPILAN) -->
+<!-- ============================================ -->
+
+    <div class="header">
+        <h1 class="header-title">Alamat Saya</h1>
+    </div>
+
+    <div class="main-content" id="addressList">
+        <!-- Alamat akan dirender di sini oleh JavaScript -->
+    </div>
+
+    <!-- Modal Tambah/Edit Alamat -->
+    <div class="modal-overlay" id="addressModal">
+        <div class="modal-content">
+            <h2 class="modal-title" id="modalTitle">Tambah Alamat Baru</h2>
+            <div class="form-group">
+                <label class="form-label">Label Alamat</label>
+                <input type="text" class="form-input" id="inputLabel" placeholder="Contoh: Rumah, Kantor">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Alamat Lengkap</label>
+                <textarea class="form-input form-textarea" id="inputStreet" placeholder="Jl. Nama Jalan No.123, RT/RW"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Detail (Kelurahan, Kecamatan)</label>
+                <input type="text" class="form-input" id="inputDetail" placeholder="Kel. ..., Kec. ...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Kota & Kode Pos</label>
+                <input type="text" class="form-input" id="inputCity" placeholder="Kota, Provinsi Kode Pos">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Nomor Telepon</label>
+                <input type="text" class="form-input" id="inputPhone" placeholder="08xx-xxxx-xxxx">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeModal()">Batal</button>
+                <button class="btn btn-save" onclick="saveAddress()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+
+<!-- ============================================ -->
+<!-- BAGIAN 2: JAVASCRIPT (LOGIC) -->
+<!-- Taruh di sini, sebelum </body> -->
+
+<script>
+
+// ============================================
+// STEP 1: DATA ALAMAT (array)
+// ============================================
+
+let addresses = [
+    {
+        id: "addr_1",
+        label: "Rumah",
+        street: "Jl. Raya Sutorejo No.123, RT. 01/RW 05",
+        detail: "Dusun Sutorejo, Kec. Mulyorejo",
+        city: "Surabaya, Jawa Timur 64211",
+        phone: "0838 - 5668 - 9633"
+    },
+    {
+        id: "addr_2",
+        label: "Kantor",
+        street: "Jl. Soekarno Hatta No.173",
+        detail: "Kel. Singosari, Kec. Manyar",
+        city: "Gresik, Jawa Timur 69011",
+        phone: "0838 - 8743 - 8676"
+    },
+    {
+        id: "addr_3",
+        label: "Rumah",
+        street: "Jl. Blimbing Sari No.173",
+        detail: "Kel. Singosari, Kec. Manyar",
+        city: "Gresik, Jawa Timur 69011",
+        phone: "0811 - 1111 - 2222"
+    }
+];
+
+let editingId = null;  // untuk tracking alamat yang sedang diedit
+
+
+// ============================================
+// STEP 2: RENDER ALAMAT KE HALAMAN
+// ============================================
+
+function renderAddresses() {
+    const container = document.getElementById('addressList');
+
+    let html = '';
+    addresses.forEach(addr => {
+        html += `
+            <div class="address-card" onclick="selectAddress('${addr.id}')">
+                <div class="address-header">
+                    <span class="address-label-text">${addr.label}</span>
+                    <div class="address-actions" onclick="event.stopPropagation()">
+                        <button class="action-btn edit" onclick="editAddress('${addr.id}')">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <button class="action-btn delete" onclick="deleteAddress('${addr.id}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="address-text">
+                    ${addr.street}<br>
+                    ${addr.detail}<br>
+                    ${addr.city}
+                </div>
+                <div class="address-phone">
+                    <span class="phone-icon">📱</span>
+                    <span>${addr.phone}</span>
+                </div>
+            </div>
+        `;
+    });
+
+    // Tombol tambah alamat baru
+    html += `
+        <button class="add-address-btn" onclick="openAddModal()">
+            <i class="fas fa-plus"></i> Tambah Alamat Baru
+        </button>
+    `;
+
+    container.innerHTML = html;
+}
+
+
+// ============================================
+// STEP 3: PILIH ALAMAT (kirim ke checkout)
+// ============================================
+
+/*
+Ini fungsi PENTING!
+Ketika user klik salah satu alamat, kita:
+  1. Ambil data alamat yang dipilih
+  2. Simpan ke localStorage dengan key 'panenku_selected_address'
+  3. Redirect balik ke halaman checkout
+*/
+
+function selectAddress(addrId) {
+    // Cari alamat yang dipilih dari array
+    const addr = addresses.find(a => a.id === addrId);
+
+    if (addr) {
+        // ⭐ SIMPAN alamat yang dipilih ke localStorage
+        // JSON.stringify() = ubah object jadi string
+        localStorage.setItem('panenku_selected_address', JSON.stringify(addr));
+
+        showToast('Alamat dipilih');
+
+        // Highlight card yang dipilih
+        document.querySelectorAll('.address-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        event.currentTarget.classList.add('selected');
+
+        // Redirect balik ke halaman checkout setelah 500ms
+        setTimeout(() => {
+            window.location.href = 'checkout.html';
+        }, 500);
+    }
+}
+
+
+// ============================================
+// STEP 4: TAMBAH ALAMAT BARU
+// ============================================
+
+function openAddModal() {
+    editingId = null;  // null = mode tambah baru
+    document.getElementById('modalTitle').textContent = 'Tambah Alamat Baru';
+
+    // Kosongkan semua input
+    document.getElementById('inputLabel').value = '';
+    document.getElementById('inputStreet').value = '';
+    document.getElementById('inputDetail').value = '';
+    document.getElementById('inputCity').value = '';
+    document.getElementById('inputPhone').value = '';
+
+    // Tampilkan modal
+    document.getElementById('addressModal').classList.add('show');
+}
+
+
+// ============================================
+// STEP 5: EDIT ALAMAT
+// ============================================
+
+function editAddress(addrId) {
+    event.stopPropagation();  // jangan trigger selectAddress
+
+    const addr = addresses.find(a => a.id === addrId);
+    if (!addr) return;
+
+    editingId = addrId;  // simpan ID yang diedit
+    document.getElementById('modalTitle').textContent = 'Edit Alamat';
+
+    // Isi form dengan data yang ada
+    document.getElementById('inputLabel').value = addr.label;
+    document.getElementById('inputStreet').value = addr.street;
+    document.getElementById('inputDetail').value = addr.detail;
+    document.getElementById('inputCity').value = addr.city;
+    document.getElementById('inputPhone').value = addr.phone;
+
+    // Tampilkan modal
+    document.getElementById('addressModal').classList.add('show');
+}
+
+
+// ============================================
+// STEP 6: HAPUS ALAMAT
+// ============================================
+
+function deleteAddress(addrId) {
+    event.stopPropagation();  // jangan trigger selectAddress
+
+    if (confirm('Yakin mau hapus alamat ini?')) {
+        // Filter: buang alamat yang ID-nya sama dengan addrId
+        addresses = addresses.filter(a => a.id !== addrId);
+        renderAddresses();
+        showToast('Alamat dihapus');
+    }
+}
+
+
+// ============================================
+// STEP 7: SIMPAN ALAMAT (tambah/edit)
+// ============================================
+
+function saveAddress() {
+    // Ambil nilai dari input form
+    const label = document.getElementById('inputLabel').value.trim();
+    const street = document.getElementById('inputStreet').value.trim();
+    const detail = document.getElementById('inputDetail').value.trim();
+    const city = document.getElementById('inputCity').value.trim();
+    const phone = document.getElementById('inputPhone').value.trim();
+
+    // Validasi: label, alamat, dan kota wajib diisi
+    if (!label || !street || !city) {
+        showToast('Label, alamat, dan kota wajib diisi');
+        return;
+    }
+
+    if (editingId) {
+        // MODE EDIT: update alamat yang sudah ada
+        const addr = addresses.find(a => a.id === editingId);
+        if (addr) {
+            addr.label = label;
+            addr.street = street;
+            addr.detail = detail;
+            addr.city = city;
+            addr.phone = phone;
+        }
+        showToast('Alamat diperbarui');
+    } else {
+        // MODE TAMBAH: buat alamat baru
+        const newAddr = {
+            id: 'addr_' + Date.now(),  // ID unik dari timestamp
+            label: label,
+            street: street,
+            detail: detail,
+            city: city,
+            phone: phone
+        };
+        addresses.push(newAddr);
+        showToast('Alamat baru ditambahkan');
+    }
+
+    closeModal();
+    renderAddresses();
+}
+
+function closeModal() {
+    document.getElementById('addressModal').classList.remove('show');
+}
+
+
+// ============================================
+// STEP 8: UTILITIES
+// ============================================
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2500);
+}
+
+
+// ============================================
+// STEP 9: JALANKAN SAAT HALAMAN DIBUKA
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    renderAddresses();
+});
+
+// Tutup modal kalau klik di luar area modal
+window.onclick = function(event) {
+    const modal = document.getElementById('addressModal');
+    if (event.target === modal) {
+        closeModal();
+    }
+};
+
+</script>
+
+</body>
+</html>

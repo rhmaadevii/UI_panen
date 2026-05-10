@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PanenKu - Pesanan Saya</title>
+  <link rel="stylesheet" href="dashboardpembeli.css"/>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-left">
+    <div class="navbar-logo-wrap">
+      <img src="logo2.png" alt="PanenKu Logo" class="navbar-logo" onerror="this.style.display='none'"/>
+      <span class="navbar-brand">PanenKu</span>
+    </div>
+  </div>
+  <div class="navbar-center">
+    <a href="#">Beranda <span class="chevron"></span></a>
+    <a href="#">Artikel <span class="chevron"></span></a>
+    <a href="#">Komunitas <span class="chevron"></span></a>
+  </div>
+  <div class="navbar-right">
+    <button class="icon-btn">🛒</button>
+    <button class="icon-btn">💬</button>
+    <button class="vir-btn">VIR</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <a href="index.html" class="back-btn">←</a>
+  <h1>Pesanan Saya</h1>
+</div>
+
+<div class="pesanan-bg">
+  <div class="pesanan-container">
+
+    <div class="pesanan-tabs">
+      <button class="pesanan-tab active" onclick="gantiTab('belum-bayar', this)">
+        Belum Bayar <span class="badge-tab">1</span>
+      </button>
+      <button class="pesanan-tab" onclick="gantiTab('dikemas', this)">Dikemas</button>
+      <button class="pesanan-tab" onclick="gantiTab('dikirim', this)">
+        Dikirim <span class="badge-tab">2</span>
+      </button>
+      <button class="pesanan-tab" onclick="gantiTab('selesai', this)">Selesai</button>
+    </div>
+
+    <div id="tab-belum-bayar" class="pesanan-list">
+      <div class="pesanan-item-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg" alt="Tomat"/>
+        <div class="pesanan-item-info">
+          <div class="pesanan-item-nama">Tomat Segar</div>
+          <div class="pesanan-item-detail">1 kg · Manyar, Gresik</div>
+          <div class="pesanan-item-harga">Rp6.000</div>
+        </div>
+        <span class="pesanan-status-badge status-belum-bayar">Belum Bayar</span>
+      </div>
+    </div>
+
+    <div id="tab-dikemas" class="pesanan-list" style="display:none;">
+      <div class="kosong-info">Tidak ada pesanan yang sedang dikemas.</div>
+    </div>
+
+    <div id="tab-dikirim" class="pesanan-list" style="display:none;">
+      <div class="pesanan-item-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Broccoli_and_cross_section_edit.jpg/640px-Broccoli_and_cross_section_edit.jpg" alt="Brokoli"/>
+        <div class="pesanan-item-info">
+          <div class="pesanan-item-nama">Brokoli Segar</div>
+          <div class="pesanan-item-detail">500 gr · Mulyorejo, Surabaya</div>
+          <div class="pesanan-item-harga">Rp14.000</div>
+        </div>
+        <span class="pesanan-status-badge status-dikirim">Dikirim</span>
+      </div>
+      <div class="pesanan-item-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Onions.jpg/640px-Onions.jpg" alt="Bawang"/>
+        <div class="pesanan-item-info">
+          <div class="pesanan-item-nama">Bawang Merah</div>
+          <div class="pesanan-item-detail">1 kg · Manyar, Gresik</div>
+          <div class="pesanan-item-harga">Rp10.000</div>
+        </div>
+        <span class="pesanan-status-badge status-dikirim">Dikirim</span>
+      </div>
+    </div>
+
+    <div id="tab-selesai" class="pesanan-list" style="display:none;">
+      <div class="pesanan-item-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Popcorn_corn_on_the_cob.JPG/640px-Popcorn_corn_on_the_cob.JPG" alt="Jagung"/>
+        <div class="pesanan-item-info">
+          <div class="pesanan-item-nama">Jagung Manis</div>
+          <div class="pesanan-item-detail">3 buah · Manyar, Gresik</div>
+          <div class="pesanan-item-harga">Rp9.000</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+          <span class="pesanan-status-badge status-selesai">Selesai</span>
+        </div>
+      </div>
+      <div class="pesanan-item-card" id="pesananKonfirmasi1">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Vegetable-Carrot-Bundle-wStalks.jpg/640px-Vegetable-Carrot-Bundle-wStalks.jpg" alt="Wortel"/>
+        <div class="pesanan-item-info">
+          <div class="pesanan-item-nama">Wortel Segar</div>
+          <div class="pesanan-item-detail">1 kg · Manyar, Gresik</div>
+          <div class="pesanan-item-harga">Rp4.000</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+          <span class="pesanan-status-badge status-dikirim" id="statusKonfirmasi1">Sudah Diterima?</span>
+          <button class="selesai-btn" onclick="konfirmasiSelesai('pesananKonfirmasi1', 'statusKonfirmasi1')">Pesanan Selesai</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function gantiTab(id, el) {
+    document.querySelectorAll('.pesanan-list').forEach(t => t.style.display = 'none');
+    document.querySelectorAll('.pesanan-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + id).style.display = 'flex';
+    el.classList.add('active');
+  }
+
+  function konfirmasiSelesai(cardId, statusId) {
+    if (confirm('Konfirmasi pesanan sudah diterima?')) {
+      document.getElementById(statusId).textContent = 'Selesai';
+      document.getElementById(statusId).className = 'pesanan-status-badge status-selesai';
+      const card = document.getElementById(cardId);
+      const btn = card.querySelector('.selesai-btn');
+      if (btn) btn.remove();
+    }
+  }
+</script>
+</body>
+</html>

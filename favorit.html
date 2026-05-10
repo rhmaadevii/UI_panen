@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PanenKu - Favorit</title>
+  <link rel="stylesheet" href="dashboardpembeli.css"/>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-left">
+    <div class="navbar-logo-wrap">
+      <img src="logo2.png" alt="PanenKu Logo" class="navbar-logo" onerror="this.style.display='none'"/>
+      <span class="navbar-brand">PanenKu</span>
+    </div>
+  </div>
+  <div class="navbar-center">
+    <a href="#">Beranda <span class="chevron"></span></a>
+    <a href="#">Artikel <span class="chevron"></span></a>
+    <a href="#">Komunitas <span class="chevron"></span></a>
+  </div>
+  <div class="navbar-right">
+    <button class="icon-btn">🛒</button>
+    <button class="icon-btn">💬</button>
+    <button class="vir-btn">VIR</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <a href="dashboardpembeli.html" class="back-btn">←</a>
+  <h1>Favorit</h1>
+</div>
+
+<div class="favorit-bg">
+  <div class="favorit-container">
+    <div class="produk-grid" id="produkGrid"></div>
+    <div id="kosongFavorit" style="display:none;text-align:center;padding:50px;color:#999;">
+      Belum ada produk favorit.
+    </div>
+  </div>
+</div>
+
+<script>
+  let favorit = [
+    { id: 1, nama: 'Tomat', harga: 'Rp.6.000', desc: 'Tomat segar dari pertanian', lokasi: 'Manyar, Gresik', rating: '4,9 (50+ Ulasan)', img: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg' },
+    { id: 2, nama: 'Bawang', harga: 'Rp.10.000', desc: '', lokasi: '', rating: '5,0 (15+ Ulasan)', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Onions.jpg/640px-Onions.jpg' },
+    { id: 3, nama: 'Brokoli', harga: 'Rp.14.000', desc: 'Brokoli segar kaya nutrisi, cocok untuk menu sehat.', lokasi: 'Mulyorejo, Surabaya', rating: '4,9 (50+ Ulasan)', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Broccoli_and_cross_section_edit.jpg/640px-Broccoli_and_cross_section_edit.jpg' },
+    { id: 4, nama: 'Cabai', harga: 'Rp.9000', desc: 'Cabai merah segar dengan rasa pedas alami.', lokasi: 'Manyar, Gresik', rating: '4,7 (43+ Ulasan)', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Capsicum_annuum_var._annuum_chile_de_agua_2.jpg/640px-Capsicum_annuum_var._annuum_chile_de_agua_2.jpg' },
+    { id: 5, nama: 'Bibit Timun', harga: 'Rp.4.000', desc: 'Bibit Timun Sehat Segar', lokasi: 'Manyar, Gresik', rating: '4,9 (50+ Ulasan)', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Cucumbers_and_cross_section.jpg/640px-Cucumbers_and_cross_section.jpg' },
+    { id: 6, nama: 'Jagung', harga: 'Rp.9.000', desc: 'Jagung manis segar dengan rasa manis alami.', lokasi: 'Manyar, Gresik', rating: '4,9 (50+ Ulasan)', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Popcorn_corn_on_the_cob.JPG/640px-Popcorn_corn_on_the_cob.JPG' },
+    { id: 7, nama: 'Tomat', harga: 'Rp.9000', desc: 'Tomat segar dari pertanian', lokasi: 'Kebomas, Gresik', rating: '4,9 (20+ Ulasan)', img: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg' },
+    { id: 8, nama: 'Wortel', harga: 'Rp.4.000', desc: 'Wortal Kualitas Bagus, segar', lokasi: 'Manyar, Gresik', rating: '4,9 (50+ Ulasan)', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Vegetable-Carrot-Bundle-wStalks.jpg/640px-Vegetable-Carrot-Bundle-wStalks.jpg' },
+    { id: 9, nama: 'Jagung', harga: 'Rp.9.000', desc: 'Jagung Manis Segar', lokasi: 'Manyar, Gresik', rating: '4,9 (50+ Ulasan)', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Popcorn_corn_on_the_cob.JPG/640px-Popcorn_corn_on_the_cob.JPG' },
+  ];
+
+  function renderFavorit() {
+    const grid = document.getElementById('produkGrid');
+    const kosong = document.getElementById('kosongFavorit');
+    if (favorit.length === 0) {
+      grid.innerHTML = '';
+      kosong.style.display = 'block';
+      return;
+    }
+    kosong.style.display = 'none';
+    grid.innerHTML = favorit.map(p => `
+      <div class="produk-card" id="produk-${p.id}">
+        <img src="${p.img}" alt="${p.nama}" onerror="this.src='https://via.placeholder.com/200x130?text=Gambar'"/>
+        <div class="produk-card-info">
+          <span class="produk-nama">${p.nama}</span>
+          <span class="produk-harga">${p.harga}</span>
+        </div>
+        ${p.desc ? `<div class="produk-desc">${p.desc}</div>` : ''}
+        <div class="produk-meta">
+          <div>
+            ${p.lokasi ? `<div class="produk-lokasi">📍 ${p.lokasi}</div>` : ''}
+            <div class="produk-rating">⭐ ${p.rating}</div>
+          </div>
+          <button class="love-btn" onclick="toggleLove(${p.id})" title="Hapus dari favorit">❤️</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function toggleLove(id) {
+    favorit = favorit.filter(p => p.id !== id);
+    renderFavorit();
+  }
+
+  renderFavorit();
+</script>
+</body>
+</html>

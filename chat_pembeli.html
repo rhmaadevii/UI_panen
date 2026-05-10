@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PanenKu - Chat Pembeli</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #c5e0a5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #a8d46f;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            width: 40px; height: 40px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: #6b8e3d;
+            font-weight: 600;
+            flex: 1;
+            text-align: center;
+            margin-right: 40px;
+        }
+
+        .header-title span {
+            color: white;
+            font-weight: 700;
+        }
+
+        .chat-list { padding: 0; }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chat-item:nth-child(odd) { background: #6b9e2b; }
+        .chat-item:nth-child(even) { background: #a8d46f; }
+        .chat-item:hover { filter: brightness(1.1); }
+
+        .chat-avatar {
+            width: 55px; height: 55px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+            flex-shrink: 0;
+        }
+
+        .chat-content { flex: 1; min-width: 0; }
+
+        .chat-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .chat-preview {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: rgba(255,255,255,0.9);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .chat-item:nth-child(even) .chat-preview { color: #4a7a2a; }
+
+        .chat-time {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.8);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .chat-item:nth-child(even) .chat-time { color: #4a7a2a; }
+
+        /* EMPTY STATE */
+        .empty-chat {
+            text-align: center;
+            padding: 100px 20px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .empty-chat i {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.4;
+        }
+
+        .empty-chat h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .empty-chat p {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .btn-start {
+            padding: 12px 30px;
+            background: white;
+            border: none;
+            border-radius: 25px;
+            color: #6b9e2b;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .header-title { font-size: 1.6rem; }
+            .chat-avatar { width: 50px; height: 50px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <button class="back-btn" onclick="window.location.href='dashboardpetani.html'">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="header-title">Panenku<span>Chat Pembeli</span></div>
+    </div>
+
+    <div class="chat-list" id="chatList"></div>
+
+    <script>
+        // ============================================
+        // PREFIX 
+        // ============================================
+        const STORAGE_PREFIX = 'panenku_seller_chat_';
+
+        // Data pembeli default (buat testing awal)
+        const pembeliData = [
+            {
+                name: 'Inas Amatullah',
+                avatar: 'avatar_inas.png',
+                pesan: 'Kak stok nya masih ada lagi ga ya? aku mau nambah beli tapi stoknya tinggal dikit. Kapan restock ya?',
+                waktu: '2 menit lalu'
+            },
+            {
+                name: 'Rahmadevi Shetyaning',
+                avatar: 'avatar_vivi.png',
+                pesan: 'Permisi ibu maaf menggangu mau tanya tomat yang dijual itu bisa bertahan berapa lama ya?',
+                waktu: '11 jam lalu'
+            },
+            {
+                name: 'Zarra Firdaus',
+                avatar: 'avatar_rara.png',
+                pesan: 'oke min, ditunggu paket sampenya',
+                waktu: '19 jam lalu'
+            }
+        ];
+
+        // ============================================
+        // CEK APAKAH ADA DATA (untuk kondisi empty)
+        // ============================================
+        function adaDataChat() {
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith(STORAGE_PREFIX)) {
+                    const messages = JSON.parse(localStorage.getItem(key) || '[]');
+                    if (messages.length > 0) return true;
+                }
+            }
+            return false;
+        }
+
+        // ============================================
+        // INIT DATA (hanya kalau user pernah chat)
+        // ============================================
+        function initData() {
+            // Cek apakah sudah pernah init
+            if (localStorage.getItem(STORAGE_PREFIX + '_initialized')) {
+                return; // Sudah pernah, gak usah init lagi
+            }
+
+            // Init data default (pertama kali buka)
+            pembeliData.forEach(p => {
+                const key = STORAGE_PREFIX + p.name;
+                const initial = [{
+                    sender: 'buyer',
+                    text: p.pesan,
+                    time: p.waktu,
+                    timestamp: Date.now()
+                }];
+                localStorage.setItem(key, JSON.stringify(initial));
+            });
+
+            // Tandai sudah init
+            localStorage.setItem(STORAGE_PREFIX + '_initialized', 'true');
+        }
+
+        // ============================================
+        // LOAD CHAT LIST
+        // ============================================
+        function loadChatList() {
+            let chatList = [];
+
+            // Scan localStorage dengan prefix khusus
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith(STORAGE_PREFIX) && !key.endsWith('_initialized')) {
+                    const buyerName = key.replace(STORAGE_PREFIX, '');
+                    const messages = JSON.parse(localStorage.getItem(key) || '[]');
+
+                    if (messages.length > 0) {
+                        const lastMsg = messages[messages.length - 1];
+                        const unreadCount = messages.filter(m => m.sender === 'buyer' && !m.read).length;
+
+                        // Cari avatar dari default
+                        const defaultBuyer = pembeliData.find(b => b.name === buyerName);
+                        const avatar = defaultBuyer ? defaultBuyer.avatar : 'profil.png';
+
+                        chatList.push({
+                            name: buyerName,
+                            avatar: avatar,
+                            preview: lastMsg.text || (lastMsg.image ? '📷 Foto' : ''),
+                            time: lastMsg.time || 'Baru saja',
+                            unread: unreadCount
+                        });
+                    }
+                }
+            }
+
+            // Sort: unread dulu
+            chatList.sort((a, b) => b.unread - a.unread);
+
+            return chatList;
+        }
+
+        // ============================================
+        // RENDER
+        // ============================================
+        function renderList() {
+            const container = document.getElementById('chatList');
+            const chatList = loadChatList();
+
+            // KONDISI EMPTY - kalau belum ada chat sama sekali
+            if (chatList.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-chat">
+                        <i class="fas fa-comments"></i>
+                        <h3>Belum ada chat</h3>
+                        <p>Pembeli akan muncul di sini ketika mereka mengirim pesan</p>
+                        <button class="btn-start" onclick="initData(); renderList();">
+                            🚀 Mulai Demo (3 Pembeli)
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Ada chat, tampilkan list
+            let html = '';
+            chatList.forEach(chat => {
+                html += `
+                    <div class="chat-item" onclick="bukaChat('${escape(chat.name)}', '${escape(chat.avatar)}')">
+                        <img src="${chat.avatar}" alt="${chat.name}" class="chat-avatar" onerror="this.src='profil.png'">
+                        <div class="chat-content">
+                            <div class="chat-name">${chat.name}</div>
+                            <div class="chat-preview">${chat.preview}</div>
+                        </div>
+                        <div class="chat-time">${chat.time}</div>
+                        ${chat.unread > 0 ? `<div style="background:#ef4444;color:white;font-size:11px;font-weight:600;min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 6px;">${chat.unread}</div>` : ''}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ============================================
+        // NAVIGASI
+        // ============================================
+        function bukaChat(name, avatar) {
+            const key = STORAGE_PREFIX + name;
+            const messages = JSON.parse(localStorage.getItem(key) || '[]');
+
+            // Mark as read
+            messages.forEach(m => { if (m.sender === 'buyer') m.read = true; });
+            localStorage.setItem(key, JSON.stringify(messages));
+
+            // Kirim prefix ke chat_detailing via URL parameter
+            window.location.href = 'chat_detailing.html?buyer=' + encodeURIComponent(name) + '&avatar=' + encodeURIComponent(avatar) + '&prefix=' + encodeURIComponent(STORAGE_PREFIX);
+        }
+
+        function escape(str) {
+            return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+
+        // ============================================
+        // START
+        // ============================================
+        
+        // Cek apakah mau tampilkan empty atau data
+        // Kalau belum pernah init, tampilkan EMPTY STATE (kondisi yang kamu mau)
+        if (!localStorage.getItem(STORAGE_PREFIX + '_initialized')) {
+            renderList(); // Akan tampilkan empty state
+        } else {
+            initData(); // Sudah pernah, load data
+            renderList();
+        }
+    </script>
+
+</body>
+</html>

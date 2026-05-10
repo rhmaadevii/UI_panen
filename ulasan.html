@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PanenKu - Ulasan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #c5e0a5;
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 25px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding: 15px 0;
+        }
+
+        .btn-back {
+            width: 45px;
+            height: 45px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 28px;
+            color: #a8d46f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            color: #6b9e2b;
+            transform: translateX(-3px);
+        }
+
+        .page-title {
+            color: #6b8e3d;
+            font-size: 28px;
+            font-weight: 500;
+        }
+
+        /* SECTION CARD */
+        .section-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .section-card h3 {
+            color: #2d8a2d;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #c5e0a5;
+        }
+
+        /* ULASAN ITEM */
+        .ulasan-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .ulasan-item {
+            display: flex;
+            gap: 18px;
+            padding: 20px;
+            border-radius: 15px;
+            background: white;
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s;
+        }
+
+        .ulasan-item:hover {
+            background: #f8f8f8;
+        }
+
+        .ulasan-left {
+            flex-shrink: 0;
+        }
+
+        .ulasan-img {
+            width: 110px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid #e0e0e0;
+        }
+
+        .ulasan-center {
+            flex: 1;
+        }
+
+        .ulasan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .ulasan-info h4 {
+            color: #2d8a2d;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .ulasan-info .pembeli {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+
+        .ulasan-info .isi-ulasan {
+            color: #a8d46f;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .ulasan-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #2d4a1e;
+            font-weight: 600;
+        }
+
+        .ulasan-rating span {
+            font-size: 18px;
+        }
+
+        .ulasan-tujuan {
+            color: #a8d46f;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        /* RESPON AREA */
+        .respon-area {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #e0e0e0;
+        }
+
+        .respon-label {
+            color: #2d8a2d;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .respon-text {
+            color: #2d8a2d;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .respon-text.belum {
+            color: #e74c3c;
+        }
+
+        /* FORM RESPON */
+        .respon-form {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .respon-form input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #c5e0a5;
+            border-radius: 10px;
+            font-size: 13px;
+            outline: none;
+            margin-bottom: 8px;
+        }
+
+        .respon-form input:focus {
+            border-color: #6b9e2b;
+        }
+
+        .respon-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-simpan-respon {
+            padding: 8px 20px;
+            background: #6b9e2b;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-simpan-respon:hover {
+            background: #5a8524;
+        }
+
+        .btn-batal-respon {
+            padding: 8px 20px;
+            background: #ccc;
+            border: none;
+            border-radius: 8px;
+            color: #555;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-batal-respon:hover {
+            background: #bbb;
+        }
+
+        /* ACTION BUTTONS */
+        .ulasan-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-aksi {
+            padding: 6px 15px;
+            border: 1px solid #c5e0a5;
+            border-radius: 8px;
+            background: white;
+            color: #6b9e2b;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-aksi:hover {
+            background: #6b9e2b;
+            color: white;
+        }
+
+        .btn-hapus {
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+
+        .btn-hapus:hover {
+            background: #e74c3c;
+            color: white;
+        }
+
+        /* NOTIF */
+        .notif {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notif.sukses {
+            background: #6b9e2b;
+            color: white;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 15px;
+            }
+            .ulasan-item {
+                flex-direction: column;
+            }
+            .ulasan-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NOTIF -->
+    <div class="notif" id="notif"></div>
+
+    <div class="content">
+
+        <div class="page-header">
+            <a href="dashboardpetani.html" class="btn-back">←</a>
+            <h1 class="page-title">Ulasan</h1>
+        </div>
+
+        <!-- SEMUA ULASAN -->
+        <div class="section-card">
+            <h3>Semua Ulasan</h3>
+            <div class="ulasan-list" id="daftarUlasan">
+
+                <!-- ULASAN 1 - ADA RESPON -->
+                <div class="ulasan-item" data-id="1">
+                    <div class="ulasan-left">
+                        <img src="jagung.png" alt="Jagung" class="ulasan-img">
+                    </div>
+                    <div class="ulasan-center">
+                        <div class="ulasan-header">
+                            <div class="ulasan-info">
+                                <h4>Jagung Manis Segar</h4>
+                                <div class="pembeli">Siti Munaroh</div>
+                                <div class="isi-ulasan">Isi : Jagung nya masih fresh gaada ulatnya. Warnanya juga cantik. Rasanya manis. Kemarin untuk bakar bakar hari raya anak saya suka semua</div>
+                            </div>
+                            <div class="ulasan-rating">
+                                <span>★</span> 4
+                            </div>
+                        </div>
+                        <div class="ulasan-tujuan">Pengiriman ke Jakarta</div>
+                        
+                        <div class="respon-area">
+                            <div class="respon-label">Respon :</div>
+                            <div class="respon-text" id="respon-1">Tanaman tumbuh dengan cinta anak juga merasa dicintai</div>
+                            
+                            <div class="respon-form" id="form-respon-1">
+                                <input type="text" id="input-respon-1" placeholder="Ketik respon Anda...">
+                                <div class="respon-actions">
+                                    <button class="btn-simpan-respon" onclick="simpanRespon(1)">Simpan</button>
+                                    <button class="btn-batal-respon" onclick="batalRespon(1)">Batal</button>
+                                </div>
+                            </div>
+                            
+                            <div class="ulasan-actions" id="actions-1">
+                                <button class="btn-aksi" onclick="editRespon(1)">Edit Respon</button>
+                                <button class="btn-aksi btn-hapus" onclick="hapusRespon(1)">Hapus Respon</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ULASAN 2 - ADA RESPON -->
+                <div class="ulasan-item" data-id="2">
+                    <div class="ulasan-left">
+                        <img src="tomat.png" alt="Tomat" class="ulasan-img">
+                    </div>
+                    <div class="ulasan-center">
+                        <div class="ulasan-header">
+                            <div class="ulasan-info">
+                                <h4>Tomat Merah</h4>
+                                <div class="pembeli">Vivi</div>
+                                <div class="isi-ulasan">Isi : Aku suka banget gadoin tomat, tapi kebanyakan tomat itu asem banget kecuali ini. Ini cocok banget dimakan langsung, rasanya ga terlalu asem</div>
+                            </div>
+                            <div class="ulasan-rating">
+                                <span>★</span> 5
+                            </div>
+                        </div>
+                        <div class="ulasan-tujuan">Pengiriman ke Gresik</div>
+                        
+                        <div class="respon-area">
+                            <div class="respon-label">Respon :</div>
+                            <div class="respon-text" id="respon-2">Senang kalau kakak suka</div>
+                            
+                            <div class="respon-form" id="form-respon-2">
+                                <input type="text" id="input-respon-2" placeholder="Ketik respon Anda...">
+                                <div class="respon-actions">
+                                    <button class="btn-simpan-respon" onclick="simpanRespon(2)">Simpan</button>
+                                    <button class="btn-batal-respon" onclick="batalRespon(2)">Batal</button>
+                                </div>
+                            </div>
+                            
+                            <div class="ulasan-actions" id="actions-2">
+                                <button class="btn-aksi" onclick="editRespon(2)">Edit Respon</button>
+                                <button class="btn-aksi btn-hapus" onclick="hapusRespon(2)">Hapus Respon</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ULASAN 3 - ADA RESPON -->
+                <div class="ulasan-item" data-id="3">
+                    <div class="ulasan-left">
+                        <img src="brokoli.png" alt="Brokoli" class="ulasan-img">
+                    </div>
+                    <div class="ulasan-center">
+                        <div class="ulasan-header">
+                            <div class="ulasan-info">
+                                <h4>Brokoli</h4>
+                                <div class="pembeli">Paijo</div>
+                                <div class="isi-ulasan">Isi : Pokoknya mantap</div>
+                            </div>
+                            <div class="ulasan-rating">
+                                <span>★</span> 5
+                            </div>
+                        </div>
+                        <div class="ulasan-tujuan">Pengiriman ke Jogjakarta</div>
+                        
+                        <div class="respon-area">
+                            <div class="respon-label">Respon :</div>
+                            <div class="respon-text" id="respon-3">Terima kasih sudah belanja.</div>
+                            
+                            <div class="respon-form" id="form-respon-3">
+                                <input type="text" id="input-respon-3" placeholder="Ketik respon Anda...">
+                                <div class="respon-actions">
+                                    <button class="btn-simpan-respon" onclick="simpanRespon(3)">Simpan</button>
+                                    <button class="btn-batal-respon" onclick="batalRespon(3)">Batal</button>
+                                </div>
+                            </div>
+                            
+                            <div class="ulasan-actions" id="actions-3">
+                                <button class="btn-aksi" onclick="editRespon(3)">Edit Respon</button>
+                                <button class="btn-aksi btn-hapus" onclick="hapusRespon(3)">Hapus Respon</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ULASAN 4 - BELUM ADA RESPON -->
+                <div class="ulasan-item" data-id="4">
+                    <div class="ulasan-left">
+                        <img src="tomat.png" alt="Tomat" class="ulasan-img">
+                    </div>
+                    <div class="ulasan-center">
+                        <div class="ulasan-header">
+                            <div class="ulasan-info">
+                                <h4>Tomat Merah</h4>
+                                <div class="pembeli">Inas</div>
+                                <div class="isi-ulasan">Isi : Enak dibuat jus dan campuran salad</div>
+                            </div>
+                            <div class="ulasan-rating">
+                                <span>★</span> 5
+                            </div>
+                        </div>
+                        <div class="ulasan-tujuan">Pengiriman ke Gresik</div>
+                        
+                        <div class="respon-area">
+                            <div class="respon-label">Respon :</div>
+                            <div class="respon-text belum" id="respon-4">(belum direspon)</div>
+                            
+                            <div class="respon-form" id="form-respon-4">
+                                <input type="text" id="input-respon-4" placeholder="Ketik respon Anda...">
+                                <div class="respon-actions">
+                                    <button class="btn-simpan-respon" onclick="simpanRespon(4)">Simpan</button>
+                                    <button class="btn-batal-respon" onclick="batalRespon(4)">Batal</button>
+                                </div>
+                            </div>
+                            
+                            <div class="ulasan-actions" id="actions-4">
+                                <button class="btn-aksi" onclick="tambahRespon(4)">Tambah Respon</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // Simpan respon baru atau edit
+        function simpanRespon(id) {
+            var input = document.getElementById('input-respon-' + id);
+            var responText = document.getElementById('respon-' + id);
+            var form = document.getElementById('form-respon-' + id);
+            var actions = document.getElementById('actions-' + id);
+            
+            if (input.value.trim() === '') {
+                tampilNotif('Respon tidak boleh kosong!', 'error');
+                return;
+            }
+            
+            // Update tampilan
+            responText.textContent = input.value;
+            responText.classList.remove('belum');
+            
+            // Sembunyikan form, tampilkan actions
+            form.style.display = 'none';
+            actions.style.display = 'flex';
+            
+            // Update tombol jadi Edit & Hapus kalau belum ada
+            if (actions.innerHTML.includes('Tambah Respon')) {
+                actions.innerHTML = `
+                    <button class="btn-aksi" onclick="editRespon(${id})">Edit Respon</button>
+                    <button class="btn-aksi btn-hapus" onclick="hapusRespon(${id})">Hapus Respon</button>
+                `;
+            }
+            
+            tampilNotif('Respon berhasil disimpan!', 'sukses');
+        }
+
+        // Edit respon
+        function editRespon(id) {
+            var responText = document.getElementById('respon-' + id);
+            var form = document.getElementById('form-respon-' + id);
+            var input = document.getElementById('input-respon-' + id);
+            var actions = document.getElementById('actions-' + id);
+            
+            // Isi input dengan respon saat ini
+            input.value = responText.textContent;
+            
+            // Tampilkan form, sembunyikan actions
+            form.style.display = 'block';
+            actions.style.display = 'none';
+        }
+
+        // Hapus respon
+        function hapusRespon(id) {
+            if (confirm('Yakin mau hapus respon ini?')) {
+                var responText = document.getElementById('respon-' + id);
+                var actions = document.getElementById('actions-' + id);
+                
+                // Reset ke belum direspon
+                responText.textContent = '(belum direspon)';
+                responText.classList.add('belum');
+                
+                // Ganti tombol jadi Tambah Respon
+                actions.innerHTML = `<button class="btn-aksi" onclick="tambahRespon(${id})">Tambah Respon</button>`;
+                
+                tampilNotif('Respon berhasil dihapus!', 'sukses');
+            }
+        }
+
+        // Tambah respon baru
+        function tambahRespon(id) {
+            var form = document.getElementById('form-respon-' + id);
+            var actions = document.getElementById('actions-' + id);
+            var input = document.getElementById('input-respon-' + id);
+            
+            input.value = '';
+            form.style.display = 'block';
+            actions.style.display = 'none';
+        }
+
+        // Batal
+        function batalRespon(id) {
+            var form = document.getElementById('form-respon-' + id);
+            var actions = document.getElementById('actions-' + id);
+            
+            form.style.display = 'none';
+            actions.style.display = 'flex';
+        }
+
+        // Notifikasi
+        function tampilNotif(pesan, tipe) {
+            var notif = document.getElementById('notif');
+            notif.textContent = pesan;
+            notif.className = 'notif ' + tipe;
+            notif.style.display = 'block';
+            
+            setTimeout(function() {
+                notif.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+
+</body>
+</html>

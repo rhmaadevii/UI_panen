@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panenku - Checkout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #f5f5f5; min-height: 100vh; }
+
+        .header {
+            background: #8BC34A;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .back-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; padding: 5px; }
+        .header-title { color: white; font-size: 24px; font-weight: 600; letter-spacing: 1px; }
+        .chat-btn {
+            background: rgba(255,255,255,0.9); border: none; width: 40px; height: 40px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; overflow: hidden; padding: 0;
+        }
+        .chat-btn img { width: 24px; height: 24px; object-fit: contain; }
+
+        .main-content { padding: 20px; padding-bottom: 120px; max-width: 800px; margin: 0 auto; }
+
+        .address-section {
+            background: #9CCC65; border-radius: 16px; padding: 20px;
+            margin-bottom: 20px; display: flex; align-items: flex-start;
+            gap: 15px; cursor: pointer; transition: background 0.2s;
+        }
+        .address-section:hover { background: #8BC34A; }
+        .address-icon { color: white; font-size: 24px; margin-top: 3px; }
+        .address-info { flex: 1; color: white; }
+        .address-label { font-size: 14px; font-weight: 600; margin-bottom: 4px; opacity: 0.9; }
+        .address-text { font-size: 14px; line-height: 1.5; opacity: 0.95; }
+        .address-arrow { color: white; font-size: 18px; margin-top: 10px; }
+
+        .product-card { background: #9CCC65; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+        .product-header { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px; }
+        .product-image { width: 100px; height: 100px; object-fit: cover; border-radius: 10px; border: 3px solid rgba(255,255,255,0.5); background: white; }
+        .product-details { flex: 1; color: white; }
+        .product-name { font-size: 16px; font-weight: 600; margin-bottom: 10px; line-height: 1.3; }
+        .product-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .variant-badge, .qty-badge { background: rgba(255,255,255,0.25); padding: 3px 10px; border-radius: 6px; font-size: 12px; }
+        .product-price { font-size: 18px; font-weight: 700; }
+
+        .options-card { background: #AED581; border-radius: 16px; padding: 20px; }
+        .option-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.2); color: white; }
+        .option-row:last-child { border-bottom: none; }
+        .option-label { font-size: 14px; font-weight: 600; }
+        .option-value { font-size: 13px; opacity: 0.9; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .option-value:hover { opacity: 1; }
+
+        .shipping-options { display: flex; gap: 12px; margin: 15px 0; flex-wrap: wrap; }
+        .shipping-option { background: rgba(255,255,255,0.2); border: 2px solid transparent; border-radius: 10px; padding: 12px 16px; cursor: pointer; color: white; min-width: 140px; transition: all 0.2s; }
+        .shipping-option:hover { background: rgba(255,255,255,0.3); }
+        .shipping-option.selected { border-color: white; background: rgba(255,255,255,0.35); }
+        .shipping-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+        .shipping-price { font-size: 14px; font-weight: 700; }
+        .shipping-est { font-size: 11px; opacity: 0.8; margin-top: 2px; }
+
+        .payment-method { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 8px; margin-top: 10px; cursor: pointer; transition: background 0.2s; }
+        .payment-method:hover { background: rgba(255,255,255,0.3); }
+        .payment-icon { width: 30px; height: 30px; background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #333; }
+        .payment-name { font-size: 14px; font-weight: 500; color: white; }
+
+        .summary-section { margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.3); }
+        .summary-title { color: white; font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+        .summary-row { display: flex; justify-content: space-between; color: white; font-size: 13px; padding: 4px 0; opacity: 0.9; }
+        .summary-row.total { font-size: 15px; font-weight: 700; opacity: 1; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.2); }
+
+        .bottom-bar {
+            position: fixed; bottom: 0; left: 0; right: 0; background: #C5E1A5;
+            padding: 15px 20px; display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 100;
+        }
+        .total-section { text-align: right; }
+        .total-label { color: #555; font-size: 12px; }
+        .total-amount { color: #2E7D32; font-size: 20px; font-weight: 700; }
+        .order-btn { background: #558B2F; color: white; border: none; padding: 14px 35px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: 'Poppins', sans-serif; transition: background 0.2s; }
+        .order-btn:hover { background: #33691E; }
+
+        .toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-20px); background: #333; color: white; padding: 12px 24px; border-radius: 8px; font-size: 14px; opacity: 0; transition: all 0.3s; z-index: 200; pointer-events: none; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        @media (max-width: 480px) {
+            .header-title { font-size: 20px; }
+            .product-image { width: 80px; height: 80px; }
+            .shipping-options { gap: 8px; }
+            .shipping-option { min-width: 120px; padding: 10px 12px; }
+            .order-btn { padding: 12px 25px; font-size: 15px; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- BAGIAN 1: HTML (TAMPILAN) -->
+<!-- ============================================ -->
+
+    <div class="header">
+        <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+        <h1 class="header-title">Checkout</h1>
+        <button class="chat-btn" onclick="openChat()"><img src="group.png" alt="Chat"></button>
+    </div>
+
+    <div class="main-content">
+        <!-- Alamat Pengiriman -->
+        <div class="address-section" onclick="openAddressPage()">
+            <div class="address-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="address-info">
+                <div class="address-label">Alamat Pengiriman</div>
+                <div class="address-text" id="addressText">
+                    Jl. Raya Sutorejo No.123, RT. 01/RW 05<br>
+                    Dusun Sutorejo, Kec. Mulyorejo<br>
+                    Surabaya, Jawa Timur 64211
+                </div>
+            </div>
+            <div class="address-arrow"><i class="fas fa-chevron-right"></i></div>
+        </div>
+
+        <!-- Produk -->
+        <div id="productsContainer"></div>
+
+        <!-- Options -->
+        <div class="options-card">
+            <div class="option-row">
+                <span class="option-label">Voucher Toko</span>
+                <span class="option-value" onclick="openVoucher()">Gunakan/Masukkan kode <i class="fas fa-chevron-right"></i></span>
+            </div>
+            <div class="option-row">
+                <span class="option-label">Pesan untuk Penjual</span>
+                <span class="option-value" onclick="openMessage()">Tuliskan pesan <i class="fas fa-chevron-right"></i></span>
+            </div>
+            <div style="padding: 12px 0;">
+                <span class="option-label" style="color: white; display: block; margin-bottom: 10px;">Opsi Pengiriman</span>
+                <div class="shipping-options" id="shippingOptions">
+                    <div class="shipping-option" data-price="9000" data-name="Hemat" onclick="selectShipping(this)">
+                        <div class="shipping-name">Hemat</div>
+                        <div class="shipping-price">Rp 9.000</div>
+                        <div class="shipping-est">Tiba 12 April</div>
+                    </div>
+                    <div class="shipping-option selected" data-price="13000" data-name="Regular" onclick="selectShipping(this)">
+                        <div class="shipping-name">Regular</div>
+                        <div class="shipping-price">Rp 13.000</div>
+                        <div class="shipping-est">Tiba 11 April</div>
+                    </div>
+                    <div class="shipping-option" data-price="17000" data-name="Instant Kilat" onclick="selectShipping(this)">
+                        <div class="shipping-name">Instant Kilat</div>
+                        <div class="shipping-price">Rp 17.000</div>
+                        <div class="shipping-est">Tiba Hari ini/Besok</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding: 12px 0;">
+                <span class="option-label" style="color: white; display: block; margin-bottom: 10px;">Metode Pembayaran</span>
+                <div class="payment-method" onclick="selectPayment()">
+                    <div class="payment-icon"><i class="fas fa-qrcode"></i></div>
+                    <span class="payment-name">QRIS</span>
+                </div>
+            </div>
+            <div class="summary-section">
+                <div class="summary-title">Ringkasan Pembayaran</div>
+                <div class="summary-row"><span>Subtotal Pesanan</span><span id="subtotalOrder">Rp 0</span></div>
+                <div class="summary-row"><span>Subtotal Pengiriman</span><span id="subtotalShipping">Rp 13.000</span></div>
+                <div class="summary-row"><span>Biaya Layanan</span><span id="serviceFee">Rp 1.000</span></div>
+                <div class="summary-row"><span>Diskon dan Voucher</span><span id="discount">-Rp 0</span></div>
+                <div class="summary-row total"><span>Total Pembayaran</span><span id="totalPayment">Rp 0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <div class="total-section">
+            <div class="total-label">Total Pesanan</div>
+            <div class="total-amount" id="bottomTotal">Rp 0</div>
+        </div>
+        <button class="order-btn" onclick="createOrder()">Buat Pesanan</button>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+
+<!-- ============================================ -->
+<!-- BAGIAN 2: JAVASCRIPT (LOGIC) -->
+<!-- ============================================ -->
+
+<script>
+
+// ============================================
+// STEP 1: VARIABEL DATA
+// ============================================
+
+let checkoutData = {
+    items: [],
+    total: 0,
+    shippingCost: 13000,
+    serviceFee: 1000,
+    discount: 0,
+    fee: 0
+};
+
+let currentAddress = {
+    label: "Rumah",
+    street: "Jl. Raya Sutorejo No.123, RT. 01/RW 05",
+    detail: "Dusun Sutorejo, Kec. Mulyorejo",
+    city: "Surabaya, Jawa Timur 64211",
+    phone: "0838 - 5668 - 9633"
+};
+
+
+// ============================================
+// STEP 2: AMBIL DATA DARI KERANJANG (localStorage)
+// ============================================
+
+function loadCheckoutData() {
+    const stored = localStorage.getItem('panenku_checkout');
+
+    if (stored) {
+        try {
+            const parsed = JSON.parse(stored);
+            checkoutData.items = parsed.items || [];
+            // Hitung ulang total dari items (lebih aman)
+            checkoutData.total = checkoutData.items.reduce((sum, item) => {
+                return sum + (item.price * item.quantity);
+            }, 0);
+        } catch (e) {
+            console.error('Error loading checkout:', e);
+            useDemoData();
+        }
+    } else {
+        console.log('Tidak ada data checkout di localStorage, pakai data demo');
+        useDemoData();
+    }
+
+    renderProducts();
+    updateSummary();
+}
+
+function useDemoData() {
+    checkoutData.items = [
+        {
+            id: "item_1",
+            name: "Tomat Bundling dengan baby tomat",
+            image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=200",
+            variant: "1kg",
+            quantity: 4,
+            price: 6000
+        }
+    ];
+    checkoutData.total = 24000;
+}
+
+
+// ============================================
+// STEP 3: RENDER PRODUK
+// ============================================
+
+function renderProducts() {
+    const container = document.getElementById('productsContainer');
+
+    if (checkoutData.items.length === 0) {
+        container.innerHTML = `
+            <div class="product-card" style="text-align: center; color: white;">
+                <p>Tidak ada item yang dipilih</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = '';
+    checkoutData.items.forEach(item => {
+        html += `
+            <div class="product-card">
+                <div class="product-header">
+                    <img src="${item.image}" alt="${item.name}" class="product-image" 
+                         onerror="this.src='https://via.placeholder.com/100?text=No+Image'">
+                    <div class="product-details">
+                        <div class="product-name">${item.name}</div>
+                        <div class="product-meta">
+                            <span class="variant-badge">${item.variant}</span>
+                            <span class="qty-badge">x ${item.quantity}</span>
+                        </div>
+                        <div class="product-price">Rp ${formatPrice(item.price * item.quantity)}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+}
+
+
+// ============================================
+// STEP 4: OPSI PENGIRIMAN
+// ============================================
+
+function selectShipping(element) {
+    document.querySelectorAll('.shipping-option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    element.classList.add('selected');
+
+    checkoutData.shippingCost = parseInt(element.dataset.price);
+    updateSummary();
+}
+
+
+// ============================================
+// STEP 5: RINGKASAN PEMBAYARAN
+// ============================================
+
+function updateSummary() {
+    const subtotalOrder = checkoutData.items.reduce((sum, item) => {
+        return sum + (item.price * item.quantity);
+    }, 0);
+
+    const totalPayment = subtotalOrder + checkoutData.shippingCost + checkoutData.serviceFee - checkoutData.discount;
+
+    // Update checkoutData.total dengan total akhir (termasuk ongkir, dll)
+    checkoutData.total = totalPayment;
+
+    document.getElementById('subtotalOrder').textContent = `Rp ${formatPrice(subtotalOrder)}`;
+    document.getElementById('subtotalShipping').textContent = `Rp ${formatPrice(checkoutData.shippingCost)}`;
+    document.getElementById('serviceFee').textContent = `Rp ${formatPrice(checkoutData.serviceFee)}`;
+    document.getElementById('discount').textContent = `-Rp ${formatPrice(checkoutData.discount)}`;
+    document.getElementById('totalPayment').textContent = `Rp ${formatPrice(totalPayment)}`;
+    document.getElementById('bottomTotal').textContent = `Rp ${formatPrice(totalPayment)}`;
+}
+
+
+// ============================================
+// STEP 6: GANTI ALAMAT
+// ============================================
+
+function openAddressPage() {
+    localStorage.setItem('panenku_checkout_temp', JSON.stringify(checkoutData));
+    window.location.href = 'alamat_saya.html';
+}
+
+
+// ============================================
+// STEP 7: AMBIL ALAMAT YANG DIPILIH
+// ============================================
+
+function loadSelectedAddress() {
+    const stored = localStorage.getItem('panenku_selected_address');
+
+    if (stored) {
+        try {
+            const addr = JSON.parse(stored);
+            currentAddress = addr;
+
+            document.getElementById('addressText').innerHTML = `
+                ${addr.street}<br>
+                ${addr.detail}<br>
+                ${addr.city}
+            `;
+
+            localStorage.removeItem('panenku_selected_address');
+            showToast('Alamat berhasil diubah');
+        } catch (e) {
+            console.error('Error loading address:', e);
+        }
+    }
+}
+
+
+// ============================================
+// STEP 8: AKSI LAINNYA
+// ============================================
+
+function openVoucher() {
+    showToast('Fitur voucher belum tersedia');
+}
+
+function openMessage() {
+    const message = prompt('Tulis pesan untuk penjual:');
+    if (message) {
+        showToast('Pesan disimpan');
+        localStorage.setItem('panenku_seller_message', message);
+    }
+}
+
+function selectPayment() {
+    showToast('Metode pembayaran: QRIS');
+}
+
+
+// ============================================
+// STEP 9: BUAT PESANAN ⭐ INI YANG DIUBAH ⭐
+// ============================================
+
+function createOrder() {
+    // Hitung subtotal dari items
+    const subtotalOrder = checkoutData.items.reduce((sum, item) => {
+        return sum + (item.price * item.quantity);
+    }, 0);
+
+    // Hitung total akhir (subtotal + ongkir + layanan - diskon)
+    const total = subtotalOrder + checkoutData.shippingCost + checkoutData.serviceFee - checkoutData.discount;
+
+    // ⭐ SIAPKAN DATA LENGKAP UNTUK PEMBAYARAN
+    const orderData = {
+        // Data produk
+        items: checkoutData.items.map(item => ({
+            id: item.id,
+            name: item.name,
+            image: item.image,
+            variant: item.variant,
+            quantity: item.quantity,
+            price: item.price
+        })),
+
+        // Data harga
+        total: total,                           // TOTAL AKHIR yang dibayar
+        subtotal: subtotalOrder,                // harga barang saja
+        shipping: checkoutData.shippingCost,    // ongkir
+        serviceFee: checkoutData.serviceFee,    // biaya layanan
+        discount: checkoutData.discount,        // diskon
+        fee: 0,                                 // fee tambahan (kalau ada)
+
+        // Data alamat
+        address: currentAddress,
+
+        // Data pembayaran
+        paymentMethod: 'QRIS',
+
+        // Data waktu
+        timestamp: new Date().toISOString(),
+        createdAt: new Date().toLocaleString('id-ID')
+    };
+
+    // ⭐ SIMPAN KE LOCALSTORAGE key 'panenku_order'
+    // Halaman pembayaran akan membaca dari key ini
+    localStorage.setItem('panenku_order', JSON.stringify(orderData));
+
+    // ⭐ HAPUS data checkout dari keranjang (supaya gak dobel)
+    localStorage.removeItem('panenku_checkout');
+
+    // ⭐ HAPUS item yang sudah dicheckout dari keranjang utama (panenku_cart)
+    // Ambil keranjang yang ada
+    const cartStored = localStorage.getItem('panenku_cart');
+    if (cartStored) {
+        try {
+            let cart = JSON.parse(cartStored);
+            // Hapus item yang selected (sudah dicheckout)
+            cart = cart.filter(item => !item.selected);
+            localStorage.setItem('panenku_cart', JSON.stringify(cart));
+        } catch (e) {
+            console.error('Error updating cart:', e);
+        }
+    }
+
+    showToast('Pesanan berhasil dibuat! Mengarahkan ke pembayaran...');
+
+    // ⭐ REDIRECT KE HALAMAN PEMBAYARAN
+    setTimeout(() => {
+        window.location.href = 'pembayaran.html';
+    }, 800);
+}
+
+
+// ============================================
+// STEP 10: NAVIGASI
+// ============================================
+
+function goBack() {
+    window.history.back();
+}
+
+function openChat() {
+    window.location.href = 'chat_teman.html';
+}
+
+
+// ============================================
+// STEP 11: UTILITIES
+// ============================================
+
+function formatPrice(price) {
+    return price.toLocaleString('id-ID');
+}
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2500);
+}
+
+
+// ============================================
+// STEP 12: JALANKAN SAAT HALAMAN DIBUKA
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadCheckoutData();
+    loadSelectedAddress();
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PanenKu - Artikel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #c8e6c9;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #ffffff;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 80px;
+        }
+
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .logo-image {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #2e4a1c;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 60px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: #000000;
+            transition: color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            color: #2e4a1c;
+        }
+
+        .nav-item.active {
+            color: #000000;
+            font-weight: 600;
+        }
+
+        .chevron {
+            width: 12px;
+            height: 12px;
+            border-right: 2px solid currentColor;
+            border-bottom: 2px solid currentColor;
+            transform: rotate(45deg);
+            margin-top: -4px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item:hover .chevron {
+            transform: rotate(45deg) translateY(2px);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .vip-badge {
+            background-color: #7da84d;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .vip-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(125, 168, 77, 0.4);
+        }
+
+        .icon-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: #f5f5f5;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .icon-btn:hover {
+            background-color: #e8f5e9;
+            transform: scale(1.1);
+        }
+
+        .icon-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: #666;
+            transition: fill 0.3s ease;
+        }
+
+        .icon-btn:hover svg {
+            fill: #5a7c3a;
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #e53935;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .content-wrapper {
+            background-color: #5a7c3a;
+            border-radius: 30px;
+            padding: 50px 80px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            color: #c8e6c9;
+            font-weight: 400;
+            letter-spacing: 2px;
+        }
+
+        .page-title .highlight {
+            color: #ffffff;
+            font-style: italic;
+        }
+
+        /* Article Cards */
+        .articles-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .article-card {
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 25px;
+            display: flex;
+            gap: 25px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(90, 124, 58, 0.05) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .article-card:hover::before {
+            opacity: 1;
+        }
+
+        .article-image {
+            width: 180px;
+            height: 130px;
+            border-radius: 12px;
+            object-fit: cover;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .article-card:hover .article-image {
+            transform: scale(1.05);
+        }
+
+        .article-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .article-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #2e4a1c;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+
+        .article-card:hover .article-title {
+            color: #5a7c3a;
+        }
+
+        .article-excerpt {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .read-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #5a7c3a;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .article-card:hover .read-more {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #2e4a1c;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+            
+            .nav-left {
+                gap: 30px;
+            }
+            
+            .nav-links {
+                gap: 30px;
+            }
+            
+            .content-wrapper {
+                padding: 30px;
+            }
+            
+            .article-card {
+                flex-direction: column;
+            }
+            
+            .article-image {
+                width: 100%;
+                height: 200px;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .article-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .article-card:nth-child(1) { animation-delay: 0.1s; }
+        .article-card:nth-child(2) { animation-delay: 0.2s; }
+        .article-card:nth-child(3) { animation-delay: 0.3s; }
+        .article-card:nth-child(4) { animation-delay: 0.4s; }
+        .article-card:nth-child(5) { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="logo-section">
+                <img src="logo2.png" alt="PanenKu Logo" class="logo-image">
+                <span class="logo-text">PanenKu</span>
+            </div>
+            
+            <div class="nav-links">
+                <a href="index.html" class="nav-item">
+                    Beranda
+                    <span class="chevron"></span>
+                </a>
+                <a href="artikel.html" class="nav-item active">
+                    Artikel
+                    <span class="chevron"></span>
+                </a>
+                <a href="komunitas.html" class="nav-item">
+                    Komunitas
+                    <span class="chevron"></span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="nav-right">
+            <a href="dashboardpembeli.html" class="vip-badge">VIR</a>
+            
+            <a href="keranjang_teman.html" class="icon-btn">
+                🛒
+            </a>
+            
+            <a href="chat_teman.html" class="icon-btn">
+                💬
+                <span class="badge">2</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="content-wrapper">
+            <div class="page-title">
+                <h1>Panenku<span class="highlight">Artikel</span></h1>
+            </div>
+
+            <div class="articles-list">
+                <!-- Artikel 1 -->
+                <a href="https://www.hgofarms.com/2022/09/16/picking-great-produce/" target="_blank" class="article-card">
+                    <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400&h=300&fit=crop" alt="Hasil Pertanian" class="article-image">
+                    <div class="article-content">
+                        <h3 class="article-title">Panduan Jitu untuk Memilih Hasil Pertanian Berkualitas—Setiap Saat</h3>
+                        <p class="article-excerpt">Mengetahui cara memilih hasil pertanian segar terbaik seperti seorang ahli adalah keterampilan hidup yang dapat dipelajari. Kami sangat percaya bahwa setiap orang memiliki kemampuan untuk mempelajari keterampilan ini dan menjadi pembeli hasil pertanian yang ulung...</p>
+                        <span class="read-more">Baca selengkapnya →</span>
+                    </div>
+                </a>
+
+                <!-- Artikel 2 -->
+                <a href="https://kanjabung.com/tips-memilih-bibit-pertanian/" target="_blank" class="article-card">
+                    <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&h=300&fit=crop" alt="Bibit Pertanian" class="article-image">
+                    <div class="article-content">
+                        <h3 class="article-title">8 Tips Memilih Bibit Pertanian Untuk Hasil Panen yang Unggul</h3>
+                        <p class="article-excerpt">Memilih bibit pertanian yang berkualitas merupakan langkah krusial dalam memastikan keberhasilan usaha pertanian. Bibit yang baik tidak hanya menentukan hasil panen yang melimpah tetapi juga ketahanan tanaman terhadap hama dan penyakit...</p>
+                        <span class="read-more">Baca selengkapnya →</span>
+                    </div>
+                </a>
+
+                <!-- Artikel 3 -->
+                <a href="https://www.corteva.com/id/berita/Cara-Menanam-dan-Merawat-Tanaman-Cabai-di-Rumah-agar-Tumbuh-Subur-dan-Berbuah-Lebat.html" target="_blank" class="article-card">
+                    <img src="https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=400&h=300&fit=crop" alt="Tanaman Cabai" class="article-image">
+                    <div class="article-content">
+                        <h3 class="article-title">Cara Menanam dan Merawat Tanaman Cabai di Rumah agar Tumbuh Subur dan Berbuah Lebat</h3>
+                        <p class="article-excerpt">Makan tanpa sambal rasanya ada yang sesuatu yang kurang. Ini merupakan sebagian besar orang yang menganggap rasa pedas dari cabai menjadi teman yang pas pada masakan yang mereka nikmati. Menanam cabai sendiri di rumah ternyata mudah dan menyenangkan...</p>
+                        <span class="read-more">Baca selengkapnya →</span>
+                    </div>
+                </a>
+
+                <!-- Artikel 4 -->
+                <a href="https://www.kompas.com/homey/read/2024/04/02/154400276/cara-menanam-bibit-tanaman-di-kebun-dengan-benar" target="_blank" class="article-card">
+                    <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=400&h=300&fit=crop" alt="Menanam Bibit" class="article-image">
+                    <div class="article-content">
+                        <h3 class="article-title">Cara Menanam Bibit Tanaman di Kebun dengan Benar</h3>
+                        <p class="article-excerpt">Sebelum ditanam di kebun, benih perlu disemai terlebih dahulu. Penyemaian biasanya dilakukan di dalam ruangan menggunakan tray semai atau polybag kecil. Pastikan media semai terdiri dari campuran tanah, kompos, dan sekam yang telah disaring...</p>
+                        <span class="read-more">Baca selengkapnya →</span>
+                    </div>
+                </a>
+
+                <!-- Artikel 5 -->
+                <a href="https://pertanian.uma.ac.id/teknologi-irigasi-tetes-hemat-air-panen-maksimal/" target="_blank" class="article-card">
+                    <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&h=300&fit=crop" alt="Irigasi Tetes" class="article-image">
+                    <div class="article-content">
+                        <h3 class="article-title">Teknologi Irigasi Tetes: Hemat Air, Panen Maksimal</h3>
+                        <p class="article-excerpt">Teknologi irigasi tetes merupakan sistem pengairan modern yang mampu menghemat penggunaan air hingga 40-60% dibandingkan dengan sistem irigasi konvensional. Sistem ini bekerja dengan menyalurkan air dan nutrisi langsung ke area perakaran tanaman secara perlahan dan terkontrol...</p>
+                        <span class="read-more">Baca selengkapnya →</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="footer">
+                © 2026 Panenku. All rights reserved.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animasi hover tambahan untuk interaktivitas
+        document.querySelectorAll('.article-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.zIndex = '10';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.zIndex = '1';
+            });
+        });
+
+        // Konfirmasi sebelum menuju ke artikel eksternal
+        document.querySelectorAll('.article-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Animasi klik
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Navigasi interaktif
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!this.classList.contains('active')) {
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

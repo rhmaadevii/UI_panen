@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PanenKu - Dashboard</title>
+  <link rel="stylesheet" href="dashboardpembeli.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-left">
+    <div class="navbar-logo-wrap">
+      <img src="logo2.png" alt="PanenKu Logo" class="navbar-logo" onerror="this.style.display='none'"/>
+      <span class="navbar-brand">PanenKu</span>
+    </div>
+  </div>
+  <div class="navbar-center">
+      <a href="index.html" class="nav-item">
+          Beranda
+          <span class="chevron"></span>
+      </a>
+      <a href="artikel.html" class="nav-item active">
+          Artikel
+          <span class="chevron"></span>
+      </a>
+      <a href="komunitas.html" class="nav-item">
+          Komunitas
+          <span class="chevron"></span>
+      </a>
+  </div>
+  </div>
+  <div class="navbar-right">
+    <a href="keranjang_teman.html" class="icon-btn">🛒</a>
+    <a href="chat_teman.html" class="icon-btn">💬</a>
+    <a href="dashboardpembeli.html" class="icon-btn vir-btn" id="inisialBtn">VIR</a>
+</div>
+</nav>
+
+<div class="main-bg">
+  <div class="dashboard-container">
+
+    <div class="profil-card">
+      <div class="profil-info">
+        <div class="profil-avatar" id="inisialAvatar">VIR</div>
+        <div>
+          <div class="profil-nama" id="namaLengkap">Vivi Inas Rara</div>
+          <div class="profil-email" id="emailProfil">vivinasrara@gmail.com</div>
+        </div>
+      </div>
+      <button class="edit-profil-btn" onclick="toggleEditProfil()">Edit Profil</button>
+    </div>
+
+    <div class="dashboard-content">
+
+      <aside class="sidebar">
+        <div class="sidebar-section-title">MENU</div>
+        <ul class="sidebar-menu">
+          <li><a href="#" onclick="showProfilSaya(event)"><span class="menu-icon">👤</span> Profil Saya</a></li>
+          <li><a href="pesanan.html"><span class="menu-icon">🛒</span> Pesanan Saya</a></li>
+          <li><a href="favorit.html"><span class="menu-icon">❤️</span> Favorit</a></li>
+          <li><a href="#"><span class="menu-icon">💬</span> Diskusi Forum</a></li>
+        </ul>
+
+        <div class="sidebar-section-title">PENGATURAN</div>
+        <ul class="sidebar-menu">
+          <li><a href="notifikasi.html"><span class="menu-icon">🔔</span> Notifikasi</a></li>
+          <li><a href="keamanan.html"><span class="menu-icon">🔒</span> Keamanan</a></li>
+          <li><a href="#" onclick="showPopupKeluar(event)"><span class="menu-icon">❌</span> Keluar</a></li>
+        </ul>
+      </aside>
+
+      <div style="display:flex;flex-direction:column;gap:20px;">
+
+        <div id="panelProfilSaya" class="main-card" style="display:none;">
+          <div class="section-title" style="margin-bottom:16px;">Profil Saya</div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 0;">
+            <div class="profil-avatar" style="width:80px;height:80px;font-size:1.5rem;" id="bigAvatar">VIR</div>
+            <div style="font-size:1.2rem;font-weight:700;" id="bigNama">Vivi Inas Rara</div>
+            <div style="color:#999;font-size:0.9rem;" id="bigEmail">vivinasrara@gmail.com</div>
+            <div style="color:#999;font-size:0.9rem;" id="bigTelp">0838 - 5668 - 9633</div>
+            <div style="color:#999;font-size:0.88rem;" id="bigTgl">12 Desember 2005</div>
+          </div>
+          <p style="text-align:center;color:#bbb;font-size:0.82rem;margin-top:8px;">Untuk mengubah data, gunakan tombol <b>Edit Profil</b> di atas.</p>
+        </div>
+
+        <div class="main-card" id="panelInfoPribadi">
+          <div>
+            <div class="section-header">
+              <span class="section-title">Informasi Pribadi</span>
+              <button class="ubah-btn" onclick="toggleEditProfil()">Ubah</button>
+            </div>
+
+            <div id="viewMode">
+              <div class="info-row">
+                <div class="info-label">
+                  <div class="label-icon">👤</div>
+                  <div class="info-label-text">
+                    <span class="label-main">Nama Lengkap</span>
+                    <span class="label-sub">Nama sesuai KTP</span>
+                  </div>
+                </div>
+                <div class="info-value" id="viewNama">Vivi Inas Rara</div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">
+                  <div class="label-icon">✉️</div>
+                  <div class="info-label-text">
+                    <span class="label-main">Email</span>
+                    <span class="label-sub">Email aktif</span>
+                  </div>
+                </div>
+                <div class="info-value">
+                  <span id="viewEmail">vivinasrara@gmail.com</span><br>
+                  <span class="verified">✓ Terverifikasi</span>
+                </div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">
+                  <div class="label-icon">📱</div>
+                  <div class="info-label-text">
+                    <span class="label-main">Nomor Telepon</span>
+                    <span class="label-sub">Nomor WhatsApp</span>
+                  </div>
+                </div>
+                <div class="info-value">
+                  <span id="viewTelp">0838 - 5668 - 9633</span><br>
+                  <span class="verified">✓ Terverifikasi</span>
+                </div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">
+                  <div class="label-icon">🎂</div>
+                  <div class="info-label-text">
+                    <span class="label-main">Tanggal lahir</span>
+                    <span class="label-sub">Untuk promo ulang tahun</span>
+                  </div>
+                </div>
+                <div class="info-value" id="viewTanggalLahir">12 Desember 2005</div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">
+                  <div class="label-icon">🏷️</div>
+                  <div class="info-label-text">
+                    <span class="label-main">Jenis kelamin</span>
+                    <span class="label-sub">Perempuan/Laki-laki</span>
+                  </div>
+                </div>
+                <div class="info-value" id="viewJenisKelamin"><span class="tambahkan">Tambahkan</span></div>
+              </div>
+            </div>
+
+            <div id="editMode" style="display:none;">
+              <div class="form-group">
+                <label>Nama Lengkap</label>
+                <input type="text" id="editNama" value="Vivi Inas Rara"/>
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="editEmail" value="vivinasrara@gmail.com"/>
+              </div>
+              <div class="form-group">
+                <label>Nomor Telepon</label>
+                <input type="text" id="editTelp" value="0838 - 5668 - 9633"/>
+              </div>
+              <div class="form-group">
+                <label>Tanggal Lahir</label>
+                <input type="text" id="editTanggalLahir" value="12 Desember 2005"/>
+              </div>
+              <div class="form-group">
+                <label>Jenis Kelamin</label>
+                <select id="editJenisKelamin">
+                  <option value="">-- Pilih --</option>
+                  <option value="Laki-laki">Laki-laki</option>
+                  <option value="Perempuan">Perempuan</option>
+                </select>
+              </div>
+              <div style="display:flex;gap:10px;margin-top:12px;">
+                <button class="simpan-btn" onclick="simpanProfil()" style="margin-top:0;">Simpan</button>
+                <button class="simpan-btn" onclick="batalEditProfil()" style="margin-top:0;background:#aaa;">Batal</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alamat-section" id="alamatSection">
+          <div class="section-header">
+            <span class="section-title">Alamat Saya</span>
+          </div>
+          <div id="dashAlamatList"></div>
+          <a href="alamat.html" class="tambah-alamat-btn">+ Tambah Alamat Baru</a>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer">© 2026 Panenku. All rights reserved.</div>
+  </div>
+</div>
+
+<div class="popup-overlay" id="popupKeluar">
+  <div class="popup-box">
+    <h3>Keluar Akun</h3>
+    <p>Anda yakin ingin keluar dari akun ini?</p>
+    <div class="popup-actions">
+      <button class="btn-batal" onclick="hidePopupKeluar()">Batal</button>
+      <button class="btn-keluar" onclick="doKeluar()">Tetap Keluar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function renderAlamatDashboard() {
+    const alamatList = JSON.parse(localStorage.getItem('alamatList') || 'null');
+    const container = document.getElementById('dashAlamatList');
+    if (!alamatList || alamatList.length === 0) {
+      container.innerHTML = '<p style="color:#999;font-size:0.9rem;margin-bottom:12px;">Belum ada alamat tersimpan.</p>';
+      return;
+    }
+    const sorted = [...alamatList].sort((a, b) => (b.utama ? 1 : 0) - (a.utama ? 1 : 0));
+    container.innerHTML = sorted.map(a => `
+      <div class="alamat-card">
+        <div class="alamat-card-header">
+          <div>
+            <span class="alamat-card-title">${a.label}</span>
+            ${a.utama ? '<span class="badge-utama">Utama</span>' : ''}
+          </div>
+        </div>
+        <div class="alamat-teks">${a.teks.replace(/\n/g, '<br>')}</div>
+        <div class="alamat-telepon">📱 ${a.telp}</div>
+      </div>
+    `).join('');
+  }
+
+  renderAlamatDashboard();
+
+  function showProfilSaya(e) {
+    e.preventDefault();
+    const panel = document.getElementById('panelProfilSaya');
+    const info = document.getElementById('panelInfoPribadi');
+    const alamatSec = document.getElementById('alamatSection');
+    if (panel.style.display === 'none') {
+      panel.style.display = 'block';
+      info.style.display = 'none';
+      alamatSec.style.display = 'none';
+      document.getElementById('bigNama').textContent = document.getElementById('namaLengkap').textContent;
+      document.getElementById('bigEmail').textContent = document.getElementById('emailProfil').textContent;
+      document.getElementById('bigAvatar').textContent = document.getElementById('inisialAvatar').textContent;
+      document.getElementById('bigTelp').textContent = document.getElementById('viewTelp').textContent;
+      document.getElementById('bigTgl').textContent = document.getElementById('viewTanggalLahir').textContent;
+    } else {
+      panel.style.display = 'none';
+      info.style.display = 'block';
+      alamatSec.style.display = 'block';
+    }
+  }
+
+  function toggleEditProfil() {
+    document.getElementById('viewMode').style.display = 'none';
+    document.getElementById('editMode').style.display = 'block';
+  }
+
+  function batalEditProfil() {
+    document.getElementById('viewMode').style.display = 'block';
+    document.getElementById('editMode').style.display = 'none';
+  }
+
+  function simpanProfil() {
+    const nama = document.getElementById('editNama').value;
+    const email = document.getElementById('editEmail').value;
+    const telp = document.getElementById('editTelp').value;
+    const tgl = document.getElementById('editTanggalLahir').value;
+    const jk = document.getElementById('editJenisKelamin').value;
+
+    document.getElementById('viewNama').textContent = nama;
+    document.getElementById('viewEmail').textContent = email;
+    document.getElementById('viewTelp').textContent = telp;
+    document.getElementById('viewTanggalLahir').textContent = tgl;
+
+    const jkEl = document.getElementById('viewJenisKelamin');
+    jkEl.innerHTML = jk ? jk : '<span class="tambahkan">Tambahkan</span>';
+
+    document.getElementById('namaLengkap').textContent = nama;
+    document.getElementById('emailProfil').textContent = email;
+
+    const inisial = nama.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 3);
+    document.getElementById('inisialAvatar').textContent = inisial;
+    document.getElementById('inisialBtn').textContent = inisial;
+
+    localStorage.setItem('profilJenisKelamin', jk);
+
+    batalEditProfil();
+  }
+
+  function showPopupKeluar(e) {
+    e.preventDefault();
+    document.getElementById('popupKeluar').classList.add('show');
+  }
+
+  function hidePopupKeluar() {
+    document.getElementById('popupKeluar').classList.remove('show');
+  }
+
+  function doKeluar() {
+    hidePopupKeluar();
+    // TODO: arahkan ke halaman login setelah digabung
+    // window.location.href = 'login.html';
+  }
+</script>
+</body>
+</html>

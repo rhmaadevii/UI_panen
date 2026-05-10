@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PanenKu Community - Komunitas</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:'Segoe UI',sans-serif;
+      background:#d4e6b5;
+      min-height:100vh;
+    }
+
+    .navbar-top{
+      background:#d4e6b5;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:8px 40px;
+      min-height:86px;
+    }
+
+    .logo{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      width:80px;
+      flex-shrink:0;
+      pointer-events:none;
+    }
+
+    .logo img{
+      width:52px;
+      height:52px;
+      object-fit:contain;
+      display:block;
+    }
+
+    .logo-text{
+      margin-top:2px;
+      font-size:16px;
+      font-weight:700;
+      color:#2e4a10;
+      line-height:1;
+    }
+
+    .nav-links{
+      display:flex;
+      gap:42px;
+      align-items:center;
+      justify-content:center;
+      flex:1;
+    }
+    .nav-links a {
+    text-decoration: none;
+    color: #000000;
+    font-size: 16px;
+    font-weight: 500;
+    }
+    .nav-right{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-shrink:0;
+    }
+
+    .avatar-circle{
+      width:42px;
+      height:42px;
+      border-radius:50%;
+      background:#3a5c1a;
+      color:#d4e6b5;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .icon-btn{
+      width:42px;
+      height:42px;
+      border:none;
+      border-radius:50%;
+      background:#c8dba0;
+      font-size:18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .main-content{
+      background:#c8dba0;
+      padding:24px 20px 30px;
+    }
+
+    .page-title{
+      text-align:center;
+      font-size:22px;
+      font-weight:700;
+      color:#2e4a10;
+      margin-bottom:20px;
+    }
+
+    .page-title span{
+      color:#8db83a;
+    }
+
+    .forum-box{
+      background:linear-gradient(180deg,#4a7c20 0%,#2e5010 100%);
+      border-radius:14px;
+      padding:20px 20px 16px;
+      max-width:1060px;
+      margin:0 auto;
+      min-height:620px;
+      display:flex;
+      flex-direction:column;
+      position:relative;
+    }
+
+    .date-header{
+      text-align:center;
+      color:#b8d88a;
+      font-size:13px;
+      margin-bottom:14px;
+    }
+
+    .chat-messages{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      overflow-y:auto;
+      max-height:480px;
+      padding-right:4px;
+      padding-bottom:10px;
+    }
+
+    .chat-messages::-webkit-scrollbar{
+      width:4px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb{
+      background:rgba(255,255,255,.2);
+      border-radius:4px;
+    }
+
+    .msg-row{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+    }
+
+    .msg-row.sent{
+      flex-direction:row-reverse;
+    }
+
+    .user-avatar{
+      width:38px;
+      height:38px;
+      border-radius:50%;
+      background:#a0c060;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+
+    .user-avatar svg{
+      width:24px;
+      height:24px;
+      fill:#fff;
+    }
+
+    .bubble-group{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      max-width:55%;
+    }
+
+    .msg-row.sent .bubble-group{
+      align-items:flex-end;
+    }
+
+    .username{
+      font-size:12px;
+      color:#c8e898;
+    }
+
+    .bubble-wrap{
+      display:flex;
+      align-items:flex-end;
+      gap:6px;
+    }
+
+    .msg-row.sent .bubble-wrap{
+      flex-direction:row-reverse;
+    }
+
+    .bubble{
+      background:#90c840;
+      border-radius:10px;
+      padding:10px 14px;
+      font-size:14px;
+      color:#2a4a08;
+      line-height:1.4;
+      word-break:break-word;
+      cursor:pointer;
+    }
+
+    .deleted{
+      font-style:italic;
+      opacity:.8;
+    }
+
+    .bubble-img{
+      width:170px;
+      border-radius:10px;
+      overflow:hidden;
+      cursor:pointer;
+    }
+
+    .bubble-img img{
+      width:100%;
+      display:block;
+    }
+
+    .time{
+      font-size:11px;
+      color:#c8e898;
+      white-space:nowrap;
+      margin-bottom:2px;
+    }
+
+    .hapus-menu{
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      background:#ffffff;
+      border-radius:8px;
+      padding:10px 16px;
+      font-size:13px;
+      color:#2e4a10;
+      box-shadow:0 4px 10px rgba(0,0,0,.18);
+      display:none;
+      z-index:99;
+      min-width:180px;
+      text-align:center;
+    }
+
+    .hapus-btn-wrap{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .hapus-btn{
+      border:none;
+      padding:6px 14px;
+      border-radius:6px;
+      cursor:pointer;
+      font-size:12px;
+    }
+
+    .btn-cancel{
+      background:#ddd;
+    }
+
+    .btn-hapus{
+      background:#8dc840;
+      color:#fff;
+    }
+
+    .scroll-down{
+      text-align:center;
+      margin-top:6px;
+      cursor:pointer;
+    }
+
+    .scroll-down span{
+      color:#a8d060;
+      font-size:18px;
+      display:none;
+    }
+
+    .input-bar{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .input-wrap{
+      flex:1;
+      background:#fff;
+      border-radius:25px;
+      display:flex;
+      align-items:center;
+      padding:10px 16px;
+      gap:10px;
+    }
+
+    .input-wrap input[type="text"]{
+      flex:1;
+      border:none;
+      outline:none;
+      background:transparent;
+      font-size:14px;
+      color:#2e4a10;
+    }
+
+    .input-wrap input[type="text"]::placeholder{
+      color:#6a8c3a;
+      font-weight:600;
+    }
+
+    .img-upload-btn{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+    }
+
+    .img-upload-btn svg{
+      width:22px;
+      height:22px;
+      fill:#555;
+    }
+
+    .send-btn{
+      width:46px;
+      height:46px;
+      border:none;
+      border-radius:50%;
+      background:#8dc840;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+    }
+
+    .send-btn svg{
+      width:20px;
+      height:20px;
+      fill:#fff;
+    }
+
+    footer{
+      background:#d4e6b5;
+      text-align:center;
+      padding:14px;
+      font-size:13px;
+      color:#5a7a2a;
+    }
+
+    #file-upload{
+      display:none;
+    }
+    .chevron {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    margin-left: 4px;
+    vertical-align: middle;
+    margin-bottom: 3px;
+    }
+  </style>
+</head>
+
+<body>
+
+<nav class="navbar-top">
+  <div class="logo">
+    <img src="logo2.png" alt="PanenKu Logo" onerror="this.style.display='none'">
+    <div class="logo-text">PanenKu</div>
+  </div>
+
+  <div class="nav-links">
+    <a href="index.html" class="nav-item">
+        Beranda
+        <span class="chevron"></span>
+    </a>
+    <a href="artikel.html" class="nav-item active">
+        Artikel
+        <span class="chevron"></span>
+    </a>
+    <a href="komunitas.html" class="nav-item">
+        Komunitas
+        <span class="chevron"></span>
+    </a>
+</div>
+  </div>
+
+  <div class="nav-right">
+    <a href="dashboardpembeli.html" class="avatar-circle">VIR</a>
+    <a href="keranjang_teman.html" class="icon-btn">🛒</a>
+    <a href="chat_teman.html" class="icon-btn">💬</a>
+  </div>
+</nav>
+
+<div class="main-content">
+  <h1 class="page-title"><span>PanenKu</span> Community</h1>
+
+  <div class="forum-box">
+
+    <div class="date-header" id="dateHeader"></div>
+    <div class="chat-messages" id="chatMessages"></div>
+
+    <div class="hapus-menu" id="hapusMenu">
+      <div>Hapus chat saya?</div>
+      <div class="hapus-btn-wrap">
+        <button class="hapus-btn btn-cancel" onclick="tutupHapus()">Cancel</button>
+        <button class="hapus-btn btn-hapus" onclick="hapusSekarang()">Hapus</button>
+      </div>
+    </div>
+
+    <div class="scroll-down">
+      <span>&#9660;</span>
+    </div>
+
+    <div class="input-bar">
+      <div class="input-wrap">
+        <input type="text" id="msgInput" placeholder="Ketik Pesan">
+
+        <label class="img-upload-btn" for="file-upload">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+          </svg>
+        </label>
+
+        <input type="file" id="file-upload" accept="image/*">
+      </div>
+
+      <button class="send-btn" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  &copy; 2026 Panenku. All rights reserved.
+</footer>
+
+<script>
+let targetPesan=null;
+
+function formatTanggal(date){
+  const bulan=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  return date.getDate()+" "+bulan[date.getMonth()]+" "+date.getFullYear();
+}
+
+function formatJam(date){
+  return String(date.getHours()).padStart(2,'0') + "." +
+         String(date.getMinutes()).padStart(2,'0');
+}
+
+document.getElementById("dateHeader").innerText=formatTanggal(new Date());
+
+function sendMessage(){
+  const input=document.getElementById("msgInput");
+  const text=input.value.trim();
+  if(!text) return;
+
+  addTextBubble("Kamu",text,"sent");
+  input.value="";
+}
+
+document.getElementById("msgInput").addEventListener("keypress",function(e){
+  if(e.key==="Enter"){
+    sendMessage();
+  }
+});
+
+document.getElementById("file-upload").addEventListener("change",function(e){
+  const file=e.target.files[0];
+  if(!file) return;
+
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    addImageBubble("Kamu",ev.target.result,"sent");
+  };
+
+  reader.readAsDataURL(file);
+  this.value="";
+});
+
+function bukaHapus(el){
+  targetPesan=el;
+  document.getElementById("hapusMenu").style.display="block";
+}
+
+function tutupHapus(){
+  document.getElementById("hapusMenu").style.display="none";
+}
+
+function hapusSekarang(){
+  if(targetPesan){
+    if(targetPesan.classList.contains("bubble")){
+      targetPesan.innerText="Pesan telah dihapus";
+      targetPesan.classList.add("deleted");
+    }else{
+      targetPesan.outerHTML='<div class="bubble deleted">Pesan telah dihapus</div>';
+    }
+  }
+  tutupHapus();
+}
+
+function addTextBubble(username,text,type){
+  const jam=formatJam(new Date());
+  const container=document.getElementById("chatMessages");
+
+  const row=document.createElement("div");
+  row.className="msg-row "+type;
+
+  row.innerHTML=`
+    <div class="user-avatar">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+      </svg>
+    </div>
+
+    <div class="bubble-group">
+      <div class="username">${username}</div>
+      <div class="bubble-wrap">
+        <div class="bubble" onclick="bukaHapus(this)">${escapeHtml(text)}</div>
+        <div class="time">${jam}</div>
+      </div>
+    </div>
+  `;
+
+  container.appendChild(row);
+}
+
+function addImageBubble(username,src,type){
+  const jam=formatJam(new Date());
+  const container=document.getElementById("chatMessages");
+
+  const row=document.createElement("div");
+  row.className="msg-row "+type;
+
+  row.innerHTML=`
+    <div class="user-avatar">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+      </svg>
+    </div>
+
+    <div class="bubble-group">
+      <div class="username">${username}</div>
+      <div class="bubble-wrap">
+        <div class="bubble-img" onclick="bukaHapus(this)">
+          <img src="${src}">
+        </div>
+        <div class="time">${jam}</div>
+      </div>
+    </div>
+  `;
+
+  container.appendChild(row);
+}
+
+function escapeHtml(str){
+  return str.replace(/&/g,"&amp;")
+            .replace(/</g,"&lt;")
+            .replace(/>/g,"&gt;");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PanenKu - Dashboard Petani</title>
+    <link rel="stylesheet" href="dashboardpetani.css">
+    <style>
+        /* Modal Notifikasi */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-box {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .modal-message {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .btn-oke {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-oke:hover {
+            background-color: #1b5e20;
+        }
+        
+        .btn-batal {
+            background-color: #f5f5f5;
+            color: #666;
+            border: 1px solid #ddd;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-batal:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-section">
+                <img src="logo_panenku.png" alt="PanenKu Logo">
+                <span>PanenKu</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item" onclick="return tampilkanNotifikasi(event)">
+                    Beranda <i>▼</i>
+                </a>
+                <a href="#" class="nav-item" onclick="return tampilkanNotifikasi(event)">
+                    Artikel <i>▼</i>
+                </a>
+                <a href="komunitas.html" class="nav-item">
+                    Komunitas <i>▼</i>
+                </a>
+            </nav>
+        </div>
+        
+        <div class="header-right">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Cari produk..." onkeyup="cariProduk()">
+            </div>
+            <button class="icon-btn">🛒</button>
+            <a href="chat_pembeli.html" class="icon-btn" style="display: flex; align-items: center; justify-content: center;">
+                💬
+                <span class="badge">2</span>
+            </a>
+            <div class="profile-avatar">VIR</div>
+        </div>
+    </header>
+
+    <!-- MODAL NOTIFIKASI -->
+    <div class="modal-overlay" id="modalNotifikasi">
+        <div class="modal-box">
+            <div class="modal-icon">🔔</div>
+            <div class="modal-title">Akses Terbatas</div>
+            <div class="modal-message">
+                Untuk mengakses fitur ini, Anda perlu masuk atau daftar sebagai pengguna terlebih dahulu.
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-batal" onclick="tutupModal()">Batal</button>
+                <button class="btn-oke" onclick="arahkanKeSignup()">Oke</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN LAYOUT -->
+    <div class="main-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <a href="produk_saya.html" class="sidebar-item">
+                <i>📦</i> Produk Saya
+            </a>
+            <a href="riwayat_transaksi.html" class="sidebar-item">
+                <i>🔄</i> Riwayat Transaksi
+            </a>
+            <a href="pengaturan_toko.html" class="sidebar-item">
+                <i>🏪</i> Pengaturan Toko
+            </a>
+            <a href="keamanan_petani.html" class="sidebar-item">
+                <i>🔒</i> Keamanan
+            </a>
+            <a href="#" class="sidebar-item" onclick="return keluar()">
+                <i>🚪</i> Keluar
+            </a>
+        </aside>
+
+        <!-- CONTENT -->
+        <main class="content">
+
+            <!-- PROFILE CARD -->
+            <div class="profile-card">
+                <div class="profile-info">
+                    <img src="profil_toko.png" alt="ViviGroceries" class="profile-img">
+                    <div class="profile-text">
+                        <h2>ViviGroceries</h2>
+                        <p>📍 Desa Sumber Rejeki, Kec. Grogol, Kediri, Jawa Timur</p>
+                        <div class="rating">
+                            <span>⭐ 4.9 Rating</span>
+                            <span>⭐ 4.9 Rating</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <a href="pengaturan_toko.html" class="btn-outline">Edit Profil</a>
+                    <a href="keamanan_petani.html" class="btn-outline">Lihat Toko</a>
+                </div>
+            </div>
+
+            <!-- STATS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value">Rp12.5 jt</div>
+                    <div class="stat-label">Total penghasilan (bulan ini)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🛒</div>
+                    <div class="stat-value">140</div>
+                    <div class="stat-label">Total pesanan (bulan ini)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👁️</div>
+                    <div class="stat-value">3.2k</div>
+                    <div class="stat-label">Dilihat produk (minggu ini)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">❤️</div>
+                    <div class="stat-value">107</div>
+                    <div class="stat-label">Jumlah pelanggan menyukai</div>
+                </div>
+            </div>
+
+            <!-- STATUS PESANAN -->
+            <div class="status-section">
+                <h3>🌾 Status Pesanan</h3>
+                <div class="status-grid">
+                    <a href="tunggu_konfirmasi.html" class="status-card">
+                        <div class="status-icon-wrap">
+                            <div class="status-icon">⏱️</div>
+                            <span class="status-count">3</span>
+                        </div>
+                        <div class="status-title">Menunggu Konfirmasi</div>
+                        <div class="status-desc">Pesanan perlu dikonfirmasi</div>
+                    </a>
+                    
+                    <a href="pesanan_dikemas.html" class="status-card">
+                        <div class="status-icon-wrap">
+                            <div class="status-icon">📦</div>
+                        </div>
+                        <div class="status-title">Perlu Dikemas</div>
+                        <div class="status-desc">Kemas Pesanan</div>
+                    </a>
+                    
+                    <a href="pesanan_dikirim.html" class="status-card">
+                        <div class="status-icon-wrap">
+                            <div class="status-icon">🚚</div>
+                        </div>
+                        <div class="status-title">Pesanan Dikirim</div>
+                        <div class="status-desc">Sedang Dikirim ke Pelanggan</div>
+                    </a>
+                    
+                    <a href="ulasan.html" class="status-card">
+                        <div class="status-icon-wrap">
+                            <div class="status-icon">💬</div>
+                        </div>
+                        <div class="status-title">Ulasan</div>
+                        <div class="status-desc">Tanggapan ulasan</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- AKSI CEPAT -->
+            <div class="aksi-section">
+                <h3>⚡ Aksi Cepat</h3>
+                <a href="tambah_produk.html" class="aksi-card">
+                    <div class="aksi-icon">+</div>
+                    <div class="aksi-text">Tambah Produk</div>
+                </a>
+            </div>
+
+            <!-- PRODUK TERLARIS -->
+            <div class="produk-section">
+                <h3>🔥 Produk Terlaris</h3>
+                <div class="produk-list" id="daftarProduk">
+                    
+                    <div class="produk-item" data-nama="jagung manis segar">
+                        <div class="produk-left">
+                            <img src="jagung.png" alt="Jagung" class="produk-img">
+                            <div class="produk-info">
+                                <h4>Jagung Manis Segar</h4>
+                                <p>Terjual 398</p>
+                            </div>
+                        </div>
+                        <div class="produk-right">
+                            <div class="produk-harga">Rp 10.000</div>
+                            <div class="produk-stok stok-aman">Stok aman (125)</div>
+                        </div>
+                    </div>
+
+                    <div class="produk-item" data-nama="tomat merah">
+                        <div class="produk-left">
+                            <img src="tomat1.png" alt="Tomat" class="produk-img">
+                            <div class="produk-info">
+                                <h4>Tomat Merah</h4>
+                                <p>Terjual 142</p>
+                            </div>
+                        </div>
+                        <div class="produk-right">
+                            <div class="produk-harga">Rp 7.000</div>
+                            <div class="produk-stok stok-rendah">Stok rendah (5)</div>
+                        </div>
+                    </div>
+
+                    <div class="produk-item" data-nama="brokoli">
+                        <div class="produk-left">
+                            <img src="brokoli.png" alt="Brokoli" class="produk-img">
+                            <div class="produk-info">
+                                <h4>Brokoli</h4>
+                                <p>Terjual 56</p>
+                            </div>
+                        </div>
+                        <div class="produk-right">
+                            <div class="produk-harga">Rp 5.000</div>
+                            <div class="produk-stok stok-aman">Stok aman (70)</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- HASIL PENCARIAN -->
+            <div class="produk-section" id="hasilCari" style="display: none; margin-top: 20px;">
+                <h3>🔍 Hasil Pencarian</h3>
+                <div class="produk-list" id="daftarHasilCari"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        function tampilkanNotifikasi(event) {
+            event.preventDefault();
+            document.getElementById('modalNotifikasi').classList.add('active');
+            return false;
+        }
+        
+        function tutupModal() {
+            document.getElementById('modalNotifikasi').classList.remove('active');
+        }
+        
+        function arahkanKeSignup() {
+            window.location.href = 'signup_pelanggan.html';
+        }
+        
+        // Tutup modal jika klik di luar kotak modal
+        document.getElementById('modalNotifikasi').addEventListener('click', function(event) {
+            if (event.target === this) {
+                tutupModal();
+            }
+        });
+
+        function cariProduk() {
+            var input = document.getElementById('searchInput').value.toLowerCase();
+            var produkList = document.getElementById('daftarProduk');
+            var hasilCari = document.getElementById('hasilCari');
+            var daftarHasilCari = document.getElementById('daftarHasilCari');
+            
+            var semuaProduk = produkList.getElementsByClassName('produk-item');
+            var adaHasil = false;
+            var hasilHTML = '';
+            
+            for (var i = 0; i < semuaProduk.length; i++) {
+                var namaProduk = semuaProduk[i].getAttribute('data-nama');
+                var htmlProduk = semuaProduk[i].outerHTML;
+                
+                if (namaProduk.includes(input)) {
+                    hasilHTML += htmlProduk;
+                    adaHasil = true;
+                }
+            }
+            
+            if (input === '') {
+                hasilCari.style.display = 'none';
+                produkList.style.display = 'flex';
+            } else if (adaHasil) {
+                hasilCari.style.display = 'block';
+                daftarHasilCari.innerHTML = hasilHTML;
+                produkList.style.display = 'none';
+            } else {
+                hasilCari.style.display = 'block';
+                daftarHasilCari.innerHTML = '<p style="padding: 20px; color: #888; text-align: center;">Produk tidak ditemukan</p>';
+                produkList.style.display = 'none';
+            }
+        }
+
+        function keluar() {
+            if (confirm('Yakin mau keluar?')) {
+                window.location.href = 'landingpage.html';
+            }
+            return false;
+        }
+    </script>
+
+</body>
+</html>

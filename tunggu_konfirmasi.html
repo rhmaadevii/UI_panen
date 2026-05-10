@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PanenKu - Tunggu Konfirmasi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #c5e0a5;
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* CONTENT */
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 25px;
+        }
+
+        /* HEADER HALAMAN */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding: 15px 0;
+        }
+
+        .btn-back {
+            width: 45px;
+            height: 45px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 28px;
+            color: #a8d46f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            color: #6b9e2b;
+            transform: translateX(-3px);
+        }
+
+        .page-title {
+            color: #6b8e3d;
+            font-size: 28px;
+            font-weight: 500;
+        }
+
+        /* SECTION CARD */
+        .section-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .section-card h3 {
+            color: #2d8a2d;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #c5e0a5;
+        }
+
+        /* PESANAN ITEM */
+        .pesanan-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .pesanan-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px;
+            border-radius: 15px;
+            background: white;
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s;
+        }
+
+        .pesanan-item:hover {
+            background: #f8f8f8;
+        }
+
+        .pesanan-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .pesanan-img {
+            width: 110px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid #e0e0e0;
+        }
+
+        .pesanan-info h4 {
+            color: #2d8a2d;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .pesanan-info p {
+            color: #a8d46f;
+            font-size: 12px;
+        }
+
+        .pesanan-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .pesanan-harga {
+            text-align: right;
+        }
+
+        .pesanan-harga .harga {
+            color: #2d8a2d;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .pesanan-harga .stok {
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .stok-aman {
+            color: #6b9e2b;
+        }
+
+        .stok-rendah {
+            color: #e74c3c;
+        }
+
+        /* CHECKBOX */
+        .checkbox-custom {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #e74c3c;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 18px;
+            color: white;
+            background: white;
+        }
+
+        .checkbox-custom:hover {
+            background: #ffebee;
+        }
+
+        .checkbox-custom.checked {
+            background: #6b9e2b;
+            border-color: #6b9e2b;
+        }
+
+        /* SUDAH KONFIRMASI */
+        .sudah-konfirmasi {
+            opacity: 0.7;
+        }
+
+        .sudah-konfirmasi .checkbox-custom {
+            background: #a8d46f;
+            border-color: #a8d46f;
+            cursor: default;
+        }
+
+        .sudah-konfirmasi .checkbox-custom::after {
+            content: "✓";
+            color: white;
+            font-size: 18px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .content {
+                padding: 15px;
+            }
+            .pesanan-item {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .pesanan-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+
+        <!-- HEADER HALAMAN -->
+        <div class="page-header">
+            <a href="dashboardpetani.html" class="btn-back">←</a>
+            <h1 class="page-title">Tunggu Konfirmasi</h1>
+        </div>
+
+        <!-- BELUM KONFIRMASI -->
+        <div class="section-card">
+            <h3>Pesanan Belum Konfirmasi</h3>
+            <div class="pesanan-list" id="belumKonfirmasi">
+
+                <div class="pesanan-item">
+                    <div class="pesanan-left">
+                        <img src="jagung.png" alt="Jagung" class="pesanan-img">
+                        <div class="pesanan-info">
+                            <h4>Jagung Manis Segar</h4>
+                            <p>Beli 10kg</p>
+                        </div>
+                    </div>
+                    <div class="pesanan-right">
+                        <div class="pesanan-harga">
+                            <div class="harga">Rp 100.000</div>
+                            <div class="stok stok-aman">Stok aman (125)</div>
+                        </div>
+                        <div class="checkbox-custom" onclick="konfirmasiPesanan(this)"></div>
+                    </div>
+                </div>
+
+                <div class="pesanan-item">
+                    <div class="pesanan-left">
+                        <img src="tomat.png" alt="Tomat" class="pesanan-img">
+                        <div class="pesanan-info">
+                            <h4>Tomat Merah</h4>
+                            <p>Beli 4kg</p>
+                        </div>
+                    </div>
+                    <div class="pesanan-right">
+                        <div class="pesanan-harga">
+                            <div class="harga">Rp 47.000</div>
+                            <div class="stok stok-rendah">Stok rendah (5)</div>
+                        </div>
+                        <div class="checkbox-custom" onclick="konfirmasiPesanan(this)"></div>
+                    </div>
+                </div>
+
+                <div class="pesanan-item">
+                    <div class="pesanan-left">
+                        <img src="brokoli.png" alt="Brokoli" class="pesanan-img">
+                        <div class="pesanan-info">
+                            <h4>Brokoli</h4>
+                            <p>Beli 8kg</p>
+                        </div>
+                    </div>
+                    <div class="pesanan-right">
+                        <div class="pesanan-harga">
+                            <div class="harga">Rp 40.000</div>
+                            <div class="stok stok-aman">Stok aman (70)</div>
+                        </div>
+                        <div class="checkbox-custom" onclick="konfirmasiPesanan(this)"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SUDAH KONFIRMASI -->
+        <div class="section-card">
+            <h3>Sudah Dikonfirmasi</h3>
+            <div class="pesanan-list" id="sudahKonfirmasi">
+
+                <div class="pesanan-item sudah-konfirmasi">
+                    <div class="pesanan-left">
+                        <img src="jagung.png" alt="Jagung" class="pesanan-img">
+                        <div class="pesanan-info">
+                            <h4>Jagung Manis Segar</h4>
+                            <p>Beli 10kg</p>
+                        </div>
+                    </div>
+                    <div class="pesanan-right">
+                        <div class="pesanan-harga">
+                            <div class="harga">Rp 100.000</div>
+                            <div class="stok stok-aman">Stok aman (125)</div>
+                        </div>
+                        <div class="checkbox-custom checked"></div>
+                    </div>
+                </div>
+
+                <div class="pesanan-item sudah-konfirmasi">
+                    <div class="pesanan-left">
+                        <img src="tomat.png" alt="Tomat" class="pesanan-img">
+                        <div class="pesanan-info">
+                            <h4>Tomat Merah</h4>
+                            <p>Beli 4kg</p>
+                        </div>
+                    </div>
+                    <div class="pesanan-right">
+                        <div class="pesanan-harga">
+                            <div class="harga">Rp 47.000</div>
+                            <div class="stok stok-rendah">Stok rendah (5)</div>
+                        </div>
+                        <div class="checkbox-custom checked"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        function konfirmasiPesanan(checkbox) {
+            if (confirm('Konfirmasi pesanan ini?')) {
+                checkbox.classList.add('checked');
+                checkbox.innerHTML = '✓';
+                checkbox.onclick = null;
+                
+                var item = checkbox.closest('.pesanan-item');
+                item.classList.add('sudah-konfirmasi');
+                
+                document.getElementById('sudahKonfirmasi').appendChild(item);
+            }
+        }
+    </script>
+
+</body>
+</html>

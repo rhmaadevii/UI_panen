@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Produk - PanenKu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { poppins: ['Poppins', 'sans-serif'] },
+                    colors: {
+                        hijau: { 50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#A2CA6C', 400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 800: '#166534', 900: '#14532d' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #A2CA6C; }
+        .love-btn { transition: all 0.3s ease; }
+        .love-btn.active { color: #ef4444; transform: scale(1.2); }
+        .love-btn.active i { font-weight: 900; }
+        .carousel-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(255,255,255,0.8); border-radius: 50%; width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.3s; border: none;
+        }
+        .carousel-btn:hover { background: white; }
+        .carousel-btn.left { left: 12px; }
+        .carousel-btn.right { right: 12px; }
+        .review-card { background: #E8E8E8; border-radius: 16px; padding: 12px 16px; margin-bottom: 8px; }
+        .seller-card { background: #A2CA6C; border-radius: 16px; padding: 16px; }
+        .toast {
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: #166534; color: white; padding: 14px 28px; border-radius: 12px;
+            opacity: 0; transition: all 0.3s ease; z-index: 1000; font-weight: 500; font-size: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .action-btn {
+            width: 56px; height: 56px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            background: #E8E8E8; border: none; cursor: pointer; transition: all 0.3s;
+        }
+        .action-btn:hover { background: #d4d4d4; transform: scale(1.05); }
+        .checkout-btn {
+            background: #A2CA6C; color: #1a1a1a; font-weight: 700; font-size: 16px;
+            padding: 16px 32px; border-radius: 16px; border: none; cursor: pointer;
+            transition: all 0.3s; text-transform: uppercase;
+        }
+        .checkout-btn:hover { background: #8fb85a; transform: scale(1.02); }
+        .badge-new {
+            background: #FEF08A; color: #1a1a1a; padding: 4px 12px; border-radius: 8px;
+            font-size: 12px; font-weight: 600;
+        }
+        .star-rating { color: #FACC15; }
+        .image-counter {
+            position: absolute; top: 12px; right: 12px;
+            background: rgba(255,255,255,0.9); padding: 4px 12px;
+            border-radius: 20px; font-size: 14px; font-weight: 500;
+        }
+        .desc-box {
+            background: #E8E8E8; border-radius: 20px; padding: 20px;
+        }
+        .nav-link { position: relative; }
+        .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #A2CA6C; transition: width 0.3s; }
+        .nav-link:hover::after { width: 100%; }
+        .cart-badge {
+            position: absolute; top: -8px; right: -8px;
+            background: #ef4444; color: white; font-size: 11px;
+            font-weight: 600; min-width: 20px; height: 20px;
+            border-radius: 10px; display: flex; align-items: center;
+            justify-content: center; padding: 0 6px;
+        }
+        .quantity-selector {
+            display: flex; align-items: center; gap: 12px;
+            background: rgba(255,255,255,0.2); padding: 8px 16px;
+            border-radius: 12px; margin-bottom: 16px;
+        }
+        .qty-btn-main {
+            width: 32px; height: 32px; border-radius: 8px;
+            border: none; background: white; color: #166534;
+            font-weight: 700; cursor: pointer; transition: all 0.2s;
+        }
+        .qty-btn-main:hover { background: #f0f0f0; }
+        .qty-display {
+            color: white; font-weight: 600; font-size: 18px;
+            min-width: 30px; text-align: center;
+        }
+    </style>
+<base target="_blank">
+</head>
+<body class="min-h-screen pb-24">
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Produk ditambahkan ke keranjang!</div>
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="index.html" class="flex-shrink-0">
+                    <img src="logo.png" alt="PanenKu" class="h-12 w-auto">
+                </a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="nav-link text-gray-700 hover:text-hijau-800 font-medium flex items-center gap-1">Beranda <i class="fas fa-chevron-down text-xs"></i></a>
+                    <a href="artikel.html" class="nav-link text-gray-700 hover:text-hijau-800 font-medium flex items-center gap-1">Artikel <i class="fas fa-chevron-down text-xs"></i></a>
+                    <a href="komunitas.html" class="nav-link text-gray-700 hover:text-hijau-800 font-medium flex items-center gap-1">Komunitas <i class="fas fa-chevron-down text-xs"></i></a>
+                </div>
+                <div class="flex-1 max-w-xl mx-8">
+                    <form action="hasil_search.html" method="GET" class="relative">
+                        <input type="text" name="q" placeholder="Cari" class="w-full pl-12 pr-4 py-3 rounded-full border-2 border-hijau-300 focus:border-hijau-500 focus:outline-none text-gray-700 placeholder-gray-400">
+                        <button type="submit" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-hijau-600"><i class="fas fa-search text-lg"></i></button>
+                    </form>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="keranjang_teman.html" class="relative p-2 hover:bg-hijau-50 rounded-full transition">
+                        <img src="keranjang.png" alt="Keranjang" class="h-7 w-7">
+                        <span id="cart-count" class="cart-badge hidden">0</span>
+                    </a>
+                    <a href="chat_teman.html" class="relative p-2 hover:bg-hijau-50 rounded-full transition">
+                        <img src="group.png" alt="Chat" class="h-7 w-7">
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">2</span>
+                    </a>
+                    <a href="dashboard_pembeli.html" class="p-1 hover:bg-hijau-50 rounded-full transition">
+                        <img src="profil.png" alt="Profile" class="h-10 w-10 rounded-full object-cover border-2 border-hijau-300">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-3xl mx-auto px-4 py-6">
+
+        <!-- Back Button -->
+        <a href="index.html" class="inline-flex items-center text-white mb-4 hover:opacity-80 transition">
+            <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center mr-3">
+                <i class="fas fa-chevron-left text-white"></i>
+            </div>
+        </a>
+
+        <!-- Product Image Carousel -->
+        <div class="relative bg-white rounded-3xl overflow-hidden mb-6 shadow-lg">
+            <div id="carousel-images" class="flex transition-transform duration-300">
+                <img id="main-image" src="" alt="Product" class="w-full h-80 object-contain p-4">
+            </div>
+            <button onclick="prevImage()" class="carousel-btn left"><i class="fas fa-chevron-left text-gray-700"></i></button>
+            <button onclick="nextImage()" class="carousel-btn right"><i class="fas fa-chevron-right text-gray-700"></i></button>
+            <div class="image-counter"><span id="current-img">1</span>/5</div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="mb-4">
+            <div class="flex justify-between items-start mb-2">
+                <h1 id="product-name" class="text-2xl font-bold text-white"></h1>
+                <button onclick="toggleLove(this)" class="love-btn text-white hover:text-red-400 text-2xl mt-1">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+            <p id="product-short-desc" class="text-white/90 mb-3"></p>
+
+            <!-- Quantity Selector -->
+            <div class="quantity-selector">
+                <span class="text-white font-medium">Jumlah:</span>
+                <button onclick="changeQuantity(-1)" class="qty-btn-main">-</button>
+                <span id="product-quantity" class="qty-display">1</span>
+                <button onclick="changeQuantity(1)" class="qty-btn-main">+</button>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <h2 id="product-price" class="text-3xl font-bold text-white"></h2>
+                <div class="flex items-center text-white">
+                    <i class="fas fa-star text-yellow-300 mr-2"></i>
+                    <span id="product-rating" class="font-semibold mr-1"></span>
+                    <span id="product-reviews" class="text-white/80"></span>
+                </div>
+            </div>
+            <div class="flex items-center text-white/90 mt-2">
+                <i class="fas fa-map-marker-alt mr-2"></i>
+                <span id="product-location"></span>
+            </div>
+        </div>
+
+        <!-- Product Description -->
+        <div class="desc-box mb-6">
+            <h3 class="text-xl font-bold text-hijau-900 mb-3">Deskripsi Produk</h3>
+            <p id="product-desc" class="text-gray-700 text-sm leading-relaxed mb-4"></p>
+
+            <h4 class="font-semibold text-gray-800 mb-2">Informasi Produk</h4>
+            <ul id="product-info" class="text-sm text-gray-700 space-y-1 mb-4"></ul>
+
+            <p id="product-closing" class="text-gray-700 text-sm"></p>
+        </div>
+
+        <!-- Seller Info -->
+        <div class="seller-card mb-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <img id="seller-avatar" src="profil.png" alt="Seller" class="w-12 h-12 rounded-full object-cover border-2 border-white mr-3">
+                    <div>
+                        <h4 id="seller-name" class="font-bold text-white text-lg"></h4>
+                        <div class="flex items-center text-white/90 text-sm">
+                            <i class="fas fa-map-marker-alt mr-1"></i>
+                            <span id="seller-location"></span>
+                        </div>
+                        <div class="flex items-center mt-1">
+                            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                            <span class="text-white text-sm font-medium">Online</span>
+                        </div>
+                    </div>
+                </div>
+                <span class="badge-new">NEW SELLER</span>
+            </div>
+        </div>
+
+        <!-- Reviews -->
+        <div class="bg-white rounded-3xl p-5 mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center">
+                    <span id="review-rating" class="text-2xl font-bold text-hijau-900 mr-2"></span>
+                    <i class="fas fa-star text-yellow-400 text-xl mr-2"></i>
+                    <h3 id="review-title" class="text-xl font-bold text-hijau-900"></h3>
+                </div>
+                <a href="#" class="text-gray-500 text-sm flex items-center hover:text-hijau-700">Lihat Semua <i class="fas fa-chevron-right ml-1"></i></a>
+            </div>
+            <div id="reviews-list">
+                <div class="review-card flex items-start">
+                    <img src="profil.png" alt="User" class="w-10 h-10 rounded-full object-cover mr-3">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-semibold text-gray-800">abcdefghi</span>
+                            <div class="star-rating text-sm">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm">Produk fresh dan kualitasnya bagus</p>
+                    </div>
+                </div>
+                <div class="review-card flex items-start">
+                    <img src="profil.png" alt="User" class="w-10 h-10 rounded-full object-cover mr-3">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-semibold text-gray-800">jklmnopqrs</span>
+                            <div class="star-rating text-sm">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm">Produk lumayan ok</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Action Bar -->
+    <div class="fixed bottom-0 left-0 right-0 bg-hijau-900/95 backdrop-blur-sm p-4 z-40">
+        <div class="max-w-3xl mx-auto flex items-center justify-between gap-4">
+            <button class="action-btn" onclick="openChat()">
+                <i class="fas fa-comment-dots text-gray-700 text-xl"></i>
+            </button>
+            <button class="action-btn" onclick="addToCart()">
+                <i class="fas fa-shopping-cart text-gray-700 text-xl"></i>
+            </button>
+            <button class="checkout-btn flex-1" onclick="buyNow()">
+                CHECKOUT SEKARANG
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // PRODUCT DATA - 6 Products
+        // ============================================
+        const products = {
+            'tomat1': {
+                id: 'tomat1',
+                name: 'Tomat',
+                fullName: 'Tomat Bundling dengan baby tomat',
+                shortDesc: 'Tomat segar yang anda cari !',
+                price: 6000,
+                priceDisplay: 'Rp. 6000',
+                desc: 'Nikmati kesegaran tomat langsung dari petani lokal Purwoharjo, Banyuwangi. Paket bundling ini berisi kombinasi tomat merah pilihan dan baby tomat segar yang dipanen langsung dari kebun sehingga kualitas dan kesegarannya tetap terjaga.\n\nTomat ditanam di lahan pertanian daerah Purwoharjo yang memiliki tanah subur dan iklim yang mendukung pertumbuhan tanaman hortikultura. Proses budidaya dilakukan menggunakan metode budidaya konvensional dengan perawatan terpadu, yaitu melalui pengolahan tanah, pemupukan terjadwal, penyiraman rutin, serta pengendalian hama dan penyakit tanaman secara terkontrol.',
+                info: [
+                    'Nama Produk: Bundling Tomat Merah & Baby Tomat',
+                    'Asal Daerah Tanam: Purwoharjo, Banyuwangi, Jawa Timur',
+                    'Metode Budidaya: Budidaya konvensional dengan perawatan terpadu (pemupukan, penyiraman, dan pengendalian hama secara terkontrol)',
+                    'Isi Paket: Tomat merah segar + baby tomat',
+                    'Kondisi Produk: Dipanen segar sebelum pengiriman',
+                    'Cocok untuk: salad, sambal, jus, tumisan, dan camilan sehat'
+                ],
+                closing: 'Segar dari kebun, langsung ke meja makan Anda. 🍅',
+                location: 'Purwoharjo, Banyuwangi',
+                rating: '4,6',
+                reviews: '(99 Ulasan)',
+                reviewCount: '99',
+                seller: 'RaraFarmers',
+                sellerLocation: 'Desa Laba-laba, Kec. Purwoharjo, Banyuwangi, Jawa Timur',
+                stock: 50,
+                images: [
+                    'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1561136594-7f68413baa99?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?w=600&h=400&fit=crop'
+                ]
+            },
+            'bawang1': {
+                id: 'bawang1',
+                name: 'Bawang',
+                fullName: 'Bawang Bombay Segar 500gram',
+                shortDesc: 'Bawang segar yang anda cari !',
+                price: 10000,
+                priceDisplay: 'Rp. 10000',
+                desc: 'Nikmati kesegaran bawang bombay langsung dari petani lokal Bantul, Yogyakarta. Bawang bombay ini dipanen langsung dari kebun sehingga kualitas dan kesegarannya tetap terjaga.\n\nBawang ditanam di lahan pertanian daerah Bantul yang memiliki tanah subur dan iklim yang mendukung pertumbuhan tanaman hortikultura. Proses budidaya dilakukan menggunakan metode budidaya konvensional dengan perawatan terpadu.',
+                info: [
+                    'Nama Produk: Bawang Bombay Segar 500gram',
+                    'Asal Daerah Tanam: Bantul, Yogyakarta, Jawa Tengah',
+                    'Metode Budidaya: Budidaya konvensional dengan perawatan terpadu',
+                    'Isi Paket: Bawang bombay segar 500 gram',
+                    'Kondisi Produk: Dipanen segar sebelum pengiriman',
+                    'Cocok untuk: tumisan, sup, sambal goreng, dan berbagai masakan'
+                ],
+                closing: 'Segar dari kebun, langsung ke meja makan Anda. 🧅',
+                location: 'Bantul, Jogja',
+                rating: '5,0',
+                reviews: '(15 Ulasan)',
+                reviewCount: '15',
+                seller: 'BantulFarm',
+                sellerLocation: 'Desa Mulyo, Kec. Bantul, Yogyakarta',
+                stock: 30,
+                images: [
+                    'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1587049633312-d6ae259fbc8e?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1623414434268-b8a9a6c9e6f6?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1599403414725-6e031d3c235f?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1608224873587-5e8c2b2b2b2b?w=600&h=400&fit=crop'
+                ]
+            },
+            'brokoli1': {
+                id: 'brokoli1',
+                name: 'Brokoli',
+                fullName: 'Brokoli Segar Kaya Nutrisi',
+                shortDesc: 'Brokoli segar kaya nutrisi, cocok untuk menu sehat.',
+                price: 14000,
+                priceDisplay: 'Rp. 14000',
+                desc: 'Nikmati kesegaran brokoli langsung dari petani lokal Mulyorejo, Surabaya. Brokoli ini kaya akan nutrisi dan cocok untuk menu sehat keluarga Anda.\n\nBrokoli ditanam di lahan pertanian daerah Mulyorejo yang memiliki tanah subur. Proses budidaya dilakukan dengan perawatan terpadu untuk menjaga kualitas terbaik.',
+                info: [
+                    'Nama Produk: Brokoli Segar',
+                    'Asal Daerah Tanam: Mulyorejo, Surabaya, Jawa Timur',
+                    'Metode Budidaya: Budidaya konvensional dengan perawatan terpadu',
+                    'Isi Paket: Brokoli segar 1 ikat',
+                    'Kondisi Produk: Dipanen segar sebelum pengiriman',
+                    'Cocok untuk: tumisan, sup, salad, dan menu diet sehat'
+                ],
+                closing: 'Segar dari kebun, langsung ke meja makan Anda. 🥦',
+                location: 'Mulyorejo, Surabaya',
+                rating: '4,9',
+                reviews: '(50 Ulasan)',
+                reviewCount: '50',
+                seller: 'SurabayaFresh',
+                sellerLocation: 'Desa Mulyorejo, Kec. Mulyorejo, Surabaya',
+                stock: 25,
+                images: [
+                    'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1583663848853-3f7a0c29c4a5?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1589620588698-c11cc28f6454?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1587049633312-d6ae259fbc8e?w=600&h=400&fit=crop'
+                ]
+            },
+            'cabai1': {
+                id: 'cabai1',
+                name: 'Cabai',
+                fullName: 'Cabai Merah Segar',
+                shortDesc: 'Cabai merah segar dengan rasa pedas alami.',
+                price: 9000,
+                priceDisplay: 'Rp. 9000',
+                desc: 'Nikmati kesegaran cabai merah langsung dari petani lokal Manyar, Gresik. Cabai ini memiliki rasa pedas alami yang sempurna untuk berbagai masakan.\n\nCabai ditanam di lahan pertanian daerah Manyar dengan perawatan terpadu untuk menghasilkan cabai berkualitas tinggi.',
+                info: [
+                    'Nama Produk: Cabai Merah Segar',
+                    'Asal Daerah Tanam: Manyar, Gresik, Jawa Timur',
+                    'Metode Budidaya: Budidaya konvensional dengan perawatan terpadu',
+                    'Isi Paket: Cabai merah segar 250 gram',
+                    'Kondisi Produk: Dipanen segar sebelum pengiriman',
+                    'Cocok untuk: sambal, tumisan, dan berbagai masakan pedas'
+                ],
+                closing: 'Segar dari kebun, langsung ke meja makan Anda. 🌶️',
+                location: 'Manyar, Gresik',
+                rating: '4,7',
+                reviews: '(43 Ulasan)',
+                reviewCount: '43',
+                seller: 'GresikSpicy',
+                sellerLocation: 'Desa Manyar, Kec. Manyar, Gresik, Jawa Timur',
+                stock: 40,
+                images: [
+                    'https://images.unsplash.com/photo-1588252303782-cb80119abd6c?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1561136594-7f68413baa99?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=600&h=400&fit=crop'
+                ]
+            },
+            'bibittimun1': {
+                id: 'bibittimun1',
+                name: 'Bibit Timun',
+                fullName: 'Bibit Timun Sehat Segar',
+                shortDesc: 'Bibit timun sehat segar untuk kebun Anda.',
+                price: 4000,
+                priceDisplay: 'Rp. 4000',
+                desc: 'Nikmati kesegaran bibit timun langsung dari petani lokal Manyar, Gresik. Bibit timun ini sehat dan siap tanam untuk kebun Anda.\n\nBibit timun ditanam di lahan pertanian daerah Manyar dengan perawatan terpadu untuk menghasilkan bibit berkualitas tinggi.',
+                info: [
+                    'Nama Produk: Bibit Timun Segar',
+                    'Asal Daerah Tanam: Manyar, Gresik, Jawa Timur',
+                    'Metode Budidaya: Budidaya konvensional dengan perawatan terpadu',
+                    'Isi Paket: Bibit timun segar 5 pcs',
+                    'Kondisi Produk: Segar dan siap tanam',
+                    'Cocok untuk: ditanam di kebun rumah atau lahan pertanian'
+                ],
+                closing: 'Segar dari kebun, langsung ke kebun Anda. 🌱',
+                location: 'Manyar, Gresik',
+                rating: '4,9',
+                reviews: '(50 Ulasan)',
+                reviewCount: '50',
+                seller: 'GresikSeeds',
+                sellerLocation: 'Desa Manyar, Kec. Manyar, Gresik, Jawa Timur',
+                stock: 100,
+                images: [
+                    'https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1587049633312-d6ae259fbc8e?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1561136594-7f68413baa99?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=600&h=400&fit=crop'
+                ]
+            },
+            'jagung1': {
+                id: 'jagung1',
+                name: 'Jagung',
+                fullName: 'Jagung Manis Segar',
+                shortDesc: 'Jagung manis segar dengan rasa manis alami.',
+                price: 9000,
+                priceDisplay: 'Rp. 9000',
+                desc: 'Nikmati kesegaran jagung manis langsung dari petani lokal Manyar, Gresik. Jagung ini memiliki rasa manis alami yang lezat.\n\nJagung ditanam di lahan pertanian daerah Manyar dengan perawatan terpadu untuk menghasilkan jagung berkualitas tinggi.',
+                info: [
+                    'Nama Produk: Jagung Manis Segar',
+                    'Asal Daerah Tanam: Manyar, Gresik, Jawa Timur',
+                    'Metode Budidaya: Budidaya konvensional dengan perawatan terpadu',
+                    'Isi Paket: Jagung manis segar 2 pcs',
+                    'Kondisi Produk: Dipanen segar sebelum pengiriman',
+                    'Cocok untuk: rebus, bakar, sup, dan berbagai masakan'
+                ],
+                closing: 'Segar dari kebun, langsung ke meja makan Anda. 🌽',
+                location: 'Manyar, Gresik',
+                rating: '4,9',
+                reviews: '(50 Ulasan)',
+                reviewCount: '50',
+                seller: 'GresikSweet',
+                sellerLocation: 'Desa Manyar, Kec. Manyar, Gresik, Jawa Timur',
+                stock: 35,
+                images: [
+                    'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1587049633312-d6ae259fbc8e?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1561136594-7f68413baa99?w=600&h=400&fit=crop',
+                    'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=600&h=400&fit=crop'
+                ]
+            }
+        };
+
+        // ============================================
+        // CART FUNCTIONALITY - Integrasi dengan keranjang_teman.html
+        // ============================================
+
+        let currentQuantity = 1;
+        let currentProduct = null;
+
+        // Get product ID from URL
+        function getProductId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id') || 'tomat1';
+        }
+
+        // Load product data
+        function loadProduct() {
+            const productId = getProductId();
+            currentProduct = products[productId] || products['tomat1'];
+
+            document.getElementById('product-name').textContent = currentProduct.fullName;
+            document.getElementById('product-short-desc').textContent = currentProduct.shortDesc;
+            document.getElementById('product-price').textContent = currentProduct.priceDisplay;
+            document.getElementById('product-rating').textContent = currentProduct.rating;
+            document.getElementById('product-reviews').textContent = currentProduct.reviews;
+            document.getElementById('product-location').textContent = currentProduct.location;
+            document.getElementById('product-desc').innerHTML = currentProduct.desc.replace(/\\n/g, '<br><br>');
+            document.getElementById('product-closing').textContent = currentProduct.closing;
+            document.getElementById('seller-name').textContent = currentProduct.seller;
+            document.getElementById('seller-location').textContent = currentProduct.sellerLocation;
+            document.getElementById('review-rating').textContent = currentProduct.rating;
+            document.getElementById('review-title').textContent = 'Review Produk (' + currentProduct.reviewCount + ')';
+
+            const infoList = document.getElementById('product-info');
+            infoList.innerHTML = '';
+            currentProduct.info.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = '• ' + item;
+                infoList.appendChild(li);
+            });
+
+            currentImageIndex = 0;
+            updateImage();
+            updateCartCount();
+        }
+
+        // Quantity controls
+        function changeQuantity(delta) {
+            const newQty = currentQuantity + delta;
+            if (newQty >= 1 && newQty <= currentProduct.stock) {
+                currentQuantity = newQty;
+                document.getElementById('product-quantity').textContent = currentQuantity;
+                // Update price display
+                const totalPrice = currentProduct.price * currentQuantity;
+                document.getElementById('product-price').textContent = 'Rp. ' + totalPrice.toLocaleString('id-ID');
+            } else if (newQty > currentProduct.stock) {
+                showToast('Stok hanya tersisa ' + currentProduct.stock + ' item');
+            }
+        }
+
+        // ============================================
+        // CART OPERATIONS - Menyimpan ke localStorage
+        // ============================================
+
+        function getCart() {
+            const stored = localStorage.getItem('panenku_cart');
+            if (stored) {
+                try {
+                    return JSON.parse(stored);
+                } catch (e) {
+                    return [];
+                }
+            }
+            return [];
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem('panenku_cart', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        function updateCartCount() {
+            const cart = getCart();
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badge = document.getElementById('cart-count');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function addToCart() {
+            const cart = getCart();
+
+            // Cek apakah produk sudah ada di keranjang
+            const existingItem = cart.find(item => item.id === currentProduct.id);
+
+            if (existingItem) {
+                // Update quantity jika sudah ada
+                existingItem.quantity += currentQuantity;
+                showToast(currentProduct.name + ' ditambahkan (' + existingItem.quantity + ' item di keranjang)');
+            } else {
+                // Tambah item baru
+                const newItem = {
+                    id: currentProduct.id,
+                    shopId: 'shop_' + currentProduct.seller.toLowerCase().replace(/\s/g, ''),
+                    shopName: currentProduct.seller,
+                    name: currentProduct.fullName,
+                    image: currentProduct.images[0],
+                    variant: 'Default',
+                    variants: ['Default'],
+                    price: currentProduct.price,
+                    stock: currentProduct.stock,
+                    quantity: currentQuantity,
+                    tier: null,
+                    selected: false,
+                    editing: false
+                };
+                cart.push(newItem);
+                showToast(currentProduct.name + ' ditambahkan ke keranjang!');
+            }
+
+            saveCart(cart);
+        }
+
+        function buyNow() {
+            // Langsung tambah ke keranjang dan redirect ke keranjang
+            addToCart();
+            setTimeout(() => {
+                window.location.href = 'checkout.html';
+            }, 800);
+        }
+
+        // ============================================
+        // CAROUSEL
+        // ============================================
+
+        let currentImageIndex = 0;
+
+        function updateImage() {
+            const img = document.getElementById('main-image');
+            img.src = currentProduct.images[currentImageIndex];
+            document.getElementById('current-img').textContent = currentImageIndex + 1;
+        }
+
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % currentProduct.images.length;
+            updateImage();
+        }
+
+        function prevImage() {
+            currentImageIndex = (currentImageIndex - 1 + currentProduct.images.length) % currentProduct.images.length;
+            updateImage();
+        }
+
+        // ============================================
+        // LOVE BUTTON
+        // ============================================
+
+        function toggleLove(btn) {
+            btn.classList.toggle('active');
+            const icon = btn.querySelector('i');
+            if (btn.classList.contains('active')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                showToast('Produk ditambahkan ke favorit!');
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                showToast('Produk dihapus dari favorit!');
+            }
+        }
+
+        // ============================================
+        // TOAST & UTILITIES
+        // ============================================
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        function openChat() {
+            // Kirim data produk ke chat_detail.html dengan penjual
+            const chatUrl = 'chat_detail.html?seller=' + encodeURIComponent(currentProduct.seller) 
+                + '&avatar=' + encodeURIComponent('profil.png')
+                + '&productId=' + encodeURIComponent(currentProduct.id)
+                + '&productName=' + encodeURIComponent(currentProduct.fullName)
+                + '&productPrice=' + encodeURIComponent(currentProduct.priceDisplay)
+                + '&productImage=' + encodeURIComponent(currentProduct.images[0])
+                + '&productLocation=' + encodeURIComponent(currentProduct.location)
+                + '&productDesc=' + encodeURIComponent(currentProduct.shortDesc);
+            window.location.href = chatUrl;
+        }
+
+        // ============================================
+        // INIT
+        // ============================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProduct();
+        });
+    </script>
+</body>
+</html>
