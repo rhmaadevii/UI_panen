@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PanenKu - Chat Detail</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #6b9e2b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: #a8d46f;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            width: 40px; height: 40px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: #6b8e3d;
+            font-weight: 600;
+            flex: 1;
+            text-align: center;
+        }
+
+        .header-title span {
+            color: white;
+            font-weight: 700;
+        }
+
+        .buyer-info {
+            background: white;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .buyer-avatar {
+            width: 45px; height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .buyer-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .chat-area {
+            flex: 1;
+            padding: 15px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .msg-wrapper {
+            display: flex;
+            flex-direction: column;
+            max-width: 75%;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg-wrapper.buyer { align-self: flex-start; }
+        .msg-wrapper.seller { align-self: flex-end; }
+
+        .msg-bubble {
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .msg-wrapper.buyer .msg-bubble {
+            background: #a8d46f;
+            color: #33691E;
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg-wrapper.seller .msg-bubble {
+            background: #c5e0a5;
+            color: #33691E;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* REPLY PREVIEW */
+        .reply-preview {
+            background: rgba(0,0,0,0.08);
+            border-left: 3px solid #6b8e3d;
+            padding: 6px 10px;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .reply-preview-name {
+            font-weight: 700;
+            color: #6b8e3d;
+            font-size: 0.75rem;
+            margin-bottom: 2px;
+        }
+
+        .reply-preview-text {
+            color: #555;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .reply-preview-img {
+            max-width: 40px;
+            max-height: 40px;
+            border-radius: 4px;
+            margin-top: 2px;
+        }
+
+        /* ACTIONS */
+        .msg-actions {
+            display: none;
+            position: absolute;
+            top: -30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            padding: 4px;
+            gap: 2px;
+            z-index: 10;
+        }
+
+        .msg-wrapper.buyer .msg-actions { right: 0; }
+        .msg-wrapper.seller .msg-actions { left: 0; }
+
+        .msg-wrapper:hover .msg-actions { display: flex; }
+
+        .action-btn {
+            width: 28px; height: 28px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover { background: #f0f0f0; }
+        .action-btn.reply-btn { color: #6b8e3d; }
+        .action-btn.delete-btn { color: #e74c3c; }
+
+        .msg-img {
+            max-width: 200px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* REPLY BAR */
+        .reply-bar {
+            display: none;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reply-bar.active { display: flex; }
+
+        .reply-bar-content {
+            flex: 1;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border-left: 3px solid #6b8e3d;
+        }
+
+        .reply-bar-name {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #6b8e3d;
+            margin-bottom: 2px;
+        }
+
+        .reply-bar-text {
+            font-size: 0.85rem;
+            color: #555;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .reply-bar-close {
+            width: 25px; height: 25px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* INPUT */
+        .input-section { background: #6b9e2b; }
+
+        .divider {
+            height: 1px;
+            background: rgba(255,255,255,0.3);
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .divider::after {
+            content: '▼';
+            position: absolute;
+            left: 50%;
+            top: -8px;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.4);
+            font-size: 0.6rem;
+        }
+
+        .input-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+        }
+
+        .input-box {
+            flex: 1;
+            background: white;
+            border-radius: 20px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .input-box input::placeholder {
+            color: #999;
+            font-weight: 500;
+        }
+
+        .btn-img {
+            width: 30px; height: 30px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .btn-send {
+            width: 40px; height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #6b9e2b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #fileInput { display: none; }
+
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .deleting {
+            animation: deleteAnim 0.3s ease forwards;
+        }
+
+        @keyframes deleteAnim {
+            to {
+                opacity: 0;
+                transform: translateX(-20px);
+                height: 0;
+                padding: 0;
+                margin: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-title { font-size: 1.5rem; }
+            .msg-wrapper { max-width: 85%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <button class="back-btn" onclick="window.location.href='chat_pembeli.html'">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="header-title">Panenku<span>ChatPembeli</span></div>
+    </div>
+
+    <div class="buyer-info">
+        <img src="profil.png" alt="Avatar" class="buyer-avatar" id="buyerAvatar" onerror="this.src='profil.png'">
+        <div class="buyer-name" id="buyerName">Pembeli</div>
+    </div>
+
+    <div class="chat-area" id="chatArea"></div>
+
+    <div class="reply-bar" id="replyBar">
+        <div class="reply-bar-content">
+            <div class="reply-bar-name" id="replyBarName">Pembeli</div>
+            <div class="reply-bar-text" id="replyBarText">...</div>
+        </div>
+        <button class="reply-bar-close" onclick="batalReply()">×</button>
+    </div>
+
+    <div class="input-section">
+        <div class="divider"></div>
+        <div class="input-area">
+            <div class="input-box">
+                <input type="text" id="inputPesan" placeholder="Ketik Pesan" onkeypress="cekEnter(event)">
+                <button class="btn-img" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-image"></i>
+                </button>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" onchange="kirimFoto(this)">
+            <button class="btn-send" onclick="kirimPesan()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // AMBIL PARAMETER + PREFIX
+        // ============================================
+        const urlParams = new URLSearchParams(window.location.search);
+        const buyerName = urlParams.get('buyer') || 'Pembeli';
+        const buyerAvatar = urlParams.get('avatar') || 'profil.png';
+        
+        // PREFIX KHUSUS - harus sama dengan chat_pembeli.html
+        const STORAGE_PREFIX = urlParams.get('prefix') || 'panenku_seller_chat_';
+        const storageKey = STORAGE_PREFIX + buyerName;
+
+        const defaultPesan = {
+            'Inas Amatullah': 'Kak stok nya masih ada lagi ga ya? aku mau nambah beli tapi stoknya tinggal dikit. Kapan restock ya?',
+            'Rahmadevi Shetyaning': 'Permisi ibu maaf menggangu mau tanya tomat yang dijual itu bisa bertahan berapa lama ya?',
+            'Zarra Firdaus': 'oke min, ditunggu paket sampenya'
+        };
+
+        let replyToIndex = null;
+
+        function init() {
+            document.getElementById('buyerName').textContent = buyerName;
+            document.getElementById('buyerAvatar').src = buyerAvatar;
+
+            // Kalau belum ada data, init dari default
+            if (!localStorage.getItem(storageKey)) {
+                const initial = [{
+                    sender: 'buyer',
+                    text: defaultPesan[buyerName] || 'Halo kak',
+                    time: 'Baru saja',
+                    timestamp: Date.now()
+                }];
+                localStorage.setItem(storageKey, JSON.stringify(initial));
+            }
+
+            renderChat();
+            document.getElementById('inputPesan').focus();
+        }
+
+        function renderChat() {
+            const area = document.getElementById('chatArea');
+            const messages = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+            if (messages.length === 0) {
+                area.innerHTML = `
+                    <div class="empty">
+                        <i class="fas fa-comments" style="font-size: 40px; margin-bottom: 10px;"></i>
+                        <p>Belum ada pesan</p>
+                    </div>
+                `;
+                return;
+            }
+
+            area.innerHTML = '';
+            messages.forEach((msg, i) => {
+                const isSeller = msg.sender === 'seller';
+                const cls = isSeller ? 'seller' : 'buyer';
+
+                let html = '';
+
+                // REPLY PREVIEW
+                if (msg.replyTo) {
+                    const replyName = msg.replyTo.sender === 'seller' ? 'Anda' : buyerName;
+                    let replyPreview = '';
+
+                    if (msg.replyTo.image) {
+                        replyPreview = `<img src="${msg.replyTo.image}" class="reply-preview-img">`;
+                    } else {
+                        replyPreview = `<div class="reply-preview-text">${escapeHtml(msg.replyTo.text || '')}</div>`;
+                    }
+
+                    html += `
+                        <div class="reply-preview">
+                            <div class="reply-preview-name">${replyName}</div>
+                            ${replyPreview}
+                        </div>
+                    `;
+                }
+
+                // IMAGE
+                if (msg.image) {
+                    html += `<img src="${msg.image}" class="msg-img" onerror="this.style.display='none'">`;
+                }
+
+                // TEXT
+                if (msg.text) {
+                    html += `<div>${escapeHtml(msg.text)}</div>`;
+                }
+
+                const div = document.createElement('div');
+                div.className = `msg-wrapper ${cls}`;
+                div.setAttribute('data-index', i);
+                div.innerHTML = `
+                    <div class="msg-actions">
+                        <button class="action-btn reply-btn" onclick="setupReply(${i})" title="Reply">
+                            <i class="fas fa-reply"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="hapusPesan(${i})" title="Hapus">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="msg-bubble">${html}</div>
+                `;
+                area.appendChild(div);
+            });
+
+            area.scrollTop = area.scrollHeight;
+        }
+
+        // SETUP REPLY
+        function setupReply(index) {
+            const messages = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            const msg = messages[index];
+            if (!msg) return;
+
+            replyToIndex = index;
+
+            const replyName = msg.sender === 'seller' ? 'Anda' : buyerName;
+            let replyText = msg.text || '';
+            if (msg.image && !msg.text) replyText = '📷 Foto';
+
+            document.getElementById('replyBarName').textContent = replyName;
+            document.getElementById('replyBarText').textContent = replyText;
+            document.getElementById('replyBar').classList.add('active');
+            document.getElementById('inputPesan').focus();
+        }
+
+        function batalReply() {
+            replyToIndex = null;
+            document.getElementById('replyBar').classList.remove('active');
+        }
+
+        // KIRIM PESAN
+        function kirimPesan() {
+            const input = document.getElementById('inputPesan');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const msg = {
+                sender: 'seller',
+                text: text,
+                time: formatTime(),
+                timestamp: Date.now()
+            };
+
+            if (replyToIndex !== null) {
+                const messages = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                const replyMsg = messages[replyToIndex];
+                if (replyMsg) {
+                    msg.replyTo = {
+                        sender: replyMsg.sender,
+                        text: replyMsg.text || '',
+                        image: replyMsg.image || ''
+                    };
+                }
+                batalReply();
+            }
+
+            saveMsg(msg);
+            input.value = '';
+            input.focus();
+        }
+
+        // KIRIM FOTO
+        function kirimFoto(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Maksimal 5MB');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const msg = {
+                    sender: 'seller',
+                    image: e.target.result,
+                    time: formatTime(),
+                    timestamp: Date.now()
+                };
+
+                if (replyToIndex !== null) {
+                    const messages = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                    const replyMsg = messages[replyToIndex];
+                    if (replyMsg) {
+                        msg.replyTo = {
+                            sender: replyMsg.sender,
+                            text: replyMsg.text || '',
+                            image: replyMsg.image || ''
+                        };
+                    }
+                    batalReply();
+                }
+
+                saveMsg(msg);
+                input.value = '';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // HAPUS PESAN
+        function hapusPesan(index) {
+            if (!confirm('Yakin mau hapus pesan ini?')) return;
+
+            const wrapper = document.querySelector(`.msg-wrapper[data-index="${index}"]`);
+            if (wrapper) {
+                wrapper.classList.add('deleting');
+                setTimeout(() => {
+                    let messages = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                    messages.splice(index, 1);
+                    localStorage.setItem(storageKey, JSON.stringify(messages));
+                    renderChat();
+                }, 300);
+            }
+        }
+
+        // SAVE
+        function saveMsg(msg) {
+            let messages = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            messages.push(msg);
+            localStorage.setItem(storageKey, JSON.stringify(messages));
+            renderChat();
+        }
+
+        function cekEnter(e) {
+            if (e.key === 'Enter') kirimPesan();
+        }
+
+        function formatTime() {
+            const now = new Date();
+            return String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        init();
+    </script>
+
+</body>
+</html>

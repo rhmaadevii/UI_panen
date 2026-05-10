@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Detail - PanenKu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #8BC34A;
+            --dark-green: #689F38;
+            --light-green: #AED581;
+            --bg-green: #C5E1A5;
+            --accent-green: #558B2F;
+            --text-dark: #33691E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #C5E1A5 0%, #689F38 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .chat-header {
+            background: var(--bg-green);
+            padding: 1rem 5%;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .header-title span {
+            color: white;
+            font-weight: 700;
+        }
+
+        /* Seller Info Bar */
+        .seller-bar {
+            background: white;
+            padding: 1rem 5%;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .seller-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .seller-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        /* Chat Messages */
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem 5%;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 1rem 1.2rem;
+            border-radius: 20px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background: var(--light-green);
+            color: #333;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-image {
+            max-width: 200px;
+            border-radius: 15px;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .reply-btn {
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .message:hover .reply-btn {
+            opacity: 1;
+        }
+
+        .message.sent .reply-btn {
+            right: auto;
+            left: -30px;
+        }
+
+        /* Product Card in Chat */
+        .product-card-chat {
+            background: white;
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 280px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .product-card-chat:hover {
+            transform: scale(1.02);
+        }
+
+        .product-card-chat img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        .product-card-chat .product-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .product-card-chat .product-price {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--accent-green);
+        }
+
+        .product-card-chat .product-location {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .product-card-chat .product-label {
+            background: var(--primary-green);
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        /* Reply indicator */
+        .reply-indicator {
+            background: rgba(0,0,0,0.05);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            border-left: 3px solid var(--primary-green);
+        }
+
+        /* Input Area */
+        .chat-input-area {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem 5%;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .message-input-container {
+            flex: 1;
+            background: white;
+            border-radius: 30px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .message-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .message-input::placeholder {
+            color: #999;
+        }
+
+        .attach-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: #666;
+            transition: color 0.3s;
+        }
+
+        .attach-btn:hover {
+            color: var(--primary-green);
+        }
+
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            background: var(--primary-green);
+            color: white;
+        }
+
+        /* Scroll down indicator */
+        .scroll-down {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Image preview modal */
+        .image-preview-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-preview-modal.active {
+            display: flex;
+        }
+
+        .image-preview-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+
+        .close-preview {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 1.5rem;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+
+            .message-image {
+                max-width: 150px;
+            }
+
+            .product-card-chat {
+                max-width: 240px;
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="chat-header">
+        <button class="back-btn" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1 class="header-title">Panenku <span>Chat Penjual</span></h1>
+    </div>
+
+    <!-- Seller Info -->
+    <div class="seller-bar">
+        <img src="" alt="Seller" class="seller-avatar" id="sellerAvatar">
+        <div class="seller-name" id="sellerName">Seller Name</div>
+    </div>
+
+    <!-- Chat Messages -->
+    <div class="chat-messages" id="chatMessages">
+        <!-- Messages injected by JS -->
+    </div>
+
+    <!-- Scroll Down -->
+    <div class="scroll-down" onclick="scrollToBottom()" id="scrollDownBtn" style="display: none;">
+        <i class="fas fa-chevron-down"></i>
+    </div>
+
+    <!-- Input Area -->
+    <div class="chat-input-area">
+        <div class="input-wrapper">
+            <div class="message-input-container">
+                <input type="text" class="message-input" id="messageInput" placeholder="Ketik Pesan" onkeypress="handleKeyPress(event)">
+                <button class="attach-btn" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-image"></i>
+                </button>
+                <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+            </div>
+            <button class="send-btn" onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div class="image-preview-modal" id="imagePreviewModal" onclick="closeImagePreview()">
+        <button class="close-preview" onclick="event.stopPropagation(); closeImagePreview()">
+            <i class="fas fa-times"></i>
+        </button>
+        <img src="" alt="Preview" id="previewImage">
+    </div>
+
+    <script>
+        // ============================================
+        // GET URL PARAMS - Including product data from detail_produk
+        // ============================================
+        const urlParams = new URLSearchParams(window.location.search);
+        const sellerName = urlParams.get('seller') || 'ViviGroceries';
+        const sellerAvatar = urlParams.get('avatar') || 'https://i.pravatar.cc/150?img=4';
+
+        // Product data from detail_produk.html
+        const productData = {
+            id: urlParams.get('productId') || null,
+            name: urlParams.get('productName') || null,
+            price: urlParams.get('productPrice') || null,
+            image: urlParams.get('productImage') || null,
+            location: urlParams.get('productLocation') || null,
+            desc: urlParams.get('productDesc') || null
+        };
+
+        // Set seller info
+        document.getElementById('sellerName').textContent = sellerName;
+        document.getElementById('sellerAvatar').src = sellerAvatar;
+
+        // ============================================
+        // CHAT MESSAGES DATA
+        // ============================================
+        let messages = [];
+
+        // Load messages from localStorage for this seller
+        function loadMessages() {
+            const stored = localStorage.getItem('chat_' + sellerName);
+            if (stored) {
+                try {
+                    messages = JSON.parse(stored);
+                } catch (e) {
+                    messages = [];
+                }
+            } else {
+                // Default messages if no history
+                messages = [
+                    {
+                        id: 1,
+                        type: 'received',
+                        text: 'Halo! Selamat datang di ' + sellerName + '. Ada yang bisa kami bantu?',
+                        image: null,
+                        time: '10:00',
+                        replyTo: null,
+                        product: null
+                    }
+                ];
+            }
+        }
+
+        // Save messages to localStorage
+        function saveMessages() {
+            localStorage.setItem('chat_' + sellerName, JSON.stringify(messages));
+        }
+
+        // ============================================
+        // RENDER MESSAGES
+        // ============================================
+        function renderMessages() {
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = messages.map(msg => {
+                let productHtml = '';
+                if (msg.product) {
+                    productHtml = `
+                        <div class="product-card-chat" onclick="viewProduct('${msg.product.id}')">
+                            <span class="product-label">📦 PRODUK</span>
+                            <img src="${msg.product.image}" alt="${msg.product.name}" onerror="this.src='https://via.placeholder.com/280x150?text=No+Image'">
+                            <div class="product-name">${msg.product.name}</div>
+                            <div class="product-price">${msg.product.price}</div>
+                            <div class="product-location"><i class="fas fa-map-marker-alt"></i> ${msg.product.location}</div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="message ${msg.type}" data-id="${msg.id}">
+                        ${msg.replyTo ? `<div class="reply-indicator">Membalas: ${msg.replyTo}</div>` : ''}
+                        ${msg.image ? `<img src="${msg.image}" alt="Image" class="message-image" onclick="openImagePreview('${msg.image}')">` : ''}
+                        ${productHtml}
+                        ${msg.text ? `<div class="message-text">${msg.text}</div>` : ''}
+                        <button class="reply-btn" onclick="setReply(${msg.id})">
+                            <i class="fas fa-reply"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+
+            scrollToBottom();
+        }
+
+        function setReply(msgId) {
+            const msg = messages.find(m => m.id === msgId);
+            if (msg) {
+                let replyText = msg.text;
+                if (msg.product) {
+                    replyText = 'Produk: ' + msg.product.name;
+                }
+                replyTo = replyText.substring(0, 30) + (replyText.length > 30 ? '...' : '');
+                document.getElementById('messageInput').placeholder = `Membalas: ${replyTo}`;
+                document.getElementById('messageInput').focus();
+            }
+        }
+
+        // ============================================
+        // SEND MESSAGE
+        // ============================================
+        let replyTo = null;
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            const newMsg = {
+                id: messages.length + 1,
+                type: 'sent',
+                text: text,
+                image: null,
+                time: new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}),
+                replyTo: replyTo,
+                product: null
+            };
+
+            messages.push(newMsg);
+            saveMessages();
+            renderMessages();
+
+            input.value = '';
+            input.placeholder = 'Ketik Pesan';
+            replyTo = null;
+
+            // Simulate reply after 2 seconds
+            setTimeout(() => {
+                const replyMsg = {
+                    id: messages.length + 1,
+                    type: 'received',
+                    text: 'Baik kak, terima kasih atas pesannya! Kami akan segera memprosesnya. 🙏',
+                    image: null,
+                    time: new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}),
+                    replyTo: null,
+                    product: null
+                };
+                messages.push(replyMsg);
+                saveMessages();
+                renderMessages();
+            }, 2000);
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newMsg = {
+                    id: messages.length + 1,
+                    type: 'sent',
+                    text: '',
+                    image: e.target.result,
+                    time: new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}),
+                    replyTo: replyTo,
+                    product: null
+                };
+                messages.push(newMsg);
+                saveMessages();
+                renderMessages();
+
+                replyTo = null;
+                document.getElementById('messageInput').placeholder = 'Ketik Pesan';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // ============================================
+        // PRODUCT CARD FUNCTIONALITY
+        // ============================================
+        function viewProduct(productId) {
+            window.location.href = 'detail_produk.html?id=' + productId;
+        }
+
+        // ============================================
+        // AUTO-SEND PRODUCT CARD (from detail_produk.html)
+        // ============================================
+        function autoSendProduct() {
+            if (productData.id && productData.name) {
+                // Check if product already sent in this chat
+                const alreadySent = messages.some(msg => msg.product && msg.product.id === productData.id);
+
+                if (!alreadySent) {
+                    const productMsg = {
+                        id: messages.length + 1,
+                        type: 'sent',
+                        text: 'Halo, saya tertarik dengan produk ini. Apakah masih tersedia?',
+                        image: null,
+                        time: new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}),
+                        replyTo: null,
+                        product: {
+                            id: productData.id,
+                            name: productData.name,
+                            price: productData.price,
+                            image: productData.image,
+                            location: productData.location
+                        }
+                    };
+                    messages.push(productMsg);
+                    saveMessages();
+                    renderMessages();
+
+                    // Simulate seller reply
+                    setTimeout(() => {
+                        const replyMsg = {
+                            id: messages.length + 1,
+                            type: 'received',
+                            text: 'Halo kak! Iya, produk ' + productData.name + ' masih tersedia. Mau order berapa kak?',
+                            image: null,
+                            time: new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}),
+                            replyTo: null,
+                            product: null
+                        };
+                        messages.push(replyMsg);
+                        saveMessages();
+                        renderMessages();
+                    }, 1500);
+                }
+            }
+        }
+
+        // ============================================
+        // NAVIGATION
+        // ============================================
+        function goBack() {
+            // If came from detail_produk, go back to detail_produk
+            if (productData.id) {
+                window.location.href = 'detail_produk.html?id=' + productData.id;
+            } else {
+                window.location.href = 'chat_teman.html';
+            }
+        }
+
+        function scrollToBottom() {
+            const container = document.getElementById('chatMessages');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function openImagePreview(src) {
+            document.getElementById('previewImage').src = src;
+            document.getElementById('imagePreviewModal').classList.add('active');
+        }
+
+        function closeImagePreview() {
+            document.getElementById('imagePreviewModal').classList.remove('active');
+        }
+
+        // Check scroll position for scroll down button
+        document.getElementById('chatMessages').addEventListener('scroll', function() {
+            const btn = document.getElementById('scrollDownBtn');
+            const nearBottom = this.scrollHeight - this.scrollTop - this.clientHeight < 100;
+            btn.style.display = nearBottom ? 'none' : 'flex';
+        });
+
+        // ============================================
+        // INIT
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMessages();
+            renderMessages();
+            // Auto-send product card if coming from detail_produk
+            autoSendProduct();
+        });
+    </script>
+
+</body>
+</html>

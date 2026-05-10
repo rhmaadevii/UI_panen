@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PanenKu - Keamanan</title>
+  <link rel="stylesheet" href="dashboardpembeli.css"/>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-left">
+    <div class="navbar-logo-wrap">
+      <img src="logo2.png" alt="PanenKu Logo" class="navbar-logo" onerror="this.style.display='none'"/>
+      <span class="navbar-brand">PanenKu</span>
+    </div>
+  </div>
+  <div class="navbar-center">
+    <a href="#">Beranda <span class="chevron"></span></a>
+    <a href="#">Artikel <span class="chevron"></span></a>
+    <a href="#">Komunitas <span class="chevron"></span></a>
+  </div>
+  <div class="navbar-right">
+    <button class="icon-btn">🛒</button>
+    <button class="icon-btn">💬</button>
+    <button class="vir-btn">VIR</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <a href="dashboardpembeli.html" class="back-btn">←</a>
+  <h1>Keamanan</h1>
+</div>
+
+<div class="keamanan-bg">
+  <div class="keamanan-container">
+
+    <div class="keamanan-card">
+      <h2>Informasi Pribadi</h2>
+      <div class="info-row">
+        <div class="info-label">
+          <div class="label-icon">👤</div>
+          <span class="label-main">Nama Lengkap</span>
+        </div>
+        <div class="info-value">Vivi Inas Rara</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">
+          <div class="label-icon">✉️</div>
+          <span class="label-main">Email</span>
+        </div>
+        <div class="info-value">
+          vivinasrara@gmail.com<br>
+          <span class="verified">✓ Terverifikasi</span>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">
+          <div class="label-icon">📱</div>
+          <span class="label-main">Nomor Telepon</span>
+        </div>
+        <div class="info-value">
+          0838 - 5668 - 9633<br>
+          <span class="verified">✓ Terverifikasi</span>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">
+          <div class="label-icon">🎂</div>
+          <span class="label-main">Tanggal lahir</span>
+        </div>
+        <div class="info-value">12 Desember 2005</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">
+          <div class="label-icon">🏷️</div>
+          <span class="label-main">Jenis kelamin</span>
+        </div>
+        <div class="info-value" id="viewJenisKelaminKeamanan">-</div>
+      </div>
+    </div>
+
+    <div class="keamanan-card">
+      <h2>Ganti Password</h2>
+      <div class="password-input-group">
+        <input type="password" id="pwBaru" placeholder="Password Baru"/>
+        <input type="password" id="pwKonfirmasi" placeholder="Konfirmasi Password"/>
+        <button class="konfirmasi-btn" onclick="gantiPassword()">Konfirmasi</button>
+      </div>
+      <div id="pesanPassword" style="margin-top:12px;font-size:0.88rem;color:green;display:none;"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Ambil jenis kelamin dari localStorage
+  const jk = localStorage.getItem('profilJenisKelamin');
+  const elJK = document.getElementById('viewJenisKelaminKeamanan');
+  if (jk) {
+    elJK.textContent = jk;
+  } else {
+    elJK.textContent = '-';
+  }
+
+  function gantiPassword() {
+    const pw1 = document.getElementById('pwBaru').value;
+    const pw2 = document.getElementById('pwKonfirmasi').value;
+    const pesan = document.getElementById('pesanPassword');
+    if (!pw1 || !pw2) {
+      pesan.style.color = 'red';
+      pesan.textContent = 'Harap isi semua kolom password.';
+      pesan.style.display = 'block';
+      return;
+    }
+    if (pw1 !== pw2) {
+      pesan.style.color = 'red';
+      pesan.textContent = 'Password tidak cocok, coba lagi.';
+      pesan.style.display = 'block';
+      return;
+    }
+    pesan.style.color = 'green';
+    pesan.textContent = 'Password berhasil diubah!';
+    pesan.style.display = 'block';
+    document.getElementById('pwBaru').value = '';
+    document.getElementById('pwKonfirmasi').value = '';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panenku - Pembayaran QRIS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #f5f5f5; min-height: 100vh; }
+
+        /* Header */
+        .header {
+            background: #E0E0E0;
+            padding: 20px;
+            text-align: center;
+        }
+        .header-title { color: #8BC34A; font-size: 24px; font-weight: 700; }
+        .header-subtitle { color: #666; font-size: 14px; margin-top: 5px; }
+
+        /* Countdown Timer */
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .countdown-box {
+            background: white;
+            border-radius: 8px;
+            padding: 8px 15px;
+            min-width: 50px;
+            text-align: center;
+        }
+        .countdown-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+        .countdown-label {
+            font-size: 10px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .payment-card {
+            background: #9CCC65;
+            border-radius: 20px;
+            padding: 25px;
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        /* Left Side - QR Code */
+        .qr-section {
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .qr-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .qr-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .qr-logo img {
+            width: 60px;
+        }
+
+        .qr-logo-text {
+            text-align: left;
+            font-size: 11px;
+            color: #333;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .qr-code-img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+        }
+
+        .download-btn {
+            width: 100%;
+            background: #AED581;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            color: #333;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .download-btn:hover { background: #9CCC65; }
+        .download-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        .qr-instructions {
+            color: white;
+            font-size: 11px;
+            line-height: 1.8;
+            margin-top: 15px;
+            padding-left: 5px;
+        }
+
+        /* Right Side - Details */
+        .details-section {
+            flex: 1.5;
+            min-width: 300px;
+        }
+
+        .scan-info {
+            background: #C5E1A5;
+            border-radius: 12px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .scan-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .scan-subtitle {
+            font-size: 12px;
+            color: #555;
+            margin-top: 2px;
+        }
+
+        .cancel-btn {
+            background: transparent;
+            border: 2px solid #558B2F;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cancel-btn:hover { background: #558B2F; color: white; }
+
+        /* Transaction Info */
+        .transaction-info {
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            margin-bottom: 12px;
+            color: white;
+        }
+
+        .info-label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .info-value.id { font-family: monospace; letter-spacing: 1px; }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-unpaid {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+
+        .status-pending {
+            background: #FFC107;
+            color: #333;
+        }
+
+        .status-failed {
+            background: #E53935;
+            color: white;
+        }
+
+        .status-success {
+            background: #2E7D32;
+            color: white;
+        }
+
+        /* Order Summary */
+        .summary-section {
+            border-top: 1px solid rgba(255,255,255,0.3);
+            padding-top: 15px;
+        }
+
+        .summary-title {
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .order-item-name { flex: 1; }
+        .order-item-price { font-weight: 600; }
+        .order-item-qty {
+            color: white;
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-size: 13px;
+            padding: 3px 0;
+            opacity: 0.9;
+        }
+
+        .summary-row.total {
+            font-size: 15px;
+            font-weight: 700;
+            opacity: 1;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Simulasi Button (untuk demo) */
+        .simulasi-section {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+        }
+        .simulasi-title {
+            color: white;
+            font-size: 12px;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+        .simulasi-btn {
+            background: #2E7D32;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 5px 5px 0;
+        }
+        .simulasi-btn:hover { background: #1B5E20; }
+        .simulasi-btn.fail { background: #E53935; }
+        .simulasi-btn.fail:hover { background: #C62828; }
+        .simulasi-btn.reset { background: #FF9800; }
+        .simulasi-btn.reset:hover { background: #F57C00; }
+        .simulasi-note {
+            color: white;
+            font-size: 11px;
+            margin-top: 8px;
+            opacity: 0.7;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 200;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .payment-card { flex-direction: column; }
+            .qr-code-img { width: 180px; height: 180px; }
+            .header-title { font-size: 20px; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- BAGIAN 1: HTML (TAMPILAN) -->
+<!-- ============================================ -->
+
+    <!-- Header dengan Countdown -->
+    <div class="header">
+        <div class="header-title">Selesaikan Pembayaran Dalam</div>
+        <div class="countdown-container">
+            <div class="countdown-box">
+                <div class="countdown-value" id="countdownHours">00</div>
+                <div class="countdown-label">Jam</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="countdownMinutes">15</div>
+                <div class="countdown-label">Menit</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="countdownSeconds">00</div>
+                <div class="countdown-label">Detik</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="payment-card">
+
+            <!-- Left: QR Code -->
+            <div class="qr-section">
+                <div class="qr-container">
+                    <div class="qr-logo">
+                        <div class="qr-logo-text">
+                        </div>
+                    </div>
+                    <img src="qris.png" alt="QR Code" class="qr-code-img" id="qrImage">
+                </div>
+                <button class="download-btn" id="downloadBtn" onclick="downloadQR()">
+                    <i class="fas fa-download"></i> Unduh QR Code
+                </button>
+                <div class="qr-instructions">
+                    1. Screenshot kode QR QRIS di atas<br>
+                    2. Buka aplikasi pembayaran / m-banking dan pilih menu QRIS<br>
+                    3. Upload kode QR hasil unduh / screenshot<br>
+                    4. Cek nominal dan konfirmasi pembayaran<br>
+                    5. Masukkan pin Anda untuk verifikasi pembayaran<br>
+                    6. Transaksi Berhasil
+                </div>
+            </div>
+
+            <!-- Right: Details -->
+            <div class="details-section">
+                <div class="scan-info">
+                    <div>
+                        <div class="scan-title">Scan Qris</div>
+                        <div class="scan-subtitle">ShopeePay, OVO, DANA, Gopay, LinkAja, dan transfer bank via QRIS</div>
+                    </div>
+                    <button class="cancel-btn" onclick="cancelOrder()">Batalkan pesanan</button>
+                </div>
+
+                <div class="transaction-info">
+                    <div class="info-row">
+                        <div class="info-label">ID Transaksi</div>
+                        <div class="info-value id" id="transactionId">-</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Tanggal</div>
+                        <div class="info-value" id="transactionDate">-</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Status Pembayaran</div>
+                        <div class="info-value">
+                            <span class="status-badge status-unpaid" id="paymentStatus">
+                                <i class="fas fa-clock"></i> Belum Dibayar
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-title">Rincian Pesanan dan Pembayaran</div>
+                    <div id="orderItems"></div>
+                    <div class="summary-row">
+                        <span>Biaya Ongkir</span>
+                        <span id="shippingCost">Rp 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Biaya Layanan</span>
+                        <span id="serviceFee">Rp 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Diskon dan Voucher</span>
+                        <span id="discount">-Rp 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Fee</span>
+                        <span id="fee">Rp 0</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>TOTAL</span>
+                        <span id="totalPayment">Rp 0</span>
+                    </div>
+                </div>
+
+                <!-- Tombol Simulasi (untuk testing/demo) -->
+                <div class="simulasi-section">
+                    <div class="simulasi-title">🔧 Simulasi Status (untuk demo)</div>
+                    <button class="simulasi-btn" onclick="simulateSuccess()">
+                        <i class="fas fa-check"></i> Simulasi Bayar Sukses
+                    </button>
+                    <button class="simulasi-btn fail" onclick="simulateFail()">
+                        <i class="fas fa-times"></i> Simulasi Gagal
+                    </button>
+                    <button class="simulasi-btn reset" onclick="resetStatus()">
+                        <i class="fas fa-redo"></i> Reset Status
+                    </button>
+                    <div class="simulasi-note">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+
+<!-- ============================================ -->
+<!-- BAGIAN 2: JAVASCRIPT (LOGIC) -->
+<!-- ============================================ -->
+
+<script>
+
+// ============================================
+// STEP 1: VARIABEL & KONFIGURASI
+// ============================================
+
+const PAYMENT_DURATION = 15 * 60; // 15 menit dalam detik
+let timeRemaining = PAYMENT_DURATION;
+let countdownInterval;
+let isDownloaded = false;
+let isExpired = false;
+let isCancelled = false;
+let isSuccess = false;
+
+let orderData = {
+    items: [],
+    total: 0,
+    subtotal: 0,
+    shipping: 13000,
+    serviceFee: 1000,
+    discount: 0,
+    fee: 0,
+    address: null,
+    paymentMethod: 'QRIS',
+    timestamp: null
+};
+
+
+// ============================================
+// STEP 2: AMBIL DATA DARI CHECKOUT (localStorage)
+// ============================================
+
+function loadOrderData() {
+    const stored = localStorage.getItem('panenku_order');
+
+    if (stored) {
+        try {
+            const parsed = JSON.parse(stored);
+            orderData = { ...orderData, ...parsed };
+            console.log('Data order loaded:', orderData);
+        } catch (e) {
+            console.error('Error loading order:', e);
+            useDemoData();
+        }
+    } else {
+        console.log('Tidak ada data order di localStorage, pakai data demo');
+        useDemoData();
+    }
+
+    renderOrderDetails();
+    generateTransactionId();
+    setTransactionDate();
+}
+
+function useDemoData() {
+    orderData.items = [
+        {
+            id: "item_1",
+            name: "Tomat Bundling dengan baby tomat",
+            quantity: 4,
+            price: 6000
+        }
+    ];
+    orderData.subtotal = 24000;
+    orderData.shipping = 17000;
+    orderData.serviceFee = 1000;
+    orderData.discount = 0;
+    orderData.fee = 0;
+    orderData.total = 42000;
+}
+
+
+// ============================================
+// STEP 3: GENERATE ID TRANSAKSI & TANGGAL
+// ============================================
+
+function generateTransactionId() {
+    let id = '';
+    for (let i = 0; i < 20; i++) {
+        id += Math.floor(Math.random() * 10);
+    }
+    document.getElementById('transactionId').textContent = id;
+}
+
+function setTransactionDate() {
+    const now = new Date();
+    const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = months[now.getMonth()];
+    const year = now.getFullYear();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    const dateString = `${day} ${month} ${year}, ${hours}.${minutes}.${seconds}`;
+    document.getElementById('transactionDate').textContent = dateString;
+}
+
+
+// ============================================
+// STEP 4: RENDER DETAIL PESANAN
+// ============================================
+
+function renderOrderDetails() {
+    const itemsContainer = document.getElementById('orderItems');
+    let itemsHtml = '';
+
+    orderData.items.forEach((item, index) => {
+        itemsHtml += `
+            <div class="order-item">
+                <div class="order-item-name">${index + 1}. ${item.name}</div>
+                <div class="order-item-price">Rp ${formatPrice(item.price * item.quantity)}</div>
+            </div>
+            <div class="order-item-qty">${item.quantity} × ${formatPrice(item.price)}</div>
+        `;
+    });
+
+    itemsContainer.innerHTML = itemsHtml;
+
+    document.getElementById('shippingCost').textContent = `Rp ${formatPrice(orderData.shipping)}`;
+    document.getElementById('serviceFee').textContent = `Rp ${formatPrice(orderData.serviceFee)}`;
+    document.getElementById('discount').textContent = `-Rp ${formatPrice(orderData.discount)}`;
+    document.getElementById('fee').textContent = `Rp ${formatPrice(orderData.fee || 0)}`;
+    document.getElementById('totalPayment').textContent = `Rp ${formatPrice(orderData.total)}`;
+}
+
+
+// ============================================
+// STEP 5: COUNTDOWN TIMER (Real-time)
+// ============================================
+
+function startCountdown() {
+    const storedTime = localStorage.getItem('panenku_payment_time_left');
+    const storedStart = localStorage.getItem('panenku_payment_start');
+
+    if (storedTime && storedStart) {
+        const startTime = parseInt(storedStart);
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        timeRemaining = Math.max(0, PAYMENT_DURATION - elapsed);
+    } else {
+        localStorage.setItem('panenku_payment_start', Date.now().toString());
+        localStorage.setItem('panenku_payment_time_left', PAYMENT_DURATION.toString());
+    }
+
+    updateCountdownDisplay();
+
+    countdownInterval = setInterval(() => {
+        if (isExpired || isCancelled || isSuccess) return;
+
+        timeRemaining--;
+        localStorage.setItem('panenku_payment_time_left', timeRemaining.toString());
+
+        updateCountdownDisplay();
+
+        if (timeRemaining <= 0) {
+            clearInterval(countdownInterval);
+            handleExpired();
+        }
+    }, 1000);
+}
+
+function updateCountdownDisplay() {
+    const hours = Math.floor(timeRemaining / 3600);
+    const minutes = Math.floor((timeRemaining % 3600) / 60);
+    const seconds = timeRemaining % 60;
+
+    document.getElementById('countdownHours').textContent = String(hours).padStart(2, '0');
+    document.getElementById('countdownMinutes').textContent = String(minutes).padStart(2, '0');
+    document.getElementById('countdownSeconds').textContent = String(seconds).padStart(2, '0');
+}
+
+
+// ============================================
+// STEP 6: DOWNLOAD QR CODE
+// ============================================
+
+function downloadQR() {
+    if (isExpired || isCancelled || isSuccess) {
+        showToast('Pesanan sudah tidak aktif');
+        return;
+    }
+
+    const qrImage = document.getElementById('qrImage');
+
+    const link = document.createElement('a');
+    link.href = qrImage.src;
+    link.download = 'qris_panenku_' + Date.now() + '.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    isDownloaded = true;
+    localStorage.setItem('panenku_qr_downloaded', 'true');
+
+    updateStatus('pending');
+
+    showToast('QR Code berhasil diunduh! Status: PENDING');
+}
+
+
+// ============================================
+// STEP 7: UPDATE STATUS PEMBAYARAN
+// ============================================
+
+function updateStatus(status) {
+    const statusEl = document.getElementById('paymentStatus');
+
+    switch(status) {
+        case 'unpaid':
+            statusEl.className = 'status-badge status-unpaid';
+            statusEl.innerHTML = '<i class="fas fa-clock"></i> Belum Dibayar';
+            break;
+        case 'pending':
+            statusEl.className = 'status-badge status-pending';
+            statusEl.innerHTML = '<i class="fas fa-hourglass-half"></i> PENDING';
+            break;
+        case 'failed':
+            statusEl.className = 'status-badge status-failed';
+            statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> GAGAL';
+            break;
+        case 'success':
+            statusEl.className = 'status-badge status-success';
+            statusEl.innerHTML = '<i class="fas fa-check-circle"></i> BERHASIL';
+            break;
+    }
+}
+
+
+// ============================================
+// STEP 8: HANDLE WAKTU HABIS (Gagal)
+// ============================================
+
+function handleExpired() {
+    isExpired = true;
+    updateStatus('failed');
+    document.getElementById('downloadBtn').disabled = true;
+
+    localStorage.removeItem('panenku_payment_time_left');
+    localStorage.removeItem('panenku_payment_start');
+    localStorage.removeItem('panenku_qr_downloaded');
+
+    showToast('Waktu pembayaran telah habis. Pesanan dibatalkan.');
+}
+
+
+// ============================================
+// STEP 9: BATALKAN PESANAN
+// ============================================
+
+function cancelOrder() {
+    if (isExpired || isSuccess) {
+        showToast('Pesanan sudah tidak bisa dibatalkan');
+        return;
+    }
+
+    if (confirm('Yakin mau batalkan pesanan ini?')) {
+        isCancelled = true;
+        clearInterval(countdownInterval);
+
+        updateStatus('failed');
+
+        localStorage.removeItem('panenku_order');
+        localStorage.removeItem('panenku_payment_time_left');
+        localStorage.removeItem('panenku_payment_start');
+        localStorage.removeItem('panenku_qr_downloaded');
+        localStorage.removeItem('panenku_checkout');
+
+        showToast('Pesanan dibatalkan');
+
+        setTimeout(() => {
+            window.location.href = 'keranjang_teman.html';
+        }, 1500);
+    }
+}
+
+
+// ============================================
+// STEP 10: SIMULASI PEMBAYARAN
+// ============================================
+
+function simulateSuccess() {
+    if (isExpired || isCancelled || isSuccess) {
+        showToast('Pesanan sudah tidak aktif');
+        return;
+    }
+
+    clearInterval(countdownInterval);
+    isSuccess = true;
+
+    updateStatus('success');
+
+    const successData = {
+        ...orderData,
+        status: 'success',
+        paidAt: new Date().toISOString()
+    };
+    localStorage.setItem('panenku_order_success', JSON.stringify(successData));
+
+    localStorage.removeItem('panenku_payment_time_left');
+    localStorage.removeItem('panenku_payment_start');
+    localStorage.removeItem('panenku_qr_downloaded');
+
+    showToast('✅ Pembayaran berhasil! Pesanan telah dikonfirmasi.');
+
+    // Tampilkan notifikasi sukses (bisa di-silang)
+    showSuccessNotification();
+}
+
+function simulateFail() {
+    if (isExpired || isCancelled || isSuccess) {
+        showToast('Pesanan sudah tidak aktif');
+        return;
+    }
+
+    clearInterval(countdownInterval);
+    isExpired = true;
+
+    updateStatus('failed');
+
+    localStorage.removeItem('panenku_payment_time_left');
+    localStorage.removeItem('panenku_payment_start');
+    localStorage.removeItem('panenku_qr_downloaded');
+
+    showToast('❌ Pembayaran gagal. Waktu habis.');
+
+    // Tampilkan notifikasi gagal (bisa di-silang)
+    showFailNotification();
+}
+
+
+// ============================================
+// STEP 11: RESET STATUS (untuk testing ulang)
+// ============================================
+
+function resetStatus() {
+    // Hapus semua data status dari localStorage
+    localStorage.removeItem('panenku_order_success');
+    localStorage.removeItem('panenku_payment_time_left');
+    localStorage.removeItem('panenku_payment_start');
+    localStorage.removeItem('panenku_qr_downloaded');
+
+    // Reset semua variabel
+    isExpired = false;
+    isCancelled = false;
+    isSuccess = false;
+    isDownloaded = false;
+    timeRemaining = PAYMENT_DURATION;
+
+    // Reset tampilan
+    updateStatus('unpaid');
+    document.getElementById('downloadBtn').disabled = false;
+
+    // Hentikan countdown lama
+    clearInterval(countdownInterval);
+
+    // Mulai countdown baru
+    startCountdown();
+
+    // Tutup notifikasi kalau masih ada
+    closeNotification('successNotif');
+    closeNotification('failNotif');
+
+    showToast('🔄 Status direset. Silakan testing lagi!');
+}
+
+
+// ============================================
+// STEP 12: NOTIFIKASI (bisa di-silang user)
+// ============================================
+
+function showSuccessNotification() {
+    const notif = document.createElement('div');
+    notif.id = 'successNotif';
+    notif.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        border-radius: 20px;
+        padding: 35px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        z-index: 500;
+        animation: popIn 0.3s ease;
+    `;
+
+    notif.innerHTML = `
+        <div style="font-size: 60px; color: #2E7D32; margin-bottom: 15px;">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div style="font-size: 22px; font-weight: 700; color: #333; margin-bottom: 10px;">
+            Pembayaran Berhasil!
+        </div>
+        <div style="color: #666; font-size: 14px; margin-bottom: 20px; line-height: 1.5;">
+            Pesanan Anda telah dikonfirmasi.<br>
+            Total: <strong>Rp ${formatPrice(orderData.total)}</strong>
+        </div>
+        <button onclick="goToDashboard()" style="
+            background: #558B2F; color: white; border: none;
+            padding: 12px 30px; border-radius: 10px;
+            font-family: 'Poppins', sans-serif; font-size: 15px;
+            font-weight: 600; cursor: pointer; margin-right: 10px;
+        ">
+            Ke Dashboard
+        </button>
+        <button onclick="closeNotification('successNotif')" style="
+            background: #E0E0E0; color: #555; border: none;
+            padding: 12px 25px; border-radius: 10px;
+            font-family: 'Poppins', sans-serif; font-size: 15px;
+            font-weight: 600; cursor: pointer;
+        ">
+            Tutup
+        </button>
+    `;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'notifOverlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 400;
+    `;
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(notif);
+}
+
+function showFailNotification() {
+    const notif = document.createElement('div');
+    notif.id = 'failNotif';
+    notif.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        border-radius: 20px;
+        padding: 35px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        z-index: 500;
+        animation: popIn 0.3s ease;
+    `;
+
+    notif.innerHTML = `
+        <div style="font-size: 60px; color: #E53935; margin-bottom: 15px;">
+            <i class="fas fa-times-circle"></i>
+        </div>
+        <div style="font-size: 22px; font-weight: 700; color: #333; margin-bottom: 10px;">
+            Pembayaran Gagal
+        </div>
+        <div style="color: #666; font-size: 14px; margin-bottom: 20px; line-height: 1.5;">
+            Waktu pembayaran telah habis atau pesanan dibatalkan.<br>
+            Silakan buat pesanan ulang.
+        </div>
+        <button onclick="goToCart()" style="
+            background: #558B2F; color: white; border: none;
+            padding: 12px 30px; border-radius: 10px;
+            font-family: 'Poppins', sans-serif; font-size: 15px;
+            font-weight: 600; cursor: pointer; margin-right: 10px;
+        ">
+            Ke Keranjang
+        </button>
+        <button onclick="closeNotification('failNotif')" style="
+            background: #E0E0E0; color: #555; border: none;
+            padding: 12px 25px; border-radius: 10px;
+            font-family: 'Poppins', sans-serif; font-size: 15px;
+            font-weight: 600; cursor: pointer;
+        ">
+            Tutup
+        </button>
+    `;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'notifOverlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 400;
+    `;
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(notif);
+}
+
+function closeNotification(notifId) {
+    const notif = document.getElementById(notifId);
+    const overlay = document.getElementById('notifOverlay');
+
+    if (notif) notif.remove();
+    if (overlay) overlay.remove();
+}
+
+
+// ============================================
+// STEP 13: NAVIGASI
+// ============================================
+
+function goToCart() {
+    window.location.href = 'keranjang_teman.html';
+}
+
+function goToDashboard() {
+    closeNotification('successNotif');
+
+    showToast('Redirect ke dashboard pengguna...');
+
+    setTimeout(() => {
+        window.location.href = 'dashboard.html';
+    }, 500);
+}
+
+
+// ============================================
+// STEP 14: UTILITIES
+// ============================================
+
+function formatPrice(price) {
+    return price.toLocaleString('id-ID');
+}
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2500);
+}
+
+
+// ============================================
+// STEP 15: CEK STATUS SAAT LOAD
+// ============================================
+
+function checkExistingStatus() {
+    // Cek apakah QR sudah pernah di-download sebelum refresh
+    const wasDownloaded = localStorage.getItem('panenku_qr_downloaded');
+    if (wasDownloaded === 'true') {
+        isDownloaded = true;
+        updateStatus('pending');
+    }
+
+    // Cek apakah sudah sukses sebelumnya
+    const successData = localStorage.getItem('panenku_order_success');
+    if (successData) {
+        isSuccess = true;
+        updateStatus('success');
+        // Jangan auto-show notif, biar user klik tombol simulasi kalau mau lihat lagi
+        // Atau bisa show notif juga, tapi kasih tombol tutup
+        // showSuccessNotification();
+        return true;
+    }
+
+    return false;
+}
+
+
+// ============================================
+// STEP 16: JALANKAN SAAT HALAMAN DIBUKA
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadOrderData();
+    const isFinished = checkExistingStatus();
+    if (!isFinished) {
+        startCountdown();
+    }
+});
+
+</script>
+
+</body>
+</html>

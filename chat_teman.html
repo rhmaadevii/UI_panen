@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Penjual - PanenKu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #8BC34A;
+            --dark-green: #689F38;
+            --light-green: #AED581;
+            --bg-green: #C5E1A5;
+            --accent-green: #558B2F;
+            --text-dark: #33691E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #C5E1A5 0%, #689F38 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .chat-header {
+            background: var(--bg-green);
+            padding: 1.5rem 5%;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            width: 45px;
+            height: 45px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .header-title span {
+            color: white;
+            font-weight: 700;
+        }
+
+        /* Chat List */
+        .chat-list {
+            padding: 0;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem 5%;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .chat-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .chat-item.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .chat-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+        }
+
+        .chat-info {
+            flex: 1;
+        }
+
+        .chat-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.3rem;
+        }
+
+        .chat-preview {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .chat-time {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            white-space: nowrap;
+        }
+
+        .unread-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+            margin-top: 4px;
+        }
+
+        /* Empty State */
+        .empty-chat {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .empty-chat i {
+            font-size: 60px;
+            margin-bottom: 15px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 1.8rem;
+            }
+
+            .chat-avatar {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="chat-header">
+        <button class="back-btn" onclick="window.location.href='index.html'">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1 class="header-title">Panenku <span>Chat Penjual</span></h1>
+    </div>
+
+    <!-- Chat List -->
+    <div class="chat-list" id="chatList">
+        <!-- Chat items injected by JS -->
+    </div>
+
+    <script>
+        // ============================================
+        // LOAD CHAT LIST FROM LOCALSTORAGE
+        // ============================================
+        function loadChatList() {
+            const chatList = [];
+
+            // Scan localStorage for chat data
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('chat_')) {
+                    const sellerName = key.replace('chat_', '');
+                    const messages = JSON.parse(localStorage.getItem(key) || '[]');
+
+                    if (messages.length > 0) {
+                        const lastMsg = messages[messages.length - 1];
+                        chatList.push({
+                            id: sellerName,
+                            name: sellerName,
+                            avatar: 'profil.png',
+                            preview: lastMsg.text || (lastMsg.product ? 'Mengirim produk: ' + lastMsg.product.name : ''),
+                            time: lastMsg.time || '',
+                            unread: false
+                        });
+                    }
+                }
+            }
+
+            // Default sellers if no chat history
+            if (chatList.length === 0) {
+                chatList.push(
+                    {
+                        id: 'RaraFarmers',
+                        name: 'RaraFarmers',
+                        avatar: 'avatar_rara.png',
+                        preview: 'Belum ada pesan',
+                        time: '',
+                        unread: false
+                    },
+                    {
+                        id: 'ViviGroceries',
+                        name: 'ViviGroceries',
+                        avatar: 'avatar_vivi.png',
+                        preview: 'Belum ada pesan',
+                        time: '',
+                        unread: false
+                    },
+                    {
+                        id: 'InasFresh',
+                        name: 'InasFresh',
+                        avatar: 'avatar_inas.png',
+                        preview: 'Belum ada pesan',
+                        time: '',
+                        unread: false
+                    }
+                );
+            }
+
+            return chatList;
+        }
+
+        // Render chat list
+        function renderChatList() {
+            const container = document.getElementById('chatList');
+            const chatList = loadChatList();
+
+            if (chatList.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-chat">
+                        <i class="fas fa-comments"></i>
+                        <h3>Belum ada chat</h3>
+                        <p>Mulai chat dengan penjual dari halaman produk</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = chatList.map((chat) => `
+                <div class="chat-item ${chat.unread ? 'active' : ''}" onclick="openChat('${chat.name}')">
+                    <img src="${chat.avatar}" alt="${chat.name}" class="chat-avatar" onerror="this.src='profil.png'">
+                    <div class="chat-info">
+                        <div class="chat-name">${chat.name}</div>
+                        <div class="chat-preview">${chat.preview}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="chat-time">${chat.time}</div>
+                        ${chat.unread ? '<div class="unread-badge">1</div>' : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openChat(sellerName) {
+            window.location.href = 'chat_detail.html?seller=' + encodeURIComponent(sellerName) + '&avatar=' + encodeURIComponent('profil.png');
+        }
+
+        // Init
+        renderChatList();
+    </script>
+
+</body>
+</html>

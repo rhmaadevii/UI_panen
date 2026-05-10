@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PanenKu - Hasil Pencarian</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { poppins: ['Poppins', 'sans-serif'] },
+                    colors: {
+                        hijau: { 50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#A2CA6C', 400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 800: '#166534', 900: '#14532d' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .love-btn { transition: all 0.3s ease; }
+        .love-btn.active { color: #ef4444; transform: scale(1.2); }
+        .love-btn.active i { font-weight: 900; }
+        .product-card { border: 2px solid #A2CA6C; transition: all 0.3s ease; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: #166534; color: white; padding: 12px 24px; border-radius: 8px;
+            opacity: 0; transition: all 0.3s ease; z-index: 1000; font-weight: 500;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .search-box { border: 2px solid #A2CA6C; border-radius: 4px; }
+        .badge-diamond { background: linear-gradient(135deg, #e0f2fe, #7dd3fc); color: #0369a1; }
+        .badge-gold { background: linear-gradient(135deg, #fef3c7, #fcd34d); color: #92400e; }
+        .badge-silver { background: linear-gradient(135deg, #f3f4f6, #d1d5db); color: #4b5563; }
+    </style>
+<base target="_blank">
+</head>
+<body class="bg-white">
+    <!-- Toast -->
+    <div id="toast" class="toast">Produk ditambahkan ke favorit!</div>
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="landing_page.html" class="flex-shrink-0">
+                    <img src="logo.png" alt="PanenKu" class="h-12 w-auto">
+                </a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="landing_page.html" class="text-gray-700 hover:text-hijau-800 font-medium flex items-center gap-1">Beranda <i class="fas fa-chevron-down text-xs"></i></a>
+                    <a href="artikel.html" class="text-gray-700 hover:text-hijau-800 font-medium flex items-center gap-1">Artikel <i class="fas fa-chevron-down text-xs"></i></a>
+                    <a href="komunitas.html" class="text-gray-700 hover:text-hijau-800 font-medium flex items-center gap-1">Komunitas <i class="fas fa-chevron-down text-xs"></i></a>
+                </div>
+                <div class="flex-1 max-w-xl mx-8">
+                    <form action="hasil_search.html" method="GET" class="relative">
+                        <input type="text" name="q" id="searchInput" placeholder="Cari" 
+                            class="search-box w-full pl-12 pr-4 py-3 focus:border-hijau-500 focus:outline-none text-gray-700 placeholder-gray-400">
+                        <button type="submit" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-hijau-600">
+                            <i class="fas fa-search text-lg"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="keranjang_teman.html" class="relative p-2 hover:bg-hijau-50 rounded-full transition">
+                        <img src="keranjang.png" alt="Keranjang" class="h-7 w-7">
+                    </a>
+                    <a href="chat_teman.html" class="relative p-2 hover:bg-hijau-50 rounded-full transition">
+                        <img src="group.png" alt="Chat" class="h-7 w-7">
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">2</span>
+                    </a>
+                    <a href="dashboardpembeli.html" class="p-1 hover:bg-hijau-50 rounded-full transition">
+                        <img src="profil.png" alt="Profile" class="h-10 w-10 rounded-full object-cover border-2 border-hijau-300">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Results -->
+    <section class="py-8 px-4 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <!-- Recommendation Section -->
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4 bg-gray-100 inline-block px-4 py-1 rounded">Recommendation</h2>
+                <div id="recommendationGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Products will be inserted here by JS -->
+                </div>
+            </div>
+
+            <!-- New Seller Section -->
+            <div id="newSellerSection" class="mb-8">
+                <div class="bg-hijau-300 rounded-t-lg px-4 py-2 inline-block">
+                    <span class="font-bold text-gray-800">NEW SELLER</span>
+                </div>
+                <div class="bg-hijau-300 rounded-b-lg rounded-tr-lg p-6">
+                    <div id="newSellerGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Products will be inserted here by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Results -->
+            <div id="allResultsSection">
+                <div id="allResultsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Products will be inserted here by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Product Data
+        const products = {
+            tomat: [
+                { id: 'tomat1', name: 'Tomat', price: 'Rp.6.000', desc: 'Tomat super segar dari pertanian', loc: 'Manyar, Gresik', rating: '4,9', reviews: '5k Ulasan', img: 'tomat1.png', badge: 'DIAMOND' },
+                { id: 'tomat2', name: 'Tomat', price: 'Rp.9.000', desc: 'Tomat segar dari pertanian', loc: 'Kebomas, Gresik', rating: '4,5', reviews: '20 Ulasan', img: 'tomat2.png', badge: null },
+                { id: 'tomat3', name: 'Tomat', price: 'Rp.7.000', desc: 'Tomat fresh dari pegunungan', loc: 'Plaosan, Magetan', rating: '4,7', reviews: '157 Ulasan', img: 'tomat3.png', badge: null },
+                { id: 'tomat4', name: 'Tomat', price: 'Rp.8.000', desc: 'Tomat segar dari perkebunan', loc: 'Sempu, Banyuwangi', rating: '4,6', reviews: '73 Ulasan', img: 'tomat4.png', badge: null },
+                { id: 'tomat5', name: 'Tomat', price: 'Rp.7.500', desc: 'Tomat segar dari lahan pertanian', loc: 'Pujon, Malang', rating: '4,7', reviews: '73 Ulasan', img: 'tomat5.png', badge: 'DIAMOND' },
+                { id: 'tomat6', name: 'Tomat', price: 'Rp.9.000', desc: 'Tomat segar, tanpa peptisida', loc: 'Pancasari, Bali', rating: '4,2', reviews: '33 Ulasan', img: 'tomat6.png', badge: null },
+                { id: 'tomat7', name: 'Tomat', price: 'Rp.6.000', desc: 'Tomat segar yang anda cari !', loc: 'Purwoharjo, Banyuwangi', rating: '4,6', reviews: '99 Ulasan', img: 'tomat1.png', badge: null },
+                { id: 'bibit_tomat1', name: 'Bibit Tomat', price: 'Rp.5.000', desc: 'Bibit tomat unggul daerah pegunungan', loc: 'Plaosan, Magetan', rating: '4,9', reviews: '120 Ulasan', img: 'bibit_tomat1.png', badge: null },
+                { id: 'bibit_tomat2', name: 'Bibit Tomat', price: 'Rp.5.500', desc: 'Bibit tomat berkualitas', loc: 'Kebomas, Gresik', rating: '4,4', reviews: '54 Ulasan', img: 'bibit_tomat2.png', badge: null },
+            ],
+            wortel: [
+                { id: 'wortel1', name: 'Wortel', price: 'Rp.4.000', desc: 'Wortel Kualitas Bagus, segar', loc: 'Manyar, Gresik', rating: '4,9', reviews: '50+ Ulasan', img: 'wortel.png', badge: 'DIAMOND' },
+                { id: 'wortel2', name: 'Wortel', price: 'Rp.5.000', desc: 'Wortel segar dari pegunungan', loc: 'Batu, Malang', rating: '4,8', reviews: '120 Ulasan', img: 'wortel1.png', badge: 'GOLD' },
+                { id: 'wortel3', name: 'Wortel Organik', price: 'Rp.7.000', desc: 'Wortel organik tanpa pestisida', loc: 'Cangar, Batu', rating: '4,9', reviews: '85 Ulasan', img: 'wortel2.png', badge: 'SILVER' },
+                { id: 'wortel4', name: 'Wortel Baby', price: 'Rp.6.500', desc: 'Wortel baby segar', loc: 'Pacet, Mojokerto', rating: '4,7', reviews: '45 Ulasan', img: 'wortel3.png', badge: null },
+                { id: 'wortel5', name: 'Wortel', price: 'Rp.4.500', desc: 'Wortel segar langsung dari petani', loc: 'Trawas, Mojokerto', rating: '4,6', reviews: '67 Ulasan', img: 'wortel4.png', badge: null },
+                { id: 'wortel6', name: 'Wortel', price: 'Rp.5.500', desc: 'Wortel premium quality', loc: 'Kaliurang, Yogyakarta', rating: '4,8', reviews: '92 Ulasan', img: 'wortel5.png', badge: 'DIAMOND' },
+                { id: 'wortel7', name: 'Wortel', price: 'Rp.3.500', desc: 'Wortel segar harga terjangkau', loc: 'Ngawi, Jawa Timur', rating: '4,5', reviews: '34 Ulasan', img: 'wortel6.png', badge: null },
+                { id: 'wortel8', name: 'Wortel', price: 'Rp.6.000', desc: 'Wortel super segar', loc: 'Tawangmangu, Karanganyar', rating: '4,7', reviews: '56 Ulasan', img: 'wortel7.png', badge: 'GOLD' },
+            ]
+        };
+
+        function getBadgeClass(badge) {
+            if (badge === 'DIAMOND') return 'badge-diamond';
+            if (badge === 'GOLD') return 'badge-gold';
+            if (badge === 'SILVER') return 'badge-silver';
+            return '';
+        }
+
+        function createProductCard(product, isNewSeller = false) {
+            const badgeHtml = product.badge ? `<span class="${getBadgeClass(product.badge)} text-xs font-bold px-3 py-1 rounded-full absolute top-3 right-3">${product.badge}</span>` : '';
+            return `
+                <a href="detail_produk.html?id=${product.id}" class="product-card bg-white rounded-xl overflow-hidden block relative">
+                    ${badgeHtml}
+                    <div class="p-4">
+                        <img src="${product.img}" alt="${product.name}" class="w-full h-44 object-contain mb-3">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="text-lg font-bold text-gray-800">${product.name}</h3>
+                            <span class="text-base font-semibold text-gray-800">${product.price}</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-2">${product.desc}</p>
+                        <div class="flex items-center text-xs text-gray-500 mb-2">
+                            <i class="fas fa-map-marker-alt mr-1 text-hijau-600"></i> ${product.loc}
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center text-xs">
+                                <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                <span class="font-semibold">${product.rating}</span>
+                                <span class="text-gray-400 ml-1">(${product.reviews})</span>
+                            </div>
+                            <button onclick="event.preventDefault(); toggleLove(this)" class="love-btn text-gray-300 hover:text-red-400 text-lg">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }
+
+        function renderResults() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = (urlParams.get('q') || '').toLowerCase().trim();
+
+            document.getElementById('searchInput').value = query;
+
+            const recGrid = document.getElementById('recommendationGrid');
+            const nsGrid = document.getElementById('newSellerGrid');
+            const allGrid = document.getElementById('allResultsGrid');
+            const nsSection = document.getElementById('newSellerSection');
+            const allSection = document.getElementById('allResultsSection');
+
+            if (query.includes('tomat')) {
+                // Show Tomat results
+                recGrid.innerHTML = products.tomat.slice(0, 1).map(p => createProductCard(p)).join('');
+                nsGrid.innerHTML = products.tomat.slice(1, 5).map(p => createProductCard(p, true)).join('');
+                allGrid.innerHTML = products.tomat.slice(5).map(p => createProductCard(p)).join('');
+                nsSection.style.display = 'block';
+                allSection.style.display = 'block';
+            } else if (query.includes('wortel')) {
+                // Show Wortel results
+                recGrid.innerHTML = products.wortel.slice(0, 1).map(p => createProductCard(p)).join('');
+                nsGrid.innerHTML = products.wortel.slice(1, 5).map(p => createProductCard(p, true)).join('');
+                allGrid.innerHTML = products.wortel.slice(5).map(p => createProductCard(p)).join('');
+                nsSection.style.display = 'block';
+                allSection.style.display = 'block';
+            } else {
+                // Default / empty - show all
+                recGrid.innerHTML = '<p class="col-span-4 text-gray-500 text-center py-8">Silakan ketik "tomat" atau "wortel" untuk melihat hasil pencarian</p>';
+                nsSection.style.display = 'none';
+                allSection.style.display = 'none';
+            }
+        }
+
+        function toggleLove(btn) {
+            btn.classList.toggle('active');
+            const icon = btn.querySelector('i');
+            if (btn.classList.contains('active')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                showToast('Produk ditambahkan ke favorit!');
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                showToast('Produk dihapus dari favorit!');
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 2000);
+        }
+
+        renderResults();
+    </script>
+</body>
+</html>

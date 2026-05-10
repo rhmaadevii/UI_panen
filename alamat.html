@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PanenKu - Alamat Saya</title>
+  <link rel="stylesheet" href="dashboardpembeli.css"/>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-left">
+    <div class="navbar-logo-wrap">
+      <img src="logo2.png" alt="PanenKu Logo" class="navbar-logo" onerror="this.style.display='none'"/>
+      <span class="navbar-brand">PanenKu</span>
+    </div>
+  </div>
+  <div class="navbar-center">
+    <a href="#">Beranda <span class="chevron"></span></a>
+    <a href="#">Artikel <span class="chevron"></span></a>
+    <a href="#">Komunitas <span class="chevron"></span></a>
+  </div>
+  <div class="navbar-right">
+    <button class="icon-btn">🛒</button>
+    <button class="icon-btn">💬</button>
+    <button class="vir-btn">VIR</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <a href="dashboardpembeli.html" class="back-btn">←</a>
+  <h1>Alamat Saya</h1>
+</div>
+
+<div class="alamat-page-bg">
+  <div class="alamat-page-container">
+
+    <div id="daftarAlamat"></div>
+
+    <div id="formEditAlamat" style="display:none;margin-bottom:16px;border:1.5px solid #b5cc8e;border-radius:10px;padding:20px;">
+      <h3 style="margin-bottom:16px;font-size:1rem;">Edit Alamat</h3>
+      <div class="form-group">
+        <label>Label Alamat</label>
+        <input type="text" id="editLabelInput" placeholder="Contoh: Rumah"/>
+      </div>
+      <div class="form-group">
+        <label>Alamat Lengkap</label>
+        <textarea id="editAlamatInput" rows="3" style="width:100%;padding:11px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:0.92rem;background:#f7faf4;outline:none;resize:vertical;font-family:inherit;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Nomor Telepon</label>
+        <input type="text" id="editTelpInput"/>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="simpan-btn" onclick="simpanEdit()" style="margin-top:0;">Simpan</button>
+        <button class="simpan-btn" onclick="tutupFormEdit()" style="margin-top:0;background:#aaa;">Batal</button>
+      </div>
+    </div>
+
+    <div id="formTambahAlamat" style="display:none;margin-bottom:16px;border:1.5px solid #ddd;border-radius:10px;padding:20px;">
+      <h3 style="margin-bottom:16px;font-size:1rem;">Tambah Alamat Baru</h3>
+      <div class="form-group">
+        <label>Label Alamat (Rumah/Kantor/dll)</label>
+        <input type="text" id="newLabel" placeholder="Contoh: Rumah"/>
+      </div>
+      <div class="form-group">
+        <label>Alamat Lengkap</label>
+        <input type="text" id="newAlamat" placeholder="Jl. ..."/>
+      </div>
+      <div class="form-group">
+        <label>Kota &amp; Provinsi</label>
+        <input type="text" id="newKota" placeholder="Surabaya, Jawa Timur"/>
+      </div>
+      <div class="form-group">
+        <label>Kode Pos</label>
+        <input type="text" id="newKodePos" placeholder="64211"/>
+      </div>
+      <div class="form-group">
+        <label>Nomor Telepon</label>
+        <input type="text" id="newTelp" placeholder="0838-xxxx-xxxx"/>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="simpan-btn" onclick="simpanAlamatBaru()" style="margin-top:0;">Simpan</button>
+        <button class="simpan-btn" onclick="tutupFormTambah()" style="margin-top:0;background:#aaa;">Batal</button>
+      </div>
+    </div>
+
+    <button class="tambah-alamat-btn" id="btnTambahAlamat" onclick="tampilkanFormTambah()">+ Tambah Alamat Baru</button>
+
+  </div>
+</div>
+
+<script>
+  let alamatList = JSON.parse(localStorage.getItem('alamatList') || 'null');
+
+  if (!alamatList) {
+    alamatList = [
+      { id: 1, label: 'Rumah', teks: 'Jl. Raya Sutorejo No.123, RT. 01/RW 05\nDusun Sutorejo, Kec. Mulyorejo\nSurabaya, Jawa Timur 64211', telp: '0838 - 5668 - 9633', utama: true },
+      { id: 2, label: 'Kantor', teks: 'Jl. Soekarno Hatta No.173\nKel. Singosari, Kec. Manyar\nGresik, Jawa Timur 69011', telp: '0838 - 8743 - 8676', utama: false },
+      { id: 3, label: 'Rumah', teks: 'Jl. Blimbing Sari No.173\nKel. Singosari, Kec. Manyar\nGresik, Jawa Timur 69011', telp: '0811 - 1111 - 2222', utama: false }
+    ];
+    simpanKeStorage();
+  }
+
+  let editingId = null;
+  let idCounter = alamatList.length ? Math.max(...alamatList.map(a => a.id)) : 0;
+
+  function simpanKeStorage() {
+    localStorage.setItem('alamatList', JSON.stringify(alamatList));
+  }
+
+  function renderAlamat() {
+    const container = document.getElementById('daftarAlamat');
+    container.innerHTML = alamatList.map(a => `
+      <div class="alamat-card" id="alamat-${a.id}">
+        <div class="alamat-card-header">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="alamat-card-title">${a.label}</span>
+            ${a.utama ? '<span class="badge-utama">Utama</span>' : `<button onclick="jadikanUtama(${a.id})" style="background:none;border:1.5px solid var(--hijau-utama);color:var(--hijau-utama);border-radius:12px;padding:2px 10px;font-size:0.72rem;cursor:pointer;font-weight:600;">Jadikan Utama</button>`}
+          </div>
+          <div class="alamat-card-actions">
+            <button title="Edit" onclick="bukaFormEdit(${a.id})">✏️</button>
+            <button title="Hapus" onclick="hapusAlamat(${a.id})">🗑️</button>
+          </div>
+        </div>
+        <div class="alamat-teks">${a.teks.replace(/\n/g, '<br>')}</div>
+        <div class="alamat-telepon">📱 ${a.telp}</div>
+      </div>
+    `).join('');
+  }
+
+  function jadikanUtama(id) {
+    alamatList = alamatList.map(a => ({ ...a, utama: a.id === id }));
+    simpanKeStorage();
+    renderAlamat();
+  }
+
+  function hapusAlamat(id) {
+    if (confirm('Hapus alamat ini?')) {
+      const wasUtama = alamatList.find(a => a.id === id)?.utama;
+      alamatList = alamatList.filter(a => a.id !== id);
+      if (wasUtama && alamatList.length > 0) {
+        alamatList[0].utama = true;
+      }
+      simpanKeStorage();
+      renderAlamat();
+    }
+  }
+
+  function bukaFormEdit(id) {
+    editingId = id;
+    const a = alamatList.find(x => x.id === id);
+    document.getElementById('editLabelInput').value = a.label;
+    document.getElementById('editAlamatInput').value = a.teks;
+    document.getElementById('editTelpInput').value = a.telp;
+    document.getElementById('formEditAlamat').style.display = 'block';
+    document.getElementById('formTambahAlamat').style.display = 'none';
+    document.getElementById('btnTambahAlamat').style.display = 'none';
+    document.getElementById('formEditAlamat').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function simpanEdit() {
+    const label = document.getElementById('editLabelInput').value.trim();
+    const teks = document.getElementById('editAlamatInput').value.trim();
+    const telp = document.getElementById('editTelpInput').value.trim();
+    if (!label || !teks) {
+      alert('Label dan alamat tidak boleh kosong.');
+      return;
+    }
+    alamatList = alamatList.map(a => a.id === editingId ? { ...a, label, teks, telp } : a);
+    simpanKeStorage();
+    renderAlamat();
+    tutupFormEdit();
+  }
+
+  function tutupFormEdit() {
+    editingId = null;
+    document.getElementById('formEditAlamat').style.display = 'none';
+    document.getElementById('btnTambahAlamat').style.display = 'block';
+  }
+
+  function tampilkanFormTambah() {
+    document.getElementById('formTambahAlamat').style.display = 'block';
+    document.getElementById('formEditAlamat').style.display = 'none';
+    document.getElementById('btnTambahAlamat').style.display = 'none';
+  }
+
+  function tutupFormTambah() {
+    document.getElementById('formTambahAlamat').style.display = 'none';
+    document.getElementById('btnTambahAlamat').style.display = 'block';
+  }
+
+  function simpanAlamatBaru() {
+    const label = document.getElementById('newLabel').value.trim();
+    const alamat = document.getElementById('newAlamat').value.trim();
+    const kota = document.getElementById('newKota').value.trim();
+    const kodePos = document.getElementById('newKodePos').value.trim();
+    const telp = document.getElementById('newTelp').value.trim();
+    if (!alamat || !kota) {
+      alert('Harap isi alamat dan kota.');
+      return;
+    }
+    idCounter++;
+    const teks = alamat + (kota ? '\n' + kota + (kodePos ? ' ' + kodePos : '') : '');
+    alamatList.push({ id: idCounter, label: label || 'Rumah', teks, telp, utama: alamatList.length === 0 });
+    simpanKeStorage();
+    renderAlamat();
+    document.getElementById('newLabel').value = '';
+    document.getElementById('newAlamat').value = '';
+    document.getElementById('newKota').value = '';
+    document.getElementById('newKodePos').value = '';
+    document.getElementById('newTelp').value = '';
+    tutupFormTambah();
+  }
+
+  renderAlamat();
+</script>
+</body>
+</html>

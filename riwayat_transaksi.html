@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PanenKu - Riwayat Transaksi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #c5e0a5;
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* HEADER */
+        .header {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-section img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .logo-section span {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2d4a1e;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #6b9e2b;
+            font-size: 15px;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover {
+            background: #e8f5d6;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            padding: 10px 15px 10px 40px;
+            border: 2px solid #c5e0a5;
+            border-radius: 25px;
+            width: 300px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            position: relative;
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #6b9e2b;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* LAYOUT */
+        .main-layout {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 220px;
+            background: white;
+            padding: 25px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            color: #555;
+            font-size: 14px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .sidebar-item:hover {
+            background: #e8f5d6;
+            color: #2d4a1e;
+        }
+
+        .sidebar-item.active {
+            background: #6b9e2b;
+            color: white;
+        }
+
+        .sidebar-item i {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* CONTENT */
+        .content {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        /* TOMBOL BACK */
+        .back-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #6b9e2b;
+            border-radius: 10px;
+            color: #6b9e2b;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            background: #6b9e2b;
+            color: white;
+        }
+
+        .page-title-inline {
+            color: #2d4a1e;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        /* SUMMARY CARD */
+        .summary-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .summary-item:first-child {
+            border-bottom: 1px solid #e8f5d6;
+            margin-bottom: 10px;
+            padding-bottom: 15px;
+        }
+
+        .summary-label {
+            color: #666;
+            font-size: 15px;
+        }
+
+        .summary-value {
+            color: #2d4a1e;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* SEARCH */
+        .search-box {
+            background: #e8f5d6;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            outline: none;
+            color: #2d4a1e;
+        }
+
+        .search-box input::placeholder {
+            color: #888;
+        }
+
+        /* TRANSAKSI LIST */
+        .transaksi-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .transaksi-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .transaksi-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s;
+        }
+
+        .transaksi-item:hover {
+            background: #f8f8f8;
+            border-color: #c5e0a5;
+        }
+
+        .transaksi-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .transaksi-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .transaksi-info h4 {
+            color: #2d4a1e;
+            font-size: 15px;
+            margin-bottom: 3px;
+        }
+
+        .transaksi-info p {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+
+        .transaksi-info .bank {
+            color: #666;
+            font-size: 11px;
+        }
+
+        .transaksi-produk {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .transaksi-produk img {
+            width: 100px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .transaksi-produk span {
+            color: #2d4a1e;
+            font-size: 13px;
+        }
+
+        .transaksi-produk .qty {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .transaksi-right {
+            text-align: right;
+        }
+
+        .transaksi-tanggal {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .status-pending {
+            background: #a8d46f;
+            color: #2d4a1e;
+        }
+
+        .status-berhasil {
+            background: #6b9e2b;
+            color: white;
+        }
+
+        .status-gagal {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .transaksi-harga {
+            color: #2d4a1e;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        /* NO RESULT */
+        .no-result {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            display: none;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .search-bar input {
+                width: 200px;
+            }
+            .transaksi-item {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .transaksi-right {
+                text-align: left;
+                width: 100%;
+            }
+        }
+
+        /* MODAL NOTIFIKASI AKSES */
+        .modal-notif-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-notif-overlay.active {
+            display: flex;
+        }
+        
+        .modal-notif-box {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-notif-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+        
+        .modal-notif-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .modal-notif-message {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .modal-notif-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .btn-notif-oke {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-notif-oke:hover {
+            background-color: #1b5e20;
+        }
+        
+        .btn-notif-batal {
+            background-color: #f5f5f5;
+            color: #666;
+            border: 1px solid #ddd;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-notif-batal:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MODAL NOTIFIKASI AKSES -->
+    <div class="modal-notif-overlay" id="modalNotifikasi">
+        <div class="modal-notif-box">
+            <div class="modal-notif-icon">🔔</div>
+            <div class="modal-notif-title">Akses Terbatas</div>
+            <div class="modal-notif-message">
+                Untuk mengakses fitur ini, Anda perlu masuk atau daftar sebagai pelanggan terlebih dahulu.
+            </div>
+            <div class="modal-notif-buttons">
+                <button class="btn-notif-batal" onclick="tutupModalNotifikasi()">Batal</button>
+                <button class="btn-notif-oke" onclick="arahkanKeSignup()">Oke</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-section">
+                <img src="logo_panenku.png" alt="PanenKu Logo">
+                <span>PanenKu</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item" onclick="return tampilkanNotifikasi(event)">
+                    Beranda <i>▼</i>
+                </a>
+                <a href="#" class="nav-item" onclick="return tampilkanNotifikasi(event)">
+                    Artikel <i>▼</i>
+                </a>
+                <a href="komunitas.html" class="nav-item">
+                    Komunitas <i>▼</i>
+                </a>
+            </nav>
+        </div>
+        
+        <div class="header-right">
+            <div class="search-bar">
+                <input type="text" placeholder="Cari">
+            </div>
+            <button class="icon-btn">🛒</button>
+            <a href="chat_pembeli.html" class="icon-btn" style="display: flex; align-items: center; justify-content: center;">
+                💬
+                <span class="badge">2</span>
+            </a>
+            <div class="profile-avatar">VIR</div>
+        </div>
+    </header>
+
+    <!-- MAIN LAYOUT -->
+    <div class="main-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <a href="produk_saya.html" class="sidebar-item">
+                <i>📦</i> Produk Saya
+            </a>
+            <a href="riwayat_transaksi.html" class="sidebar-item active">
+                <i>🔄</i> Riwayat Transaksi
+            </a>
+            <a href="pengaturan_toko.html" class="sidebar-item">
+                <i>🏪</i> Pengaturan Toko
+            </a>
+            <a href="keamanan_petani.html" class="sidebar-item">
+                <i>🔒</i> Keamanan
+            </a>
+            <a href="#" class="sidebar-item" onclick="return keluar()">
+                <i>🚪</i> Keluar
+            </a>
+        </aside>
+
+        <!-- CONTENT -->
+        <main class="content">
+
+            <!-- TOMBOL BACK -->
+            <div class="back-bar">
+                <a href="dashboardpetani.html" class="btn-back">
+                    ← Kembali
+                </a>
+                <h2 class="page-title-inline">Riwayat Transaksi</h2>
+            </div>
+
+            <!-- SUMMARY -->
+            <div class="summary-card">
+                <div class="summary-item">
+                    <span class="summary-label">Total Pemasukan</span>
+                    <span class="summary-value">Rp. 9,5 jt</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Total Transaksi</span>
+                    <span class="summary-value">490 Transaksi</span>
+                </div>
+            </div>
+
+            <!-- SEARCH BERFUNGSI -->
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" id="cariTransaksi" placeholder="Cari Transaksi" onkeyup="cariTransaksi()">
+                <span>🔄</span>
+            </div>
+
+            <!-- TRANSAKSI LIST -->
+            <div class="transaksi-container">
+                <div class="transaksi-list" id="daftarTransaksi">
+
+                    <!-- TRANSAKSI 1 - PENDING -->
+                    <div class="transaksi-item" data-nama="dewi laya tomat merah">
+                        <div class="transaksi-left">
+                            <img src="profil_toko.png" alt="Dewi" class="transaksi-avatar">
+                            <div class="transaksi-info">
+                                <h4>Dewi Laya</h4>
+                                <p>Pembayaran via QRIS</p>
+                                <div class="transaksi-produk">
+                                    <img src="tomat.png" alt="Tomat">
+                                    <span>Tomat Merah <span class="qty">x4</span></span>
+                                    <span style="color: #888; font-size: 12px;">6.000</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="transaksi-right">
+                            <div class="transaksi-tanggal">24-02-2026</div>
+                            <span class="status-badge status-pending">PENDING</span>
+                            <div class="transaksi-harga">Rp. 24.000</div>
+                        </div>
+                    </div>
+
+                    <!-- TRANSAKSI 2 - BERHASIL -->
+                    <div class="transaksi-item" data-nama="siti aqila jagung manis">
+                        <div class="transaksi-left">
+                            <img src="profil_toko.png" alt="Siti" class="transaksi-avatar">
+                            <div class="transaksi-info">
+                                <h4>Siti Aqila</h4>
+                                <p class="bank">Pembayaran via BANK BRI - 182736495</p>
+                                <div class="transaksi-produk">
+                                    <img src="jagung.png" alt="Jagung">
+                                    <span>Jagung Manis Segar <span class="qty">x3</span></span>
+                                    <span style="color: #888; font-size: 12px;">10.000</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="transaksi-right">
+                            <div class="transaksi-tanggal">18-02-2026</div>
+                            <span class="status-badge status-berhasil">BERHASIL</span>
+                            <div class="transaksi-harga">Rp. 30.000</div>
+                        </div>
+                    </div>
+
+                    <!-- TRANSAKSI 3 - GAGAL -->
+                    <div class="transaksi-item" data-nama="lumius cabai merah">
+                        <div class="transaksi-left">
+                            <img src="profil_toko.png" alt="Lumius" class="transaksi-avatar">
+                            <div class="transaksi-info">
+                                <h4>Lumius</h4>
+                                <p class="bank">Pembayaran via BANK BCA -18277454</p>
+                                <div class="transaksi-produk">
+                                    <img src="cabe.png" alt="Cabai">
+                                    <span>Cabai Merah Besar <span class="qty">x4</span></span>
+                                    <span style="color: #888; font-size: 12px;">9.000</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="transaksi-right">
+                            <div class="transaksi-tanggal">15-02-2026</div>
+                            <span class="status-badge status-gagal">GAGAL</span>
+                            <div class="transaksi-harga">Rp. 36.000</div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="no-result" id="noResult">Transaksi tidak ditemukan</div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- JAVASCRIPT SEARCH  -->
+    <script>
+        // ========== MODAL NOTIFIKASI AKSES ==========
+        function tampilkanNotifikasi(event) {
+            event.preventDefault();
+            document.getElementById('modalNotifikasi').classList.add('active');
+            return false;
+        }
+        
+        function tutupModalNotifikasi() {
+            document.getElementById('modalNotifikasi').classList.remove('active');
+        }
+        
+        function arahkanKeSignup() {
+            window.location.href = 'signup_pelanggan.html';
+        }
+        
+        // Tutup modal jika klik di luar kotak modal
+        document.getElementById('modalNotifikasi').addEventListener('click', function(event) {
+            if (event.target === this) {
+                tutupModalNotifikasi();
+            }
+        });
+
+        // ========== FITUR CARI TRANSAKSI ==========
+        function cariTransaksi() {
+            var input = document.getElementById('cariTransaksi').value.toLowerCase();
+            var items = document.getElementsByClassName('transaksi-item');
+            var noResult = document.getElementById('noResult');
+            var adaHasil = false;
+
+            for (var i = 0; i < items.length; i++) {
+                var dataNama = items[i].getAttribute('data-nama');
+                if (dataNama.includes(input)) {
+                    items[i].style.display = 'flex';
+                    adaHasil = true;
+                } else {
+                    items[i].style.display = 'none';
+                }
+            }
+
+            if (adaHasil) {
+                noResult.style.display = 'none';
+            } else {
+                noResult.style.display = 'block';
+            }
+        }
+
+        function keluar() {
+            if (confirm('Yakin mau keluar?')) {
+                window.location.href = 'landingpage.html';
+            }
+            return false;
+        }
+    </script>
+
+</body>
+</html>
