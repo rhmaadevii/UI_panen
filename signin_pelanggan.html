@@ -298,7 +298,7 @@
                         <label class="remember">
                             <input type="checkbox" id="remember"> Ingat Saya
                         </label>
-                        <a href="#" class="forgot" onclick="alert('Fitur lupa password akan segera hadir')">Lupa Password?</a>
+                        <a href="forgot_password_pelanggan.html" class="forgot">Lupa Password?</a>
                     </div>
                     <button type="submit" class="btn-submit" id="submitBtn">Masuk</button>
                 </form>
@@ -320,67 +320,137 @@
         <div class="footer">© 2026 Panenku. All rights reserved.</div>
     </div>
 
-    <script>
-        // Toggle password visibility
-        function togglePassword(inputId, toggleBtn) {
-            const input = document.getElementById(inputId);
-            const isPassword = input.type === 'password';
-            input.type = isPassword ? 'text' : 'password';
-            toggleBtn.innerHTML = isPassword 
-                ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
-                : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+<script>
+    // Toggle password visibility
+    function togglePassword(inputId, toggleBtn) {
+        const input = document.getElementById(inputId);
+        const isPassword = input.type === 'password';
+
+        input.type = isPassword ? 'text' : 'password';
+
+        toggleBtn.innerHTML = isPassword
+            ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+            : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    }
+
+    // LOGIN
+    document.getElementById('signinForm').addEventListener('submit', function(e) {
+
+        e.preventDefault();
+
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+
+        let isValid = true;
+
+        // Reset error
+        email.classList.remove('error');
+        password.classList.remove('error');
+
+        emailError.classList.remove('show');
+        passwordError.classList.remove('show');
+
+        // Validasi email
+        if (!email.value.trim()) {
+            email.classList.add('error');
+            emailError.classList.add('show');
+            isValid = false;
         }
 
-        // Form validation
-        document.getElementById('signinForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email');
-            const password = document.getElementById('password');
-            const emailError = document.getElementById('emailError');
-            const passwordError = document.getElementById('passwordError');
-            let isValid = true;
+        // Validasi password
+        if (password.value.length < 8) {
+            password.classList.add('error');
+            passwordError.classList.add('show');
+            isValid = false;
+        }
 
-            // Reset errors
-            email.classList.remove('error');
-            password.classList.remove('error');
-            emailError.classList.remove('show');
-            passwordError.classList.remove('show');
+        // Kalau valid baru fetch
+        if (isValid) {
 
-            // Validate email/phone
-            if (!email.value.trim()) {
-                email.classList.add('error');
-                emailError.classList.add('show');
-                isValid = false;
-            }
+            fetch('http://127.0.0.1:8000/api/login-pembeli', {
 
-            // Validate password
-            if (password.value.length < 8) {
-                password.classList.add('error');
-                passwordError.classList.add('show');
-                isValid = false;
-            }
+                method: 'POST',
 
-            if (isValid) {
-                // Simpan role sebagai pelanggan
-                localStorage.setItem('userRole', 'pelanggan');
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userEmail', email.value);
-                
-                // Redirect ke marketplace
-                window.location.href = 'index.html';
-            }
-        });
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
 
-        // Real-time validation
-        document.getElementById('email').addEventListener('input', function() {
-            this.classList.remove('error');
-            document.getElementById('emailError').classList.remove('show');
-        });
-        document.getElementById('password').addEventListener('input', function() {
-            this.classList.remove('error');
-            document.getElementById('passwordError').classList.remove('show');
-        });
-    </script>
+                body: JSON.stringify({
+
+                    email: email.value,
+                    password: password.value
+
+                })
+
+            })
+
+            .then(async response => {
+
+                const text = await response.text();
+
+                console.log("RAW RESPONSE:", text);
+
+                try {
+
+                    const data = JSON.parse(text);
+
+                    if (response.ok) {
+
+                        alert('Login berhasil!');
+
+                        // simpan token
+                        localStorage.setItem('token', data.token);
+
+                        // simpan user
+                        localStorage.setItem('user', JSON.stringify(data.user));
+
+                        // pindah halaman
+                        window.location.href = 'index.html';
+
+                    } else {
+
+                        alert(data.message || 'Email atau password salah');
+
+                    }
+
+                } catch (e) {
+
+                    console.error("Response bukan JSON:", text);
+                    alert("Backend error. Cek terminal Laravel.");
+
+                }
+
+            })
+
+            .catch(error => {
+
+                console.log(error);
+                alert('Tidak bisa connect ke backend');
+
+            });
+
+        }
+
+    });
+
+    // Real-time validation
+    document.getElementById('email').addEventListener('input', function() {
+
+        this.classList.remove('error');
+        document.getElementById('emailError').classList.remove('show');
+
+    });
+
+    document.getElementById('password').addEventListener('input', function() {
+
+        this.classList.remove('error');
+        document.getElementById('passwordError').classList.remove('show');
+
+    });
+</script>
 </body>
 </html>

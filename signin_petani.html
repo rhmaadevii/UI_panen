@@ -256,7 +256,6 @@
             .right-side { padding: 40px 25px; }
         }
     </style>
-<base target="_blank">
 </head>
 <body>
     <div style="width: 100%; max-width: 1100px;">
@@ -362,17 +361,66 @@
                 isValid = false;
             }
 
-            if (isValid) {
-                // Simpan role sebagai petani
-                localStorage.setItem('userRole', 'petani');
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userEmail', email.value);
+ if (isValid) {
 
-                // Redirect ke dashboard penjual
+    fetch('http://127.0.0.1:8000/api/login-penjual', {
+
+        method: 'POST',
+
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+
+        body: JSON.stringify({
+            email: email.value,
+            password: password.value
+        })
+
+    })
+
+    .then(async response => {
+
+        const text = await response.text();
+
+        console.log("RAW RESPONSE:", text);
+
+        try {
+
+            const data = JSON.parse(text);
+
+            if (response.ok) {
+
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('penjual', JSON.stringify(data.penjual));
+
+                alert('Login berhasil!');
+
                 window.location.href = 'dashboardpetani.html';
-            }
-        });
 
+            } else {
+
+                alert(data.message || 'Email atau password salah');
+
+            }
+
+        } catch (e) {
+
+            console.error("Bukan JSON:", text);
+            alert("Backend error. Cek terminal Laravel");
+
+        }
+
+    })
+
+    .catch(error => {
+
+        console.log(error);
+        alert("Tidak bisa connect ke backend");
+
+    });
+}
+});
         // Real-time validation
         document.getElementById('email').addEventListener('input', function() {
             this.classList.remove('error');

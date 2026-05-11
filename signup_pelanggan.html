@@ -258,7 +258,6 @@
             .form-row { flex-direction: column; gap: 0; }
         }
     </style>
-<base target="_blank">
 </head>
 <body>
     <div style="width: 100%; max-width: 1100px;">
@@ -277,12 +276,12 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Nama Lengkap *</label>
-                            <input type="text" id="nama" placeholder="Masukkan nama lengkap" required>
+                            <input type="text" id="nama" name="nama" placeholder="Masukkan nama lengkap" required>
                             <div class="error-msg" id="namaError">Nama lengkap wajib diisi</div>
                         </div>
                         <div class="form-group">
                             <label>Nomor Telepon *</label>
-                            <input type="tel" id="telepon" placeholder="08xxxxxxxxxx" required maxlength="13">
+                            <input type="tel" id="telepon" name="telepon" placeholder="08xxxxxxxxxx" required maxlength="13">
                             <div class="error-msg" id="teleponError">Nomor telepon harus diawali 08 dan 10-13 digit</div>
                         </div>
                     </div>
@@ -340,128 +339,204 @@
         <div class="footer">© 2026 Panenku. All rights reserved.</div>
     </div>
 
-    <script>
-        // Toggle password visibility
-        function togglePassword(inputId, toggleBtn) {
-            const input = document.getElementById(inputId);
-            const isPassword = input.type === 'password';
-            input.type = isPassword ? 'text' : 'password';
-            toggleBtn.innerHTML = isPassword 
-                ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
-                : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+<script>
+    // Toggle password visibility
+    function togglePassword(inputId, toggleBtn) {
+        const input = document.getElementById(inputId);
+        const isPassword = input.type === 'password';
+
+        input.type = isPassword ? 'text' : 'password';
+
+        toggleBtn.innerHTML = isPassword
+            ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+            : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    }
+
+    // Password strength checker
+    document.getElementById('password').addEventListener('input', function () {
+
+        const val = this.value;
+        const bar = document.getElementById('strengthBar');
+
+        bar.className = 'password-strength';
+
+        if (val.length >= 8) {
+
+            const hasLetter = /[a-zA-Z]/.test(val);
+            const hasNumber = /\d/.test(val);
+            const hasSpecial = /[!@#$%^&*]/.test(val);
+
+            if (hasLetter && hasNumber && hasSpecial) {
+                bar.classList.add('strong');
+            } else if (hasLetter && hasNumber) {
+                bar.classList.add('medium');
+            } else {
+                bar.classList.add('weak');
+            }
+        }
+    });
+
+    // Signup submit
+    document.getElementById('signupForm').addEventListener('submit', async function (e) {
+
+        e.preventDefault();
+
+        const nama = document.getElementById('nama');
+        const telepon = document.getElementById('telepon');
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const agree = document.getElementById('agree');
+
+        let isValid = true;
+
+        // Reset error
+        [nama, telepon, email, password, confirmPassword].forEach(el => {
+            el.classList.remove('error');
+        });
+
+        document.querySelectorAll('.error-msg').forEach(el => {
+            el.classList.remove('show');
+        });
+
+        document.getElementById('termsBox').classList.remove('error');
+
+        // Validasi nama
+        if (!nama.value.trim()) {
+            nama.classList.add('error');
+            document.getElementById('namaError').classList.add('show');
+            isValid = false;
         }
 
-        // Password strength checker
-        document.getElementById('password').addEventListener('input', function() {
-            const val = this.value;
-            const bar = document.getElementById('strengthBar');
-            bar.className = 'password-strength';
+        // Validasi telepon
+        const teleponRegex = /^08\d{8,11}$/;
 
-            if (val.length >= 8) {
-                const hasLetter = /[a-zA-Z]/.test(val);
-                const hasNumber = /\d/.test(val);
-                const hasSpecial = /[!@#$%^&*]/.test(val);
+        if (!teleponRegex.test(telepon.value)) {
+            telepon.classList.add('error');
+            document.getElementById('teleponError').classList.add('show');
+            isValid = false;
+        }
 
-                if (hasLetter && hasNumber && hasSpecial) {
-                    bar.classList.add('strong');
-                } else if (hasLetter && hasNumber) {
-                    bar.classList.add('medium');
-                } else {
-                    bar.classList.add('weak');
+        // Validasi email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(email.value)) {
+            email.classList.add('error');
+            document.getElementById('emailError').classList.add('show');
+            isValid = false;
+        }
+
+        // Validasi password
+        if (password.value.length < 8) {
+            password.classList.add('error');
+            document.getElementById('passwordError').classList.add('show');
+            isValid = false;
+        }
+
+        // Validasi konfirmasi password
+        if (password.value !== confirmPassword.value || !confirmPassword.value) {
+            confirmPassword.classList.add('error');
+            document.getElementById('confirmError').classList.add('show');
+            isValid = false;
+        }
+
+        // Validasi checkbox
+        if (!agree.checked) {
+            document.getElementById('termsBox').classList.add('error');
+            document.getElementById('termsError').classList.add('show');
+            isValid = false;
+        }
+
+        // Kalau valid
+        if (isValid) {
+
+            try {
+
+                console.log({
+                    nama_lengkap: nama.value,
+                    nomor_telepon: telepon.value,
+                    email: email.value,
+                    password: password.value
+                });
+
+                const response = await fetch('http://127.0.0.1:8000/api/register-pembeli', {
+
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+
+                    body: JSON.stringify({
+                        nama_lengkap: nama.value,
+                        nomor_telepon: telepon.value,
+                        email: email.value,
+                        password: password.value
+                    })
+
+                });
+
+                const text = await response.text();
+
+                console.log("RAW RESPONSE:", text);
+
+                let data;
+
+                try {
+                    data = JSON.parse(text);
+                } catch (err) {
+                    alert('Response backend bukan JSON');
+                    console.error(text);
+                    return;
                 }
+
+                if (response.ok) {
+
+                    alert('Akun berhasil dibuat!');
+
+                    window.location.href = 'signin_pelanggan.html';
+
+                } else {
+
+                    alert(data.message || 'Registrasi gagal');
+
+                }
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert('Tidak bisa connect ke backend');
+
             }
+        }
+    });
+
+    // Real-time validation
+    ['nama', 'telepon', 'email', 'password', 'confirmPassword'].forEach(id => {
+
+        document.getElementById(id).addEventListener('input', function () {
+
+            this.classList.remove('error');
+
+            const errorEl = document.getElementById(id + 'Error');
+
+            if (errorEl) {
+                errorEl.classList.remove('show');
+            }
+
         });
 
-        // Form validation
-        document.getElementById('signupForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+    });
 
-            const nama = document.getElementById('nama');
-            const telepon = document.getElementById('telepon');
-            const email = document.getElementById('email');
-            const password = document.getElementById('password');
-            const confirmPassword = document.getElementById('confirmPassword');
-            const agree = document.getElementById('agree');
+    document.getElementById('agree').addEventListener('change', function () {
 
-            let isValid = true;
+        document.getElementById('termsBox').classList.remove('error');
 
-            // Reset all errors
-            [nama, telepon, email, password, confirmPassword].forEach(el => {
-                el.classList.remove('error');
-            });
-            document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
-            document.getElementById('termsBox').classList.remove('error');
+        document.getElementById('termsError').classList.remove('show');
 
-            // Validate nama
-            if (!nama.value.trim()) {
-                nama.classList.add('error');
-                document.getElementById('namaError').classList.add('show');
-                isValid = false;
-            }
-
-            // Validate telepon (must start with 08, 10-13 digits)
-            const teleponRegex = /^08\d{8,11}$/;
-            if (!teleponRegex.test(telepon.value)) {
-                telepon.classList.add('error');
-                document.getElementById('teleponError').classList.add('show');
-                isValid = false;
-            }
-
-            // Validate email
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email.value)) {
-                email.classList.add('error');
-                document.getElementById('emailError').classList.add('show');
-                isValid = false;
-            }
-
-            // Validate password
-            if (password.value.length < 8) {
-                password.classList.add('error');
-                document.getElementById('passwordError').classList.add('show');
-                isValid = false;
-            }
-
-            // Validate confirm password
-            if (password.value !== confirmPassword.value || !confirmPassword.value) {
-                confirmPassword.classList.add('error');
-                document.getElementById('confirmError').classList.add('show');
-                isValid = false;
-            }
-
-            // Validate terms
-            if (!agree.checked) {
-                document.getElementById('termsBox').classList.add('error');
-                document.getElementById('termsError').classList.add('show');
-                isValid = false;
-            }
-
-            if (isValid) {
-                // Simpan data
-                localStorage.setItem('userRole', 'pelanggan');
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userName', nama.value);
-                localStorage.setItem('userEmail', email.value);
-                localStorage.setItem('userPhone', telepon.value);
-
-                alert('Akun berhasil dibuat! Selamat datang di PanenKu, ' + nama.value);
-                // Masuk ke index
-                window.location.href = 'index.html';
-            }
-        });
-
-        // Real-time validation
-        ['nama', 'telepon', 'email', 'password', 'confirmPassword'].forEach(id => {
-            document.getElementById(id).addEventListener('input', function() {
-                this.classList.remove('error');
-                const errorEl = document.getElementById(id + 'Error');
-                if (errorEl) errorEl.classList.remove('show');
-            });
-        });
-        document.getElementById('agree').addEventListener('change', function() {
-            document.getElementById('termsBox').classList.remove('error');
-            document.getElementById('termsError').classList.remove('show');
-        });
-    </script>
+    });
+</script>
 </body>
 </html>

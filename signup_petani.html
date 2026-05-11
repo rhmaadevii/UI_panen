@@ -499,22 +499,63 @@
                 isValid = false;
             }
 
-            if (isValid) {
-                // Simpan data
-                localStorage.setItem('userRole', 'petani');
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userName', nama.value);
-                localStorage.setItem('userEmail', email.value);
-                localStorage.setItem('userPhone', telepon.value);
-                localStorage.setItem('namaToko', namaToko.value);
-                localStorage.setItem('alamatToko', alamatToko.value);
-                localStorage.setItem('jasaKirim', jasaKirim.value);
+if (isValid) {
 
-                alert('Akun petani berhasil dibuat! Selamat datang di PanenKu, ' + nama.value);
-                // Masuk ke dashboard penjual
-                window.location.href = 'dashboardpetani.html';
+    fetch('http://127.0.0.1:8000/api/register-penjual', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+
+body: JSON.stringify({
+    nama_lengkap: nama.value,
+    nomor_telepon: telepon.value,
+    email: email.value,
+    password: password.value,
+    nama_toko: namaToko.value,
+    alamat_toko: alamatToko.value,
+    jasa_pengiriman: jasaKirim.value
+})
+
+    })
+    .then(async response => {
+
+        const text = await response.text();
+
+        console.log("RAW RESPONSE:", text);
+
+        try {
+
+            const data = JSON.parse(text);
+
+            if (response.ok) {
+
+                alert('Akun penjual berhasil dibuat!');
+
+                window.location.href = 'signin_petani.html';
+
+            } else {
+
+                alert(data.message || 'Registrasi gagal');
+
             }
-        });
+
+        } catch (e) {
+
+            console.error("Bukan JSON:", text);
+            alert("Backend error. Cek terminal Laravel.");
+
+        }
+
+    })
+    .catch(error => {
+
+        console.log(error);
+        alert("Tidak bisa connect ke backend");
+
+    });
+}
 
         // Real-time validation
         ['nama', 'telepon', 'namaToko', 'alamatToko', 'email', 'password', 'confirmPassword'].forEach(id => {
@@ -532,6 +573,7 @@
             document.getElementById('termsBox').classList.remove('error');
             document.getElementById('termsError').classList.remove('show');
         });
+        }); 
     </script>
 </body>
 </html>
