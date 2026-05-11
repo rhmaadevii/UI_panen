@@ -60,41 +60,78 @@
       flex:1;
     }
     .nav-links a {
-    text-decoration: none;
-    color: #000000;
-    font-size: 16px;
-    font-weight: 500;
+      text-decoration: none;
+      color: #000000;
+      font-size: 16px;
+      font-weight: 500;
     }
+
     .nav-right{
       display:flex;
       align-items:center;
-      gap:12px;
+      gap:4px;
       flex-shrink:0;
     }
 
-    .avatar-circle{
-      width:42px;
-      height:42px;
-      border-radius:50%;
-      background:#3a5c1a;
-      color:#d4e6b5;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:14px;
-      font-weight:700;
+    .icon-btn{
+      position: relative;
+      padding: 8px;
+      border-radius: 50%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      text-decoration: none;
     }
 
-    .icon-btn{
-      width:42px;
-      height:42px;
-      border:none;
-      border-radius:50%;
-      background:#c8dba0;
-      font-size:18px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+    .icon-btn:hover{
+      background-color: #c8dba0;
+    }
+
+    .icon-btn img{
+      width: 28px;
+      height: 28px;
+    }
+
+    .badge-notif{
+      position: absolute;
+      top: -1px;
+      right: -1px;
+      background-color: #ef4444;
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-btn{
+      padding: 4px;
+      border-radius: 50%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+
+    .profile-btn:hover{
+      background-color: #c8dba0;
+    }
+
+    .profile-btn img{
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #A2CA6C;
     }
 
     .main-content{
@@ -368,15 +405,15 @@
       display:none;
     }
     .chevron {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-right: 2px solid currentColor;
-    border-bottom: 2px solid currentColor;
-    transform: rotate(45deg);
-    margin-left: 4px;
-    vertical-align: middle;
-    margin-bottom: 3px;
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      margin-left: 4px;
+      vertical-align: middle;
+      margin-bottom: 3px;
     }
   </style>
 </head>
@@ -402,13 +439,22 @@
         Komunitas
         <span class="chevron"></span>
     </a>
-</div>
   </div>
 
   <div class="nav-right">
-    <a href="dashboardpembeli.html" class="avatar-circle">VIR</a>
-    <a href="keranjang_teman.html" class="icon-btn">🛒</a>
-    <a href="chat_teman.html" class="icon-btn">💬</a>
+    <!-- Cart -->
+    <a href="keranjang_teman.html" class="icon-btn">
+      <img src="keranjang.png" alt="Keranjang">
+    </a>
+    <!-- Chat -->
+    <a href="chat_teman.html" class="icon-btn">
+      <img src="group.png" alt="Chat">
+      <span class="badge-notif">2</span>
+    </a>
+    <!-- Profile -->
+    <a href="dashboardpembeli.html" class="profile-btn">
+      <img src="profil.png" alt="Profile">
+    </a>
   </div>
 </nav>
 
