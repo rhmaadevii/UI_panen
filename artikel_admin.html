@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artikel Admin - PanenKu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #c8e6c9;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background-color: #ffffff;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .btn-back-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background-color: #dcedc8;
+            border-radius: 14px;
+            color: #2e4a1c;
+            font-size: 22px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.3s;
+            flex-shrink: 0;
+        }
+
+        .btn-back-icon:hover {
+            background-color: #c8e6c9;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-section img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+
+        .logo-section h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: #2e4a1c;
+            font-weight: 600;
+        }
+
+        .header-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #A2CA6C;
+            cursor: pointer;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-container {
+            max-width: 1200px;
+            margin: 20px auto 40px;
+            padding: 0 20px;
+        }
+
+        .content-wrapper {
+            background-color: #5a7c3a;
+            border-radius: 30px;
+            padding: 40px 80px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        /* Tambah Artikel Button */
+        .add-article-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .btn-tambah {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 30px;
+            background-color: #ffffff;
+            color: #5a7c3a;
+            border: 2px solid #5a7c3a;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-tambah:hover {
+            background-color: #5a7c3a;
+            color: #ffffff;
+        }
+
+        .btn-tambah .plus-icon {
+            width: 28px;
+            height: 28px;
+            border: 2px solid currentColor;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 300;
+        }
+
+        /* Page Title */
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            color: #c8e6c9;
+            font-weight: 400;
+            letter-spacing: 2px;
+        }
+
+        .page-title .highlight {
+            color: #ffffff;
+            font-style: italic;
+        }
+
+        /* Article Cards */
+        .articles-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .article-card {
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 25px;
+            display: flex;
+            gap: 25px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .article-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(90, 124, 58, 0.05) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .article-card:hover::before {
+            opacity: 1;
+        }
+
+        .article-image {
+            width: 180px;
+            height: 130px;
+            border-radius: 12px;
+            object-fit: cover;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .article-card:hover .article-image {
+            transform: scale(1.05);
+        }
+
+        .article-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-right: 60px;
+        }
+
+        .article-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #2e4a1c;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+
+        .article-card:hover .article-title {
+            color: #5a7c3a;
+        }
+
+        .article-excerpt {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Admin Action Buttons */
+        .article-actions {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .action-btn.edit {
+            background-color: #f0fdf4;
+            color: #5a7c3a;
+        }
+
+        .action-btn.edit:hover {
+            background-color: #5a7c3a;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .action-btn.delete {
+            background-color: #fdf2f2;
+            color: #e74c3c;
+        }
+
+        .action-btn.delete:hover {
+            background-color: #e74c3c;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #2e4a1c;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+            transform: translateX(120%);
+            transition: transform 0.4s ease;
+            min-width: 300px;
+        }
+
+        .toast.show { transform: translateX(0); }
+        .toast.success { background-color: #27ae60; }
+        .toast.error { background-color: #e74c3c; }
+
+        /* Delete Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: white;
+            border-radius: 20px;
+            padding: 35px 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.show .modal { transform: scale(1); }
+
+        .modal-icon {
+            width: 70px; height: 70px;
+            background-color: #fdf2f2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 32px;
+        }
+
+        .modal h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .modal p {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 25px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-cancel {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-cancel:hover { background-color: #e0e0e0; }
+
+        .btn-confirm-delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-confirm-delete:hover { background-color: #c0392b; }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .article-card:nth-child(1) { animation-delay: 0.1s; }
+        .article-card:nth-child(2) { animation-delay: 0.2s; }
+        .article-card:nth-child(3) { animation-delay: 0.3s; }
+        .article-card:nth-child(4) { animation-delay: 0.4s; }
+        .article-card:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .header { padding: 15px 20px; }
+            .content-wrapper { padding: 30px; }
+            .article-card { flex-direction: column; }
+            .article-image { width: 100%; height: 200px; }
+            .article-actions {
+                position: static;
+                transform: none;
+                flex-direction: row;
+                justify-content: flex-end;
+                margin-top: 10px;
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <a href="profil_admin.html" class="btn-back-icon" title="Kembali ke Profil">‹</a>
+            <div class="logo-section">
+                <img src="logo.png" alt="PanenKu Logo">
+                <h1>PanenKu</h1>
+            </div>
+        </div>
+        <img src="profil.png" alt="Profil Admin" class="header-avatar" onclick="location.href='profil_admin.html'">
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="content-wrapper">
+            <!-- Tambah Artikel Button -->
+            <div class="add-article-bar">
+                <a href="tambah_artikel.html" class="btn-tambah">
+                    <span class="plus-icon">+</span>
+                    <span>Tambah Artikel</span>
+                </a>
+            </div>
+
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>Panenku<span class="highlight">Artikel</span></h1>
+            </div>
+
+            <!-- Articles List -->
+            <div class="articles-list" id="articlesList">
+                <!-- Artikel dirender secara dinamis oleh JavaScript dari localStorage -->
+            </div>
+
+            <div class="footer">
+                &copy; 2026 Panenku. All rights reserved.
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <div class="modal-icon">🗑️</div>
+            <h3>Hapus Artikel</h3>
+            <p>Apakah Anda yakin ingin menghapus artikel ini?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn btn-cancel" id="cancelDelete">Batal</button>
+                <button class="modal-btn btn-confirm-delete" id="confirmDelete">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== DATA ARTIKEL AWAL (default, hanya dipakai sekali untuk mengisi localStorage) =====
+        const defaultArticles = [
+            {
+                id: 1,
+                judul: 'Panduan Jitu untuk Memilih Hasil Pertanian Berkualitas—Setiap Saat',
+                link: 'https://www.hgofarms.com/2022/09/16/picking-great-produce/',
+                isi: 'Mengetahui cara memilih hasil pertanian segar terbaik seperti seorang ahli adalah keterampilan hidup yang dapat dipelajari. Kami sangat percaya bahwa setiap orang memiliki kemampuan untuk mempelajari keterampilan ini dan menjadi pembeli hasil pertanian yang ulung...',
+                gambar: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400&h=300&fit=crop'
+            },
+            {
+                id: 2,
+                judul: '8 Tips Memilih Bibit Pertanian Untuk Hasil Panen yang Unggul',
+                link: 'https://kanjabung.com/tips-memilih-bibit-pertanian/',
+                isi: 'Memilih bibit pertanian yang berkualitas merupakan langkah krusial dalam memastikan keberhasilan usaha pertanian. Bibit yang baik tidak hanya menentukan hasil panen yang melimpah tetapi juga ketahanan tanaman terhadap hama dan penyakit...',
+                gambar: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&h=300&fit=crop'
+            },
+            {
+                id: 3,
+                judul: 'Cara Menanam dan Merawat Tanaman Cabai di Rumah agar Tumbuh Subur dan Berbuah Lebat',
+                link: 'https://www.corteva.com/id/berita/Cara-Menanam-dan-Merawat-Tanaman-Cabai-di-Rumah-agar-Tumbuh-Subur-dan-Berbuah-Lebat.html',
+                isi: 'Makan tanpa sambal rasanya ada yang sesuatu yang kurang. Ini merupakan sebagian besar orang yang menganggap rasa pedas dari cabai menjadi teman yang pas pada masakan yang mereka nikmati. Menanam cabai sendiri di rumah ternyata mudah dan menyenangkan...',
+                gambar: 'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=400&h=300&fit=crop'
+            },
+            {
+                id: 4,
+                judul: 'Cara Menanam Bibit Tanaman di Kebun dengan Benar',
+                link: 'https://www.kompas.com/homey/read/2024/04/02/154400276/cara-menanam-bibit-tanaman-di-kebun-dengan-benar',
+                isi: 'Sebelum ditanam di kebun, benih perlu disemai terlebih dahulu. Penyemaian biasanya dilakukan di dalam ruangan menggunakan tray semai atau polybag kecil. Pastikan media semai terdiri dari campuran tanah, kompos, dan sekam yang telah disaring...',
+                gambar: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=400&h=300&fit=crop'
+            },
+            {
+                id: 5,
+                judul: 'Teknologi Irigasi Tetes: Hemat Air, Panen Maksimal',
+                link: 'https://pertanian.uma.ac.id/teknologi-irigasi-tetes-hemat-air-panen-maksimal/',
+                isi: 'Teknologi irigasi tetes merupakan sistem pengairan modern yang mampu menghemat penggunaan air hingga 40-60% dibandingkan dengan sistem irigasi konvensional. Sistem ini bekerja dengan menyalurkan air dan nutrisi langsung ke area perakaran tanaman secara perlahan dan terkontrol...',
+                gambar: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&h=300&fit=crop'
+            }
+        ];
+
+        let deleteTargetId = null;
+
+        // ===== AMBIL / SIMPAN DATA ARTIKEL DARI LOCALSTORAGE =====
+        function getArticles() {
+            let saved = localStorage.getItem('panenku_articles');
+            if (!saved) {
+                // Pertama kali dibuka: isi localStorage dengan 5 artikel default
+                localStorage.setItem('panenku_articles', JSON.stringify(defaultArticles));
+                return [...defaultArticles];
+            }
+            try {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            } catch (e) {}
+            // Fallback jika data rusak/kosong
+            localStorage.setItem('panenku_articles', JSON.stringify(defaultArticles));
+            return [...defaultArticles];
+        }
+
+        function saveArticles(articles) {
+            localStorage.setItem('panenku_articles', JSON.stringify(articles));
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str ?? '';
+            return div.innerHTML;
+        }
+
+        // ===== RENDER DAFTAR ARTIKEL =====
+        function renderArticles() {
+            const articles = getArticles();
+            const list = document.getElementById('articlesList');
+            list.innerHTML = '';
+
+            articles.forEach((article) => {
+                const card = document.createElement('div');
+                card.className = 'article-card';
+                card.dataset.id = article.id;
+                card.innerHTML = `
+                    <img src="${escapeHtml(article.gambar)}" alt="${escapeHtml(article.judul)}" class="article-image">
+                    <div class="article-content">
+                        <h3 class="article-title">${escapeHtml(article.judul)}</h3>
+                        <p class="article-excerpt">${escapeHtml(article.isi)}</p>
+                    </div>
+                    <div class="article-actions">
+                        <button class="action-btn edit" title="Edit Artikel">✏️</button>
+                        <button class="action-btn delete" title="Hapus Artikel">🗑️</button>
+                    </div>
+                `;
+                card.querySelector('.action-btn.edit').addEventListener('click', () => editArticle(article.id));
+                card.querySelector('.action-btn.delete').addEventListener('click', () => confirmDeleteArticle(article.id));
+                list.appendChild(card);
+            });
+        }
+
+        // ===== TOAST =====
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${type === 'success' ? '✓' : '✕'}</span><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ===== EDIT ARTICLE =====
+        function editArticle(id) {
+            const articles = getArticles();
+            const article = articles.find(a => a.id === id);
+            if (article) {
+                localStorage.setItem('panenku_edit_article', JSON.stringify(article));
+                window.location.href = 'edit_artikel.html';
+            }
+        }
+
+        // ===== DELETE ARTICLE =====
+        const deleteModal = document.getElementById('deleteModal');
+        const cancelDelete = document.getElementById('cancelDelete');
+        const confirmDeleteBtn = document.getElementById('confirmDelete');
+
+        function confirmDeleteArticle(id) {
+            deleteTargetId = id;
+            deleteModal.classList.add('show');
+        }
+
+        cancelDelete.addEventListener('click', () => {
+            deleteModal.classList.remove('show');
+            deleteTargetId = null;
+        });
+
+        deleteModal.addEventListener('click', (e) => {
+            if (e.target === deleteModal) {
+                deleteModal.classList.remove('show');
+                deleteTargetId = null;
+            }
+        });
+
+        confirmDeleteBtn.addEventListener('click', () => {
+            if (deleteTargetId !== null) {
+                const card = document.querySelector(`.article-card[data-id="${deleteTargetId}"]`);
+
+                let articles = getArticles();
+                articles = articles.filter(a => a.id !== deleteTargetId);
+                saveArticles(articles);
+
+                if (card) {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateX(100px)';
+                    setTimeout(() => {
+                        card.remove();
+                        showToast('Artikel berhasil dihapus!');
+                    }, 500);
+                } else {
+                    showToast('Artikel berhasil dihapus!');
+                }
+
+                deleteModal.classList.remove('show');
+                deleteTargetId = null;
+            }
+        });
+
+        // ===== INISIALISASI =====
+        renderArticles();
+    </script>
+</body>
+</html>

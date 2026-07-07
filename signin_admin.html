@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk Admin - PanenKu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #C8E6C9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            background-color: #6B8E23;
+            border-radius: 20px;
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+            min-height: 550px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .left-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: white;
+            text-align: center;
+        }
+
+        .farmer-image {
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 30px;
+            border: 4px solid rgba(255,255,255,0.3);
+        }
+
+        .left-section h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .left-section p {
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.9;
+            max-width: 280px;
+        }
+
+        .right-section {
+            flex: 1;
+            background-color: white;
+            padding: 40px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            gap: 10px;
+        }
+
+        .logo-section img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .logo-section h1 {
+            font-size: 28px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .form-subtitle {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #C8E6C9;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            background-color: #F1F8E9;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #6B8E23;
+            box-shadow: 0 0 0 3px rgba(107, 142, 35, 0.15);
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .form-group input.error {
+            border-color: #e74c3c;
+            background-color: #fdf2f2;
+        }
+
+        .form-group input.success {
+            border-color: #27ae60;
+            background-color: #f0fdf4;
+        }
+
+        .error-message {
+            font-size: 12px;
+            color: #e74c3c;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #555;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #6B8E23;
+        }
+
+        .forgot-password {
+            color: #6B8E23;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: #6B8E23;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: #556B2F;
+            transform: translateY(-2px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .switch-link {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .switch-link a {
+            color: #6B8E23;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .switch-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+            transform: translateX(120%);
+            transition: transform 0.4s ease;
+            min-width: 300px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background-color: #27ae60;
+        }
+
+        .toast.error {
+            background-color: #e74c3c;
+        }
+
+        .toast-icon {
+            font-size: 18px;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        .btn-submit.loading .spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        /* Password toggle */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #999;
+            font-size: 16px;
+            user-select: none;
+        }
+
+        .toggle-password:hover {
+            color: #6B8E23;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .left-section {
+                padding: 30px 20px;
+            }
+
+            .farmer-image {
+                width: 200px;
+                height: 200px;
+            }
+
+            .right-section {
+                padding: 30px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="container">
+        <div class="left-section">
+            <img src="farmer_market.png" alt="Farmer Market" class="farmer-image">
+            <h2>Bergabung dengan Kami !</h2>
+            <p>Mulai perjalanan anda bersama ribuan petani dan pembeli lain di seluruh Indonesia</p>
+        </div>
+
+        <div class="right-section">
+            <div class="logo-section">
+                <img src="logo.png" alt="PanenKu Logo">
+                <h1>PanenKu</h1>
+            </div>
+
+            <h2 class="form-title">Selamat Datang Kembali!</h2>
+            <p class="form-subtitle">Masuk ke akun anda untuk melanjutkan</p>
+
+            <form id="signInForm" novalidate>
+                <div class="form-group">
+                    <label for="email">Email atau Nomor Telepon</label>
+                    <input type="text" id="email" name="email" placeholder="Masukkan email atau nomor telepon">
+                    <span class="error-message" id="emailError">Email atau nomor telepon wajib diisi</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" placeholder="Masukkan password">
+                        <span class="toggle-password" id="togglePassword">👁️</span>
+                    </div>
+                    <span class="error-message" id="passwordError">Password wajib diisi</span>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember" id="rememberMe">
+                        <span>Ingat Saya</span>
+                    </label>
+                    <a href="#" class="forgot-password" id="forgotPassword">Lupa Password?</a>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span class="spinner"></span>
+                    <span class="btn-text">Masuk sebagai Admin</span>
+                </button>
+            </form>
+
+            <p class="switch-link">
+                Belum ada akun terdaftar? <a href="signup_admin.html">Daftar di sini</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2026 Panenku. All rights reserved.
+    </div>
+
+    <script>
+        const form = document.getElementById('signInForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+        const submitBtn = document.getElementById('submitBtn');
+        const togglePassword = document.getElementById('togglePassword');
+        const forgotPassword = document.getElementById('forgotPassword');
+        const toastContainer = document.getElementById('toastContainer');
+
+        // Toggle password visibility
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <span class="toast-icon">${type === 'success' ? '✓' : '✕'}</span>
+                <span>${message}</span>
+            `;
+            toastContainer.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // Validate email or phone
+        function validateEmail(value) {
+            if (!value.trim()) return { valid: false, message: 'Email atau nomor telepon wajib diisi' };
+
+            // Check if it's an email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            // Check if it's an Indonesian phone number
+            const phoneRegex = /^(08|\+62|62)[0-9]{8,13}$/;
+
+            if (!emailRegex.test(value) && !phoneRegex.test(value)) {
+                return { valid: false, message: 'Format email atau nomor telepon tidak valid' };
+            }
+
+            return { valid: true };
+        }
+
+        // Validate password
+        function validatePassword(value) {
+            if (!value) return { valid: false, message: 'Password wajib diisi' };
+            if (value.length < 6) return { valid: false, message: 'Password minimal 6 karakter' };
+            return { valid: true };
+        }
+
+        // Real-time validation
+        emailInput.addEventListener('blur', () => {
+            const result = validateEmail(emailInput.value);
+            if (!result.valid) {
+                emailInput.classList.add('error');
+                emailInput.classList.remove('success');
+                emailError.textContent = result.message;
+                emailError.classList.add('show');
+            } else {
+                emailInput.classList.remove('error');
+                emailInput.classList.add('success');
+                emailError.classList.remove('show');
+            }
+        });
+
+        emailInput.addEventListener('input', () => {
+            if (emailInput.classList.contains('error')) {
+                const result = validateEmail(emailInput.value);
+                if (result.valid) {
+                    emailInput.classList.remove('error');
+                    emailInput.classList.add('success');
+                    emailError.classList.remove('show');
+                }
+            }
+        });
+
+        passwordInput.addEventListener('blur', () => {
+            const result = validatePassword(passwordInput.value);
+            if (!result.valid) {
+                passwordInput.classList.add('error');
+                passwordInput.classList.remove('success');
+                passwordError.textContent = result.message;
+                passwordError.classList.add('show');
+            } else {
+                passwordInput.classList.remove('error');
+                passwordInput.classList.add('success');
+                passwordError.classList.remove('show');
+            }
+        });
+
+        passwordInput.addEventListener('input', () => {
+            if (passwordInput.classList.contains('error')) {
+                const result = validatePassword(passwordInput.value);
+                if (result.valid) {
+                    passwordInput.classList.remove('error');
+                    passwordInput.classList.add('success');
+                    passwordError.classList.remove('show');
+                }
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Validate all fields
+            const emailResult = validateEmail(emailInput.value);
+            const passwordResult = validatePassword(passwordInput.value);
+
+            let hasError = false;
+
+            if (!emailResult.valid) {
+                emailInput.classList.add('error');
+                emailInput.classList.remove('success');
+                emailError.textContent = emailResult.message;
+                emailError.classList.add('show');
+                hasError = true;
+            }
+
+            if (!passwordResult.valid) {
+                passwordInput.classList.add('error');
+                passwordInput.classList.remove('success');
+                passwordError.textContent = passwordResult.message;
+                passwordError.classList.add('show');
+                hasError = true;
+            }
+
+            if (hasError) {
+                showToast('Mohon periksa kembali data yang anda masukkan', 'error');
+                return;
+            }
+
+            // Show loading
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Save to localStorage if remember me is checked
+            if (document.getElementById('rememberMe').checked) {
+                localStorage.setItem('panenku_remember_email', emailInput.value);
+            } else {
+                localStorage.removeItem('panenku_remember_email');
+            }
+
+            showToast('Login berhasil! Mengalihkan...', 'success');
+
+            setTimeout(() => {
+                window.location.href = 'profil_admin.html';
+            }, 1500);
+        });
+
+        // Forgot password
+        forgotPassword.addEventListener('click', (e) => {
+            e.preventDefault();
+            showToast('Fitur reset password akan segera hadir!', 'error');
+        });
+
+        // Load remembered email
+        window.addEventListener('DOMContentLoaded', () => {
+            const rememberedEmail = localStorage.getItem('panenku_remember_email');
+            if (rememberedEmail) {
+                emailInput.value = rememberedEmail;
+                document.getElementById('rememberMe').checked = true;
+            }
+        });
+    </script>
+</body>
+</html>

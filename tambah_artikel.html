@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Artikel - PanenKu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #C8E6C9;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background-color: white;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .btn-back-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background-color: #dcedc8;
+            border-radius: 14px;
+            color: #2e4a1c;
+            font-size: 22px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.3s;
+            flex-shrink: 0;
+        }
+
+        .btn-back-icon:hover {
+            background-color: #c8e6c9;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-section img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+
+        .logo-section h1 {
+            font-size: 24px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .header-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #A8D08D;
+            cursor: pointer;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-container {
+            max-width: 900px;
+            margin: 20px auto 40px;
+            padding: 0 20px;
+        }
+
+        /* Image Upload Area */
+        .image-upload-area {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .image-preview-box {
+            width: 320px;
+            height: 200px;
+            background-color: white;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 2px dashed #ccc;
+            transition: all 0.3s;
+        }
+
+        .image-preview-box:hover {
+            border-color: #6B8E23;
+        }
+
+        .image-preview-box.has-image {
+            border: none;
+        }
+
+        .image-preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #999;
+        }
+
+        .upload-placeholder .plus-big {
+            font-size: 60px;
+            font-weight: 300;
+            line-height: 1;
+        }
+
+        .edit-image-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 32px;
+            height: 32px;
+            background-color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        /* Form Card */
+        .form-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid #C8E6C9;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #6B8E23;
+            box-shadow: 0 0 0 3px rgba(107, 142, 35, 0.15);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #bbb;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input.error,
+        .form-group textarea.error {
+            border-color: #e74c3c;
+            background-color: #fdf2f2;
+        }
+
+        .edit-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6B8E23;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .error-message {
+            font-size: 12px;
+            color: #e74c3c;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: #6B8E23;
+            color: white;
+            border: 2px solid #333;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #556B2F;
+        }
+
+        .btn-submit:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+            transform: translateX(120%);
+            transition: transform 0.4s ease;
+            min-width: 300px;
+        }
+
+        .toast.show { transform: translateX(0); }
+        .toast.success { background-color: #27ae60; }
+        .toast.error { background-color: #e74c3c; }
+
+        @media (max-width: 768px) {
+            .header { padding: 15px 20px; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <a href="artikel_admin.html" class="btn-back-icon" title="Kembali ke Artikel">‹</a>
+            <div class="logo-section">
+                <img src="logo.png" alt="PanenKu Logo">
+                <h1>PanenKu</h1>
+            </div>
+        </div>
+        <img src="profil.png" alt="Profil Admin" class="header-avatar" onclick="location.href='profil_admin.html'">
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Image Upload -->
+        <div class="image-upload-area">
+            <div class="image-preview-box" id="imagePreviewBox" onclick="document.getElementById('imageInput').click()">
+                <div class="upload-placeholder" id="uploadPlaceholder">
+                    <span class="plus-big">+</span>
+                </div>
+                <img id="previewImage" style="display:none;">
+                <div class="edit-image-icon" id="editImageIcon" style="display:none;">✏️</div>
+            </div>
+            <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)">
+        </div>
+
+        <!-- Form -->
+        <div class="form-card">
+            <form id="tambahForm" novalidate>
+                <div class="form-group">
+                    <label for="judul">Judul Artikel</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="judul" placeholder="Masukkan judul artikel">
+                        <span class="edit-icon">✏️</span>
+                    </div>
+                    <span class="error-message" id="judulError">Judul artikel wajib diisi</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="link">Link Artikel</label>
+                    <div class="input-wrapper">
+                        <input type="url" id="link" placeholder="Masukkan Link Artikel">
+                        <span class="edit-icon">✏️</span>
+                    </div>
+                    <span class="error-message" id="linkError">Link artikel wajib diisi</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="isi">Isi Artikel</label>
+                    <div class="input-wrapper">
+                        <textarea id="isi" placeholder="Masukkan Isi Artikel"></textarea>
+                        <span class="edit-icon" style="top: 15px; transform: none;">✏️</span>
+                    </div>
+                    <span class="error-message" id="isiError">Isi artikel wajib diisi</span>
+                </div>
+            </form>
+        </div>
+
+        <button type="button" class="btn-submit" id="btnTambah" onclick="submitArticle()">
+            Tambah Artikel
+        </button>
+    </div>
+
+    <script>
+        let uploadedImage = '';
+
+        // ===== DATA ARTIKEL AWAL (sama dengan artikel_admin.html, untuk jaga-jaga jika halaman ini dibuka lebih dulu) =====
+        const defaultArticles = [
+            { id: 1, judul: 'Panduan Jitu untuk Memilih Hasil Pertanian Berkualitas—Setiap Saat', link: 'https://www.hgofarms.com/2022/09/16/picking-great-produce/', isi: 'Mengetahui cara memilih hasil pertanian segar terbaik seperti seorang ahli adalah keterampilan hidup yang dapat dipelajari. Kami sangat percaya bahwa setiap orang memiliki kemampuan untuk mempelajari keterampilan ini dan menjadi pembeli hasil pertanian yang ulung...', gambar: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400&h=300&fit=crop' },
+            { id: 2, judul: '8 Tips Memilih Bibit Pertanian Untuk Hasil Panen yang Unggul', link: 'https://kanjabung.com/tips-memilih-bibit-pertanian/', isi: 'Memilih bibit pertanian yang berkualitas merupakan langkah krusial dalam memastikan keberhasilan usaha pertanian. Bibit yang baik tidak hanya menentukan hasil panen yang melimpah tetapi juga ketahanan tanaman terhadap hama dan penyakit...', gambar: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&h=300&fit=crop' },
+            { id: 3, judul: 'Cara Menanam dan Merawat Tanaman Cabai di Rumah agar Tumbuh Subur dan Berbuah Lebat', link: 'https://www.corteva.com/id/berita/Cara-Menanam-dan-Merawat-Tanaman-Cabai-di-Rumah-agar-Tumbuh-Subur-dan-Berbuah-Lebat.html', isi: 'Makan tanpa sambal rasanya ada yang sesuatu yang kurang. Ini merupakan sebagian besar orang yang menganggap rasa pedas dari cabai menjadi teman yang pas pada masakan yang mereka nikmati. Menanam cabai sendiri di rumah ternyata mudah dan menyenangkan...', gambar: 'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=400&h=300&fit=crop' },
+            { id: 4, judul: 'Cara Menanam Bibit Tanaman di Kebun dengan Benar', link: 'https://www.kompas.com/homey/read/2024/04/02/154400276/cara-menanam-bibit-tanaman-di-kebun-dengan-benar', isi: 'Sebelum ditanam di kebun, benih perlu disemai terlebih dahulu. Penyemaian biasanya dilakukan di dalam ruangan menggunakan tray semai atau polybag kecil. Pastikan media semai terdiri dari campuran tanah, kompos, dan sekam yang telah disaring...', gambar: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=400&h=300&fit=crop' },
+            { id: 5, judul: 'Teknologi Irigasi Tetes: Hemat Air, Panen Maksimal', link: 'https://pertanian.uma.ac.id/teknologi-irigasi-tetes-hemat-air-panen-maksimal/', isi: 'Teknologi irigasi tetes merupakan sistem pengairan modern yang mampu menghemat penggunaan air hingga 40-60% dibandingkan dengan sistem irigasi konvensional. Sistem ini bekerja dengan menyalurkan air dan nutrisi langsung ke area perakaran tanaman secara perlahan dan terkontrol...', gambar: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&h=300&fit=crop' }
+        ];
+
+        function getArticles() {
+            let saved = localStorage.getItem('panenku_articles');
+            if (!saved) {
+                localStorage.setItem('panenku_articles', JSON.stringify(defaultArticles));
+                return [...defaultArticles];
+            }
+            try {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            } catch (e) {}
+            localStorage.setItem('panenku_articles', JSON.stringify(defaultArticles));
+            return [...defaultArticles];
+        }
+
+        // ===== TOAST =====
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${type === 'success' ? '✓' : '✕'}</span><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ===== IMAGE UPLOAD =====
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImage = e.target.result;
+                    document.getElementById('previewImage').src = uploadedImage;
+                    document.getElementById('previewImage').style.display = 'block';
+                    document.getElementById('uploadPlaceholder').style.display = 'none';
+                    document.getElementById('editImageIcon').style.display = 'flex';
+                    document.getElementById('imagePreviewBox').classList.add('has-image');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ===== VALIDATION =====
+        function validateForm() {
+            const judul = document.getElementById('judul');
+            const link = document.getElementById('link');
+            const isi = document.getElementById('isi');
+            let valid = true;
+
+            // Judul
+            if (!judul.value.trim()) {
+                judul.classList.add('error');
+                document.getElementById('judulError').classList.add('show');
+                valid = false;
+            } else {
+                judul.classList.remove('error');
+                document.getElementById('judulError').classList.remove('show');
+            }
+
+            // Link
+            if (!link.value.trim()) {
+                link.classList.add('error');
+                document.getElementById('linkError').classList.add('show');
+                valid = false;
+            } else {
+                link.classList.remove('error');
+                document.getElementById('linkError').classList.remove('show');
+            }
+
+            // Isi
+            if (!isi.value.trim()) {
+                isi.classList.add('error');
+                document.getElementById('isiError').classList.add('show');
+                valid = false;
+            } else {
+                isi.classList.remove('error');
+                document.getElementById('isiError').classList.remove('show');
+            }
+
+            return valid;
+        }
+
+        // Real-time validation
+        ['judul', 'link', 'isi'].forEach(id => {
+            const el = document.getElementById(id);
+            el.addEventListener('input', () => {
+                if (el.classList.contains('error')) {
+                    if (el.value.trim()) {
+                        el.classList.remove('error');
+                        document.getElementById(id + 'Error').classList.remove('show');
+                    }
+                }
+            });
+        });
+
+        // ===== SUBMIT =====
+        function submitArticle() {
+            if (!validateForm()) {
+                showToast('Mohon lengkapi semua field!', 'error');
+                return;
+            }
+
+            // Load existing articles (otomatis terisi 5 artikel default jika belum ada)
+            let articles = getArticles();
+
+            // Generate new ID
+            const newId = articles.length > 0 ? Math.max(...articles.map(a => a.id)) + 1 : 1;
+
+            const newArticle = {
+                id: newId,
+                judul: document.getElementById('judul').value.trim(),
+                link: document.getElementById('link').value.trim(),
+                isi: document.getElementById('isi').value.trim(),
+                gambar: uploadedImage || 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&h=300&fit=crop'
+            };
+
+            articles.push(newArticle);
+            localStorage.setItem('panenku_articles', JSON.stringify(articles));
+
+            showToast('Artikel berhasil ditambahkan!');
+
+            setTimeout(() => {
+                window.location.href = 'artikel_admin.html';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

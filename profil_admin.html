@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Admin - PanenKu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #C8E6C9;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background-color: white;
+            padding: 15px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-section img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+
+        .logo-section h1 {
+            font-size: 24px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #6B8E23;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 3px solid #A8D08D;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .main-container {
+            display: flex;
+            gap: 25px;
+            padding: 30px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 280px;
+            background-color: white;
+            border-radius: 20px;
+            padding: 25px;
+            height: fit-content;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .menu-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #6B8E23;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 5px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .menu-item:hover {
+            background-color: #F1F8E9;
+        }
+
+        .menu-item.active {
+            background-color: #A8D08D;
+        }
+
+        .menu-item.active .menu-icon {
+            color: #333;
+        }
+
+        .menu-item.active .menu-text {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .menu-icon {
+            font-size: 22px;
+            width: 28px;
+            text-align: center;
+        }
+
+        .menu-text {
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .settings-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #6B8E23;
+            margin: 25px 0 15px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .menu-item.logout {
+            color: #e74c3c;
+        }
+
+        .menu-item.logout:hover {
+            background-color: #fdf2f2;
+        }
+
+        /* ===== CONTENT AREA ===== */
+        .content-area {
+            flex: 1;
+        }
+
+        /* ===== PROFILE CARD ===== */
+        .profile-card {
+            background-color: white;
+            border-radius: 20px;
+            padding: 25px 35px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: #6B8E23;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            position: relative;
+            border: 4px solid #A8D08D;
+            overflow: hidden;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .profile-avatar .camera-icon {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 24px;
+            height: 24px;
+            background-color: #6B8E23;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            border: 2px solid white;
+        }
+
+        .profile-details h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .profile-details p {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .btn-edit {
+            padding: 10px 25px;
+            border: 2px solid #ccc;
+            background-color: white;
+            color: #333;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-edit:hover {
+            border-color: #6B8E23;
+            color: #6B8E23;
+        }
+
+        /* ===== INFO CARD ===== */
+        .info-card {
+            background-color: white;
+            border-radius: 20px;
+            padding: 25px 35px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .info-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-left {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #F1F8E9;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .info-label h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .info-label p {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .info-right {
+            text-align: right;
+        }
+
+        .info-right .value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .info-right .verified {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background-color: #d4edda;
+            color: #155724;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 5px;
+        }
+
+        .info-right .add-btn {
+            font-size: 13px;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .info-right .add-btn:hover {
+            color: #6B8E23;
+        }
+
+        /* ===== QUICK ACTION ===== */
+        .quick-action-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #6B8E23;
+            margin-bottom: 12px;
+        }
+
+        .quick-action-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: white;
+            border-radius: 15px;
+            padding: 18px 25px;
+            width: fit-content;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-decoration: none;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .quick-action-icon {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #6B8E23;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #6B8E23;
+            font-weight: 300;
+        }
+
+        .quick-action-text {
+            font-size: 15px;
+            font-weight: 600;
+            color: #6B8E23;
+        }
+
+        /* ===== LOGOUT MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: white;
+            border-radius: 20px;
+            padding: 35px 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            width: 70px;
+            height: 70px;
+            background-color: #fdf2f2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 32px;
+        }
+
+        .modal h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .modal p {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 25px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-cancel {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-cancel:hover {
+            background-color: #e0e0e0;
+        }
+
+        .btn-confirm {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background-color: #c0392b;
+        }
+
+        /* ===== EDIT PROFILE MODAL ===== */
+        .edit-modal .modal {
+            max-width: 500px;
+            text-align: left;
+        }
+
+        .edit-modal h3 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .edit-form-group {
+            margin-bottom: 18px;
+        }
+
+        .edit-form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .edit-form-group input,
+        .edit-form-group select,
+        .edit-form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .edit-form-group input:focus,
+        .edit-form-group select:focus,
+        .edit-form-group textarea:focus {
+            outline: none;
+            border-color: #6B8E23;
+        }
+
+        .edit-form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .edit-modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn-save {
+            background-color: #6B8E23;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background-color: #556B2F;
+        }
+
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+            transform: translateX(120%);
+            transition: transform 0.4s ease;
+            min-width: 300px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background-color: #27ae60;
+        }
+
+        .toast.error {
+            background-color: #e74c3c;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .profile-card {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .info-item {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+
+            .info-right {
+                text-align: left;
+                padding-left: 55px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-section">
+            <img src="logo.png" alt="PanenKu Logo">
+            <h1>PanenKu</h1>
+        </div>
+        <img src="profil.png" alt="Profil Admin" class="user-avatar" id="headerAvatar" style="object-fit: cover; padding: 0;">
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="menu-title">MENU</div>
+
+            <a href="profil_admin.html" class="menu-item active">
+                <span class="menu-icon">👤</span>
+                <span class="menu-text">Profil Saya</span>
+            </a>
+
+            <a href="artikel_admin.html" class="menu-item">
+                <span class="menu-icon">💬</span>
+                <span class="menu-text">Artikel</span>
+            </a>
+
+            <a href="produk_admin.html" class="menu-item">
+                <span class="menu-icon">📦</span>
+                <span class="menu-text">Produk</span>
+            </a>
+
+            <a href="pengguna_admin.html" class="menu-item">
+                <span class="menu-icon">👁️</span>
+                <span class="menu-text">Pengguna</span>
+            </a>
+
+            <div class="settings-title">PENGATURAN</div>
+
+            <a href="keamanan_admin.html" class="menu-item">
+                <span class="menu-icon">🔒</span>
+                <span class="menu-text">Keamanan</span>
+            </a>
+
+            <div class="menu-item logout" id="logoutBtn">
+                <span class="menu-icon">❌</span>
+                <span class="menu-text">Keluar</span>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Profile Card -->
+            <div class="profile-card">
+                <div class="profile-info">
+                    <div class="profile-avatar" style="padding: 0; overflow: hidden;">
+                        <img src="profil.png" alt="Profil" style="width: 100%; height: 100%; object-fit: cover;" id="profileImg">
+                    </div>
+                    <div class="profile-details">
+                        <h2 id="profileName">Vivi Inas Rara</h2>
+                        <p id="profileEmail">vivinasrara@gmail.com</p>
+                    </div>
+                </div>
+                <button class="btn-edit" id="editProfileBtn">Edit Profil</button>
+            </div>
+
+            <!-- Information Card -->
+            <div class="info-card">
+                <h3>Informasi Pribadi</h3>
+
+                <div class="info-item">
+                    <div class="info-left">
+                        <div class="info-icon">👤</div>
+                        <div class="info-label">
+                            <h4>Nama Lengkap</h4>
+                            <p>Nama sesuai KTP</p>
+                        </div>
+                    </div>
+                    <div class="info-right">
+                        <span class="add-btn" id="editNama">Ubah</span>
+                        <div class="value" id="namaValue">Vivi Inas Rara</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-left">
+                        <div class="info-icon">✉️</div>
+                        <div class="info-label">
+                            <h4>Email</h4>
+                            <p>Email aktif</p>
+                        </div>
+                    </div>
+                    <div class="info-right">
+                        <div class="value" id="emailValue">vivinasrara@gmail.com</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-left">
+                        <div class="info-icon">📱</div>
+                        <div class="info-label">
+                            <h4>Nomor Telepon</h4>
+                            <p>Nomor WhatsApp</p>
+                        </div>
+                    </div>
+                    <div class="info-right">
+                        <div class="verified">✓ Terverifikasi</div>
+                        <div class="value" id="teleponValue">0838 - 5668 - 9633</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-left">
+                        <div class="info-icon">🎂</div>
+                        <div class="info-label">
+                            <h4>Tanggal lahir</h4>
+                            <p>Tanggal lahir sesuai KTP</p>
+                        </div>
+                    </div>
+                    <div class="info-right">
+                        <div class="verified">✓ Terverifikasi</div>
+                        <div class="value" id="tanggalValue">12 Desember 2005</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-left">
+                        <div class="info-icon">⚧️</div>
+                        <div class="info-label">
+                            <h4>Jenis kelamin</h4>
+                            <p>Perempuan/Laki-laki</p>
+                        </div>
+                    </div>
+                    <div class="info-right">
+                        <span class="add-btn" id="editGender">Tambahkan</span>
+                        <div class="value" id="genderValue" style="display:none;">-</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-left">
+                        <div class="info-icon">🏠</div>
+                        <div class="info-label">
+                            <h4>Alamat</h4>
+                            <p>Alamat tempat tinggal</p>
+                        </div>
+                    </div>
+                    <div class="info-right">
+                        <div class="value" id="alamatValue">Jl. Sutorejo No 3, Surabaya</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action -->
+            <div class="quick-action-title">Aksi Cepat</div>
+            <a href="tambah_artikel.html" class="quick-action-card">
+                <div class="quick-action-icon">+</div>
+                <span class="quick-action-text">Tambah Artikel</span>
+            </a>
+        </main>
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal">
+            <div class="modal-icon">❌</div>
+            <h3>Konfirmasi Keluar</h3>
+            <p>Apakah Anda yakin ingin keluar dari akun admin?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn btn-cancel" id="cancelLogout">Batal</button>
+                <button class="modal-btn btn-confirm" id="confirmLogout">Ya, Keluar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal-overlay edit-modal" id="editModal">
+        <div class="modal">
+            <h3>Edit Profil</h3>
+            <form id="editForm">
+                <div class="edit-form-group">
+                    <label for="editNamaInput">Nama Lengkap</label>
+                    <input type="text" id="editNamaInput" placeholder="Masukkan nama lengkap">
+                </div>
+                <div class="edit-form-group">
+                    <label for="editEmailInput">Email</label>
+                    <input type="email" id="editEmailInput" placeholder="nama@email.com">
+                </div>
+                <div class="edit-form-group">
+                    <label for="editTeleponInput">Nomor Telepon</label>
+                    <input type="tel" id="editTeleponInput" placeholder="08xxxxxxxxxx">
+                </div>
+                <div class="edit-form-group">
+                    <label for="editTanggalInput">Tanggal Lahir</label>
+                    <input type="date" id="editTanggalInput">
+                </div>
+                <div class="edit-form-group">
+                    <label for="editGenderInput">Jenis Kelamin</label>
+                    <select id="editGenderInput">
+                        <option value="">Pilih jenis kelamin</option>
+                        <option value="Perempuan">Perempuan</option>
+                        <option value="Laki-laki">Laki-laki</option>
+                    </select>
+                </div>
+                <div class="edit-form-group">
+                    <label for="editAlamatInput">Alamat</label>
+                    <textarea id="editAlamatInput" placeholder="Masukkan alamat lengkap"></textarea>
+                </div>
+                <div class="edit-modal-buttons">
+                    <button type="button" class="modal-btn btn-cancel" id="cancelEdit">Batal</button>
+                    <button type="submit" class="modal-btn btn-save">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ===== DATA PROFIL =====
+        let profileData = {
+            nama: 'Vivi Inas Rara',
+            email: 'vivinasrara@gmail.com',
+            telepon: '0838 - 5668 - 9633',
+            tanggalLahir: '2005-12-12',
+            tanggalDisplay: '12 Desember 2005',
+            gender: '',
+            alamat: 'Jl. Sutorejo No 3, Surabaya'
+        };
+
+        // Load from localStorage if exists
+        const savedData = localStorage.getItem('panenku_profile');
+        if (savedData) {
+            profileData = JSON.parse(savedData);
+        }
+
+        // ===== TOAST =====
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${type === 'success' ? '✓' : '✕'}</span><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ===== UPDATE UI =====
+        function updateUI() {
+            document.getElementById('profileName').textContent = profileData.nama;
+            document.getElementById('profileEmail').textContent = profileData.email;
+            document.getElementById('namaValue').textContent = profileData.nama;
+            document.getElementById('emailValue').textContent = profileData.email;
+            document.getElementById('teleponValue').textContent = profileData.telepon;
+            document.getElementById('tanggalValue').textContent = profileData.tanggalDisplay;
+            document.getElementById('alamatValue').textContent = profileData.alamat;
+
+            // Avatar images are static (profil.png), no initials needed
+
+            // Gender
+            const genderValue = document.getElementById('genderValue');
+            const editGender = document.getElementById('editGender');
+            if (profileData.gender) {
+                genderValue.textContent = profileData.gender;
+                genderValue.style.display = 'block';
+                editGender.textContent = 'Ubah';
+            } else {
+                genderValue.style.display = 'none';
+                editGender.textContent = 'Tambahkan';
+            }
+        }
+
+        // ===== LOGOUT MODAL =====
+        const logoutModal = document.getElementById('logoutModal');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const cancelLogout = document.getElementById('cancelLogout');
+        const confirmLogout = document.getElementById('confirmLogout');
+
+        logoutBtn.addEventListener('click', () => {
+            logoutModal.classList.add('show');
+        });
+
+        cancelLogout.addEventListener('click', () => {
+            logoutModal.classList.remove('show');
+        });
+
+        logoutModal.addEventListener('click', (e) => {
+            if (e.target === logoutModal) logoutModal.classList.remove('show');
+        });
+
+        confirmLogout.addEventListener('click', () => {
+            localStorage.removeItem('panenku_admin_user');
+            showToast('Berhasil keluar!', 'success');
+            setTimeout(() => {
+                window.location.href = 'landingpage.html';
+            }, 1000);
+        });
+
+        // ===== EDIT PROFILE MODAL =====
+        const editModal = document.getElementById('editModal');
+        const editProfileBtn = document.getElementById('editProfileBtn');
+        const cancelEdit = document.getElementById('cancelEdit');
+        const editForm = document.getElementById('editForm');
+
+        function openEditModal(field = null) {
+            document.getElementById('editNamaInput').value = profileData.nama;
+            document.getElementById('editEmailInput').value = profileData.email;
+            document.getElementById('editTeleponInput').value = profileData.telepon.replace(/\s/g, '').replace(/-/g, '');
+            document.getElementById('editTanggalInput').value = profileData.tanggalLahir;
+            document.getElementById('editGenderInput').value = profileData.gender;
+            document.getElementById('editAlamatInput').value = profileData.alamat;
+            editModal.classList.add('show');
+        }
+
+        editProfileBtn.addEventListener('click', () => openEditModal());
+        document.getElementById('editNama').addEventListener('click', () => openEditModal('nama'));
+        document.getElementById('editGender').addEventListener('click', () => openEditModal('gender'));
+
+        cancelEdit.addEventListener('click', () => {
+            editModal.classList.remove('show');
+        });
+
+        editModal.addEventListener('click', (e) => {
+            if (e.target === editModal) editModal.classList.remove('show');
+        });
+
+        editForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const nama = document.getElementById('editNamaInput').value.trim();
+            const email = document.getElementById('editEmailInput').value.trim();
+            const telepon = document.getElementById('editTeleponInput').value.trim();
+            const tanggal = document.getElementById('editTanggalInput').value;
+            const gender = document.getElementById('editGenderInput').value;
+            const alamat = document.getElementById('editAlamatInput').value.trim();
+
+            if (!nama || !email || !telepon) {
+                showToast('Nama, email, dan telepon wajib diisi!', 'error');
+                return;
+            }
+
+            // Format phone
+            let formattedPhone = telepon;
+            if (telepon.startsWith('0')) {
+                formattedPhone = telepon.substring(0, 4) + ' - ' + telepon.substring(4, 8) + ' - ' + telepon.substring(8);
+            }
+
+            // Format date
+            let tanggalDisplay = profileData.tanggalDisplay;
+            if (tanggal) {
+                const d = new Date(tanggal);
+                const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+                tanggalDisplay = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+            }
+
+            profileData = {
+                nama,
+                email,
+                telepon: formattedPhone,
+                tanggalLahir: tanggal || profileData.tanggalLahir,
+                tanggalDisplay,
+                gender,
+                alamat: alamat || profileData.alamat
+            };
+
+            localStorage.setItem('panenku_profile', JSON.stringify(profileData));
+            updateUI();
+            editModal.classList.remove('show');
+            showToast('Profil berhasil diperbarui!');
+        });
+
+        // ===== INIT =====
+        updateUI();
+    </script>
+</body>
+</html>
