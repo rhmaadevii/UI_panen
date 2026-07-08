@@ -99,6 +99,7 @@
     <!-- Toast Notification -->
     <div id="toast" class="toast">Produk ditambahkan ke keranjang!</div>
 
+
     <!-- Navbar -->
     <nav class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -134,8 +135,10 @@
         </div>
     </nav>
 
+
     <!-- Main Content -->
     <div class="max-w-3xl mx-auto px-4 py-6">
+
 
         <!-- Back Button -->
         <a href="marketplace.html" class="inline-flex items-center text-white mb-4 hover:opacity-80 transition">
@@ -143,6 +146,7 @@
                 <i class="fas fa-chevron-left text-white"></i>
             </div>
         </a>
+
 
         <!-- Product Image Carousel -->
         <div class="relative bg-white rounded-3xl overflow-hidden mb-6 shadow-lg">
@@ -154,6 +158,7 @@
             <div class="image-counter"><span id="current-img">1</span>/5</div>
         </div>
 
+
         <!-- Product Info -->
         <div class="mb-4">
             <div class="flex justify-between items-start mb-2">
@@ -164,6 +169,7 @@
             </div>
             <p id="product-short-desc" class="text-white/90 mb-3"></p>
 
+
             <!-- Quantity Selector -->
             <div class="quantity-selector">
                 <span class="text-white font-medium">Jumlah:</span>
@@ -171,6 +177,7 @@
                 <span id="product-quantity" class="qty-display">1</span>
                 <button onclick="changeQuantity(1)" class="qty-btn-main">+</button>
             </div>
+
 
             <div class="flex justify-between items-center">
                 <h2 id="product-price" class="text-3xl font-bold text-white"></h2>
@@ -186,16 +193,20 @@
             </div>
         </div>
 
+
         <!-- Product Description -->
         <div class="desc-box mb-6">
             <h3 class="text-xl font-bold text-hijau-900 mb-3">Deskripsi Produk</h3>
             <p id="product-desc" class="text-gray-700 text-sm leading-relaxed mb-4"></p>
 
+
             <h4 class="font-semibold text-gray-800 mb-2">Informasi Produk</h4>
             <ul id="product-info" class="text-sm text-gray-700 space-y-1 mb-4"></ul>
 
+
             <p id="product-closing" class="text-gray-700 text-sm"></p>
         </div>
+
 
         <!-- Seller Info -->
         <div class="seller-card mb-6">
@@ -217,6 +228,7 @@
                 <span class="badge-new">NEW SELLER</span>
             </div>
         </div>
+
 
         <!-- Reviews -->
         <div class="bg-white rounded-3xl p-5 mb-8">
@@ -257,6 +269,7 @@
         </div>
     </div>
 
+
     <!-- Bottom Action Bar -->
     <div class="fixed bottom-0 left-0 right-0 bg-hijau-900/95 backdrop-blur-sm p-4 z-40">
         <div class="max-w-3xl mx-auto flex items-center justify-between gap-4">
@@ -271,6 +284,7 @@
             </button>
         </div>
     </div>
+
 
     <script>
         // ============================================
@@ -471,12 +485,15 @@
             }
         };
 
+
         // ============================================
         // CART FUNCTIONALITY - Integrasi dengan keranjang_teman.html
         // ============================================
 
+
         let currentQuantity = 1;
         let currentProduct = null;
+
 
         // Get product ID from URL
         function getProductId() {
@@ -484,10 +501,12 @@
             return params.get('id') || 'tomat1';
         }
 
+
         // Load product data
         function loadProduct() {
             const productId = getProductId();
             currentProduct = products[productId] || products['tomat1'];
+
 
             document.getElementById('product-name').textContent = currentProduct.fullName;
             document.getElementById('product-short-desc').textContent = currentProduct.shortDesc;
@@ -502,6 +521,7 @@
             document.getElementById('review-rating').textContent = currentProduct.rating;
             document.getElementById('review-title').textContent = 'Review Produk (' + currentProduct.reviewCount + ')';
 
+
             const infoList = document.getElementById('product-info');
             infoList.innerHTML = '';
             currentProduct.info.forEach(item => {
@@ -510,10 +530,12 @@
                 infoList.appendChild(li);
             });
 
+
             currentImageIndex = 0;
             updateImage();
             updateCartCount();
         }
+
 
         // Quantity controls
         function changeQuantity(delta) {
@@ -529,9 +551,11 @@
             }
         }
 
+
         // ============================================
         // CART OPERATIONS - Menyimpan ke localStorage
         // ============================================
+
 
         function getCart() {
             const stored = localStorage.getItem('panenku_cart');
@@ -545,10 +569,12 @@
             return [];
         }
 
+
         function saveCart(cart) {
             localStorage.setItem('panenku_cart', JSON.stringify(cart));
             updateCartCount();
         }
+
 
         function updateCartCount() {
             const cart = getCart();
@@ -562,11 +588,14 @@
             }
         }
 
+
         function addToCart() {
             const cart = getCart();
 
+
             // Cek apakah produk sudah ada di keranjang
             const existingItem = cart.find(item => item.id === currentProduct.id);
+
 
             if (existingItem) {
                 // Update quantity jika sudah ada
@@ -593,8 +622,10 @@
                 showToast(currentProduct.name + ' ditambahkan ke keranjang!');
             }
 
+
             saveCart(cart);
         }
+
 
         function buyNow() {
             // Langsung tambah ke keranjang dan redirect ke keranjang
@@ -604,11 +635,14 @@
             }, 800);
         }
 
+
         // ============================================
         // CAROUSEL
         // ============================================
 
+
         let currentImageIndex = 0;
+
 
         function updateImage() {
             const img = document.getElementById('main-image');
@@ -616,19 +650,23 @@
             document.getElementById('current-img').textContent = currentImageIndex + 1;
         }
 
+
         function nextImage() {
             currentImageIndex = (currentImageIndex + 1) % currentProduct.images.length;
             updateImage();
         }
+
 
         function prevImage() {
             currentImageIndex = (currentImageIndex - 1 + currentProduct.images.length) % currentProduct.images.length;
             updateImage();
         }
 
+
         // ============================================
         // LOVE BUTTON
         // ============================================
+
 
         function toggleLove(btn) {
             btn.classList.toggle('active');
@@ -644,9 +682,11 @@
             }
         }
 
+
         // ============================================
         // TOAST & UTILITIES
         // ============================================
+
 
         function showToast(message) {
             const toast = document.getElementById('toast');
@@ -657,9 +697,10 @@
             }, 2500);
         }
 
+
         function openChat() {
             // Kirim data produk ke chat_detail.html dengan penjual
-            const chatUrl = 'chat_detail.html?seller=' + encodeURIComponent(currentProduct.seller) 
+            const chatUrl = 'chat_detail.html?seller=' + encodeURIComponent(currentProduct.seller)
                 + '&avatar=' + encodeURIComponent('profil.png')
                 + '&productId=' + encodeURIComponent(currentProduct.id)
                 + '&productName=' + encodeURIComponent(currentProduct.fullName)
@@ -670,9 +711,11 @@
             window.location.href = chatUrl;
         }
 
+
         // ============================================
         // INIT
         // ============================================
+
 
         document.addEventListener('DOMContentLoaded', function() {
             loadProduct();
@@ -680,3 +723,4 @@
     </script>
 </body>
 </html>
+

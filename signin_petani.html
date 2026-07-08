@@ -69,10 +69,6 @@
             gap: 12px;
             margin-bottom: 25px;
         }
-        .logo-icon {
-            width: 45px;
-            height: 45px;
-        }
         .logo h1 {
             font-size: 28px;
             color: #4A5D23;
@@ -184,6 +180,10 @@
             cursor: pointer;
             transition: all 0.3s;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .btn-submit:hover {
             background: #5a7a32;
@@ -196,6 +196,18 @@
             transform: none;
             box-shadow: none;
         }
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .btn-submit.loading .spinner { display: inline-block; }
+        .btn-submit.loading .btn-text { display: none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
         .divider {
             display: flex;
             align-items: center;
@@ -231,6 +243,10 @@
             background: #E8F0D8;
             border-color: #6B8E3B;
         }
+        .btn-google:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
         .signup-link {
             text-align: center;
             font-size: 13px;
@@ -249,6 +265,31 @@
             font-size: 12px;
             background: #6B8E3B;
         }
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+            transform: translateX(120%);
+            transition: transform 0.4s ease;
+            min-width: 300px;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.success { background-color: #27ae60; }
+        .toast.error { background-color: #e74c3c; }
         @media (max-width: 900px) {
             .container { flex-direction: column; }
             .left-side { padding: 40px 20px; }
@@ -256,8 +297,11 @@
             .right-side { padding: 40px 25px; }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
+    <div class="toast-container" id="toastContainer"></div>
+
     <div style="width: 100%; max-width: 1100px;">
         <div class="container">
             <div class="left-side">
@@ -268,10 +312,6 @@
             <div class="right-side">
                 <div class="logo">
                     <img src="logo_panenku.png" alt="PanenKu" style="width:45px;height:45px;">
-                        <path d="M50 10 C30 10, 15 25, 15 45 C15 65, 30 85, 50 95 C70 85, 85 65, 85 45 C85 25, 70 10, 50 10Z" fill="#6B8E3B"/>
-                        <path d="M50 25 C40 25, 32 33, 32 43 C32 53, 40 63, 50 70 C60 63, 68 53, 68 43 C68 33, 60 25, 50 25Z" fill="#8FB359"/>
-                        <path d="M50 40 C45 40, 42 44, 42 49 C42 54, 45 59, 50 62 C55 59, 58 54, 58 49 C58 44, 55 40, 50 40Z" fill="#A8C97A"/>
-                    </svg>
                     <h1>PanenKu</h1>
                 </div>
                 <div class="welcome">
@@ -280,30 +320,33 @@
                 </div>
                 <form id="signinForm">
                     <div class="form-group">
-                        <label>Email atau Nomor Telepon</label>
-                        <input type="text" id="email" placeholder="Masukkan email atau nomor telepon" required>
-                        <div class="error-msg" id="emailError">Email atau nomor telepon wajib diisi</div>
+                        <label>Email</label>
+                        <input type="email" id="email" placeholder="nama@gmail.com" required>
+                        <div class="error-msg" id="emailError">Email wajib diisi dengan format yang valid</div>
                     </div>
                     <div class="form-group">
                         <label>Password</label>
                         <div class="input-wrapper">
-                            <input type="password" id="password" placeholder="Masukkan password" required minlength="8">
+                            <input type="password" id="password" placeholder="Masukkan password" required minlength="6">
                             <span class="toggle-password" onclick="togglePassword('password', this)">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </span>
                         </div>
-                        <div class="error-msg" id="passwordError">Password minimal 8 karakter</div>
+                        <div class="error-msg" id="passwordError">Password wajib diisi</div>
                     </div>
                     <div class="options">
                         <label class="remember">
                             <input type="checkbox" id="remember"> Ingat Saya
                         </label>
-                        <a href="#" class="forgot" onclick="alert('Fitur lupa password akan segera hadir')">Lupa Password?</a>
+                        <a href="#" class="forgot" id="forgotPassword">Lupa Password?</a>
                     </div>
-                    <button type="submit" class="btn-submit" id="submitBtn">Masuk</button>
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <span class="spinner"></span>
+                        <span class="btn-text">Masuk</span>
+                    </button>
                 </form>
                 <div class="divider">atau masuk dengan</div>
-                <button class="btn-google" onclick="alert('Login dengan Google akan segera hadir')">
+                <button class="btn-google" id="btnGoogle">
                     <svg width="20" height="20" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -320,116 +363,222 @@
         <div class="footer">© 2026 Panenku. All rights reserved.</div>
     </div>
 
-    <script>
-        // Toggle password visibility
-        function togglePassword(inputId, toggleBtn) {
-            const input = document.getElementById(inputId);
-            const isPassword = input.type === 'password';
-            input.type = isPassword ? 'text' : 'password';
-            toggleBtn.innerHTML = isPassword 
-                ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
-                : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+<script type="module">
+    import { 
+        auth, db, googleProvider,
+        signInWithEmailAndPassword, 
+        signInWithPopup,
+        sendPasswordResetEmail,
+        getDoc, doc, setDoc, updateDoc, serverTimestamp 
+    } from './firebase-config.js';
+
+    window.togglePassword = function(inputId, toggleBtn) {
+        const input = document.getElementById(inputId);
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        toggleBtn.innerHTML = isPassword
+            ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+            : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    }
+
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<span>${type === 'success' ? '✓' : '✕'}</span><span>${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 400);
+        }, 3000);
+    }
+
+    // ===== LOGIN EMAIL/PASSWORD =====
+    document.getElementById('signinForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const submitBtn = document.getElementById('submitBtn');
+
+        email.classList.remove('error');
+        password.classList.remove('error');
+        document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
+
+        let isValid = true;
+
+        if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+            email.classList.add('error');
+            document.getElementById('emailError').classList.add('show');
+            isValid = false;
+        }
+        if (!password.value) {
+            password.classList.add('error');
+            document.getElementById('passwordError').classList.add('show');
+            isValid = false;
         }
 
-        // Form validation
-        document.getElementById('signinForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        if (!isValid) return;
 
-            const email = document.getElementById('email');
-            const password = document.getElementById('password');
-            const emailError = document.getElementById('emailError');
-            const passwordError = document.getElementById('passwordError');
-            let isValid = true;
-
-            // Reset errors
-            email.classList.remove('error');
-            password.classList.remove('error');
-            emailError.classList.remove('show');
-            passwordError.classList.remove('show');
-
-            // Validate email/phone
-            if (!email.value.trim()) {
-                email.classList.add('error');
-                emailError.classList.add('show');
-                isValid = false;
-            }
-
-            // Validate password
-            if (password.value.length < 8) {
-                password.classList.add('error');
-                passwordError.classList.add('show');
-                isValid = false;
-            }
-
- if (isValid) {
-
-    fetch('http://127.0.0.1:8000/api/login-penjual', {
-
-        method: 'POST',
-
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-
-        body: JSON.stringify({
-            email: email.value,
-            password: password.value
-        })
-
-    })
-
-    .then(async response => {
-
-        const text = await response.text();
-
-        console.log("RAW RESPONSE:", text);
+        submitBtn.disabled = true;
+        submitBtn.classList.add('loading');
 
         try {
+            const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
+            const user = userCredential.user;
 
-            const data = JSON.parse(text);
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
 
-            if (response.ok) {
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
 
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('penjual', JSON.stringify(data.penjual));
+                if (userData.role !== 'petani') {
+                    showToast('Akun ini bukan untuk login sebagai petani!', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('loading');
+                    return;
+                }
 
-                alert('Login berhasil!');
+                await updateDoc(doc(db, 'users', user.uid), { lastLogin: serverTimestamp() });
 
-                window.location.href = 'dashboardpetani.html';
+                localStorage.setItem('panenku_user', JSON.stringify({
+                    uid: user.uid,
+                    email: user.email,
+                    nama: userData.nama_lengkap,
+                    role: userData.role,
+                    telepon: userData.nomor_telepon || '',
+                    namaToko: userData.nama_toko || '',
+                    alamatToko: userData.alamat_toko || '',
+                    jasaKirim: userData.jasa_pengiriman || '',
+                    photoURL: userData.photoURL || ''
+                }));
 
+                if (document.getElementById('remember').checked) {
+                    localStorage.setItem('panenku_remember_email', email.value);
+                } else {
+                    localStorage.removeItem('panenku_remember_email');
+                }
+
+                showToast('Login berhasil! Mengalihkan...', 'success');
+                setTimeout(() => window.location.href = 'dashboardpetani.html', 1500);
             } else {
+                showToast('Data user tidak ditemukan di database', 'error');
+            }
+        } catch (error) {
+            console.error(error);
+            let msg = 'Login gagal';
+            if (error.code === 'auth/user-not-found') msg = 'Email belum terdaftar';
+            else if (error.code === 'auth/wrong-password') msg = 'Password salah';
+            else if (error.code === 'auth/invalid-credential') msg = 'Email atau password salah';
+            else if (error.code === 'auth/invalid-email') msg = 'Format email tidak valid';
+            else if (error.code === 'auth/user-disabled') msg = 'Akun ini telah dinonaktifkan';
+            else if (error.code === 'auth/too-many-requests') msg = 'Terlalu banyak percobaan. Coba lagi nanti.';
+            showToast(msg, 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('loading');
+        }
+    });
 
-                alert(data.message || 'Email atau password salah');
+    // ===== LOGIN GOOGLE =====
+    document.getElementById('btnGoogle').addEventListener('click', async function() {
+        const btn = this;
+        btn.disabled = true;
 
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
+
+            const userRef = doc(db, 'users', user.uid);
+            const userSnap = await getDoc(userRef);
+
+            if (!userSnap.exists()) {
+                await setDoc(userRef, {
+                    nama_lengkap: user.displayName || 'User Google',
+                    email: user.email,
+                    nomor_telepon: user.phoneNumber || '',
+                    role: 'petani',
+                    photoURL: user.photoURL || '',
+                    nama_toko: '',
+                    alamat_toko: '',
+                    jasa_pengiriman: '',
+                    createdAt: serverTimestamp(),
+                    lastLogin: serverTimestamp(),
+                    loginMethod: 'google'
+                });
+            } else {
+                const userData = userSnap.data();
+                if (userData.role !== 'petani') {
+                    showToast('Akun Google ini terdaftar sebagai ' + userData.role + ', bukan petani!', 'error');
+                    btn.disabled = false;
+                    return;
+                }
+                await updateDoc(userRef, { lastLogin: serverTimestamp() });
             }
 
-        } catch (e) {
+            const finalData = (await getDoc(userRef)).data();
+            localStorage.setItem('panenku_user', JSON.stringify({
+                uid: user.uid,
+                email: user.email,
+                nama: user.displayName || 'User Google',
+                role: 'petani',
+                namaToko: finalData.nama_toko || '',
+                alamatToko: finalData.alamat_toko || '',
+                jasaKirim: finalData.jasa_pengiriman || '',
+                photoURL: user.photoURL || ''
+            }));
 
-            console.error("Bukan JSON:", text);
-            alert("Backend error. Cek terminal Laravel");
+            showToast('Login Google berhasil! Mengalihkan...', 'success');
+            setTimeout(() => window.location.href = 'dashboardpetani.html', 1500);
 
+        } catch (error) {
+            console.error(error);
+            let msg = 'Login Google gagal';
+            if (error.code === 'auth/popup-closed-by-user') msg = 'Popup ditutup. Coba lagi.';
+            else if (error.code === 'auth/popup-blocked') msg = 'Popup diblokir browser. Izinkan popup untuk situs ini.';
+            else if (error.code === 'auth/account-exists-with-different-credential') msg = 'Email sudah terdaftar dengan metode lain.';
+            showToast(msg, 'error');
+        } finally {
+            btn.disabled = false;
         }
-
-    })
-
-    .catch(error => {
-
-        console.log(error);
-        alert("Tidak bisa connect ke backend");
-
     });
-}
-});
-        // Real-time validation
-        document.getElementById('email').addEventListener('input', function() {
-            this.classList.remove('error');
-            document.getElementById('emailError').classList.remove('show');
-        });
-        document.getElementById('password').addEventListener('input', function() {
-            this.classList.remove('error');
-            document.getElementById('passwordError').classList.remove('show');
-        });
-    </script>
+
+    // ===== LUPA PASSWORD =====
+    document.getElementById('forgotPassword').addEventListener('click', async function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showToast('Masukkan email yang valid di kolom email terlebih dahulu', 'error');
+            document.getElementById('email').classList.add('error');
+            return;
+        }
+        try {
+            await sendPasswordResetEmail(auth, email);
+            showToast('Link reset password telah dikirim ke email kamu!', 'success');
+        } catch (error) {
+            showToast('Gagal mengirim reset password: ' + error.message, 'error');
+        }
+    });
+
+    // Load remembered email
+    window.addEventListener('DOMContentLoaded', () => {
+        const remembered = localStorage.getItem('panenku_remember_email');
+        if (remembered) {
+            document.getElementById('email').value = remembered;
+            document.getElementById('remember').checked = true;
+        }
+    });
+
+    // Real-time validation
+    document.getElementById('email').addEventListener('input', function() {
+        this.classList.remove('error');
+        document.getElementById('emailError').classList.remove('show');
+    });
+    document.getElementById('password').addEventListener('input', function() {
+        this.classList.remove('error');
+        document.getElementById('passwordError').classList.remove('show');
+    });
+</script>
 </body>
 </html>

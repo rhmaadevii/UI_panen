@@ -6,12 +6,7 @@
     <title>Daftar Admin - PanenKu</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #C8E6C9;
@@ -22,7 +17,6 @@
             justify-content: center;
             padding: 20px;
         }
-
         .container {
             display: flex;
             background-color: #6B8E23;
@@ -33,7 +27,6 @@
             min-height: 550px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.15);
         }
-
         .left-section {
             flex: 1;
             display: flex;
@@ -44,7 +37,6 @@
             color: white;
             text-align: center;
         }
-
         .farmer-image {
             width: 280px;
             height: 280px;
@@ -53,20 +45,8 @@
             margin-bottom: 30px;
             border: 4px solid rgba(255,255,255,0.3);
         }
-
-        .left-section h2 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .left-section p {
-            font-size: 14px;
-            line-height: 1.6;
-            opacity: 0.9;
-            max-width: 280px;
-        }
-
+        .left-section h2 { font-size: 28px; font-weight: 700; margin-bottom: 15px; }
+        .left-section p { font-size: 14px; line-height: 1.6; opacity: 0.9; max-width: 280px; }
         .right-section {
             flex: 1;
             background-color: white;
@@ -75,36 +55,11 @@
             flex-direction: column;
             justify-content: center;
         }
-
-        .form-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .form-subtitle {
-            font-size: 13px;
-            color: #888;
-            margin-bottom: 20px;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 0;
-        }
-
-        .form-group {
-            flex: 1;
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .form-group.full-width {
-            width: 100%;
-        }
-
+        .form-title { font-size: 24px; font-weight: 700; color: #333; margin-bottom: 5px; }
+        .form-subtitle { font-size: 13px; color: #888; margin-bottom: 20px; }
+        .form-row { display: flex; gap: 15px; margin-bottom: 0; }
+        .form-group { flex: 1; margin-bottom: 15px; position: relative; }
+        .form-group.full-width { width: 100%; }
         .form-group label {
             display: block;
             font-size: 14px;
@@ -112,7 +67,6 @@
             color: #333;
             margin-bottom: 6px;
         }
-
         .form-group input {
             width: 100%;
             padding: 12px 15px;
@@ -123,27 +77,20 @@
             background-color: #F1F8E9;
             transition: border-color 0.3s, box-shadow 0.3s;
         }
-
         .form-group input:focus {
             outline: none;
             border-color: #6B8E23;
             box-shadow: 0 0 0 3px rgba(107, 142, 35, 0.15);
         }
-
-        .form-group input::placeholder {
-            color: #999;
-        }
-
+        .form-group input::placeholder { color: #999; }
         .form-group input.error {
             border-color: #e74c3c;
             background-color: #fdf2f2;
         }
-
         .form-group input.success {
             border-color: #27ae60;
             background-color: #f0fdf4;
         }
-
         .error-message {
             font-size: 11px;
             color: #e74c3c;
@@ -151,11 +98,7 @@
             display: none;
             line-height: 1.3;
         }
-
-        .error-message.show {
-            display: block;
-        }
-
+        .error-message.show { display: block; }
         .password-strength {
             height: 4px;
             border-radius: 2px;
@@ -164,28 +107,19 @@
             overflow: hidden;
             display: none;
         }
-
-        .password-strength.show {
-            display: block;
-        }
-
+        .password-strength.show { display: block; }
         .password-strength-bar {
             height: 100%;
             border-radius: 2px;
             transition: width 0.3s, background-color 0.3s;
             width: 0%;
         }
-
         .password-strength-text {
             font-size: 11px;
             margin-top: 3px;
             display: none;
         }
-
-        .password-strength-text.show {
-            display: block;
-        }
-
+        .password-strength-text.show { display: block; }
         .terms {
             display: flex;
             align-items: flex-start;
@@ -194,7 +128,6 @@
             font-size: 13px;
             color: #555;
         }
-
         .terms input[type="checkbox"] {
             width: 16px;
             height: 16px;
@@ -202,21 +135,9 @@
             accent-color: #6B8E23;
             flex-shrink: 0;
         }
-
-        .terms a {
-            color: #6B8E23;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .terms a:hover {
-            text-decoration: underline;
-        }
-
-        .terms.error-text {
-            color: #e74c3c;
-        }
-
+        .terms a { color: #6B8E23; text-decoration: none; font-weight: 500; }
+        .terms a:hover { text-decoration: underline; }
+        .terms.error-text { color: #e74c3c; }
         .btn-submit {
             width: 100%;
             padding: 14px;
@@ -229,48 +150,44 @@
             font-family: 'Poppins', sans-serif;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-
-        .btn-submit:hover {
-            background-color: #556B2F;
-            transform: translateY(-2px);
-        }
-
-        .btn-submit:active {
-            transform: translateY(0);
-        }
-
+        .btn-submit:hover { background-color: #556B2F; transform: translateY(-2px); }
+        .btn-submit:active { transform: translateY(0); }
         .btn-submit:disabled {
             background-color: #a0a0a0;
             cursor: not-allowed;
             transform: none;
         }
-
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .btn-submit.loading .spinner { display: inline-block; }
+        .btn-submit.loading .btn-text { display: none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
         .switch-link {
             text-align: center;
             margin-top: 15px;
             font-size: 13px;
             color: #555;
         }
-
-        .switch-link a {
-            color: #6B8E23;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .switch-link a:hover {
-            text-decoration: underline;
-        }
-
-        /* Toast Notification */
+        .switch-link a { color: #6B8E23; text-decoration: none; font-weight: 600; }
+        .switch-link a:hover { text-decoration: underline; }
         .toast-container {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 1000;
         }
-
         .toast {
             display: flex;
             align-items: center;
@@ -286,48 +203,10 @@
             transition: transform 0.4s ease;
             min-width: 300px;
         }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .toast.success {
-            background-color: #27ae60;
-        }
-
-        .toast.error {
-            background-color: #e74c3c;
-        }
-
-        .toast-icon {
-            font-size: 18px;
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            display: none;
-            width: 18px;
-            height: 18px;
-            border: 2px solid #fff;
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-right: 8px;
-        }
-
-        .btn-submit.loading .spinner {
-            display: inline-block;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Password toggle */
-        .password-wrapper {
-            position: relative;
-        }
-
+        .toast.show { transform: translateX(0); }
+        .toast.success { background-color: #27ae60; }
+        .toast.error { background-color: #e74c3c; }
+        .password-wrapper { position: relative; }
         .toggle-password {
             position: absolute;
             right: 12px;
@@ -338,41 +217,17 @@
             font-size: 16px;
             user-select: none;
         }
-
-        .toggle-password:hover {
-            color: #6B8E23;
-        }
-
-        .footer {
-            margin-top: 20px;
-            font-size: 13px;
-            color: #555;
-        }
-
+        .toggle-password:hover { color: #6B8E23; }
+        .footer { margin-top: 20px; font-size: 13px; color: #555; }
         @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-
-            .left-section {
-                padding: 30px 20px;
-            }
-
-            .farmer-image {
-                width: 200px;
-                height: 200px;
-            }
-
-            .right-section {
-                padding: 30px 25px;
-            }
-
-            .form-row {
-                flex-direction: column;
-                gap: 0;
-            }
+            .container { flex-direction: column; }
+            .left-section { padding: 30px 20px; }
+            .farmer-image { width: 200px; height: 200px; }
+            .right-section { padding: 30px 25px; }
+            .form-row { flex-direction: column; gap: 0; }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
     <div class="toast-container" id="toastContainer"></div>
@@ -393,13 +248,12 @@
                     <div class="form-group">
                         <label for="nama">Nama Lengkap</label>
                         <input type="text" id="nama" name="nama" placeholder="Masukkan nama lengkap">
-                        <span class="error-message" id="namaError">Nama lengkap wajib diisi</span>
+                        <span class="error-message" id="namaError">Nama lengkap wajib diisi (min 3 karakter)</span>
                     </div>
-
                     <div class="form-group">
                         <label for="telepon">Nomor Telepon</label>
                         <input type="tel" id="telepon" name="telepon" placeholder="08xxxxxxxxxx">
-                        <span class="error-message" id="teleponError">Nomor telepon tidak valid</span>
+                        <span class="error-message" id="teleponError">Nomor telepon tidak valid (contoh: 081234567890)</span>
                     </div>
                 </div>
 
@@ -413,16 +267,15 @@
                     <div class="form-group">
                         <label for="password">Password</label>
                         <div class="password-wrapper">
-                            <input type="password" id="password" name="password" placeholder="Minimal 8 karakter">
+                            <input type="password" id="password" name="password" placeholder="Minimal 6 karakter">
                             <span class="toggle-password" id="togglePassword1">👁️</span>
                         </div>
-                        <span class="error-message" id="passwordError">Password minimal 8 karakter</span>
+                        <span class="error-message" id="passwordError">Password minimal 6 karakter</span>
                         <div class="password-strength" id="passwordStrength">
                             <div class="password-strength-bar" id="strengthBar"></div>
                         </div>
                         <div class="password-strength-text" id="strengthText"></div>
                     </div>
-
                     <div class="form-group">
                         <label for="konfirmasi_password">Konfirmasi password</label>
                         <div class="password-wrapper">
@@ -455,321 +308,264 @@
         &copy; 2026 Panenku. All rights reserved.
     </div>
 
-    <script>
-        const form = document.getElementById('signUpForm');
-        const namaInput = document.getElementById('nama');
-        const teleponInput = document.getElementById('telepon');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const konfirmasiInput = document.getElementById('konfirmasi_password');
-        const termsInput = document.getElementById('terms');
-        const submitBtn = document.getElementById('submitBtn');
-        const toastContainer = document.getElementById('toastContainer');
-        const strengthBar = document.getElementById('strengthBar');
-        const strengthText = document.getElementById('strengthText');
-        const passwordStrength = document.getElementById('passwordStrength');
+<script type="module">
+    import { 
+        auth, db,
+        createUserWithEmailAndPassword,
+        updateProfile,
+        doc, setDoc, serverTimestamp
+    } from './firebase-config.js';
 
-        // Toggle password visibility
-        document.getElementById('togglePassword1').addEventListener('click', function() {
-            const type = passwordInput.type === 'password' ? 'text' : 'password';
-            passwordInput.type = type;
-            this.textContent = type === 'password' ? '👁️' : '🙈';
-        });
+    const form = document.getElementById('signUpForm');
+    const namaInput = document.getElementById('nama');
+    const teleponInput = document.getElementById('telepon');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const konfirmasiInput = document.getElementById('konfirmasi_password');
+    const termsInput = document.getElementById('terms');
+    const submitBtn = document.getElementById('submitBtn');
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthText = document.getElementById('strengthText');
+    const passwordStrength = document.getElementById('passwordStrength');
 
-        document.getElementById('togglePassword2').addEventListener('click', function() {
-            const type = konfirmasiInput.type === 'password' ? 'text' : 'password';
-            konfirmasiInput.type = type;
-            this.textContent = type === 'password' ? '👁️' : '🙈';
-        });
+    // Toggle password visibility
+    document.getElementById('togglePassword1').addEventListener('click', function() {
+        const type = passwordInput.type === 'password' ? 'text' : 'password';
+        passwordInput.type = type;
+        this.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+    document.getElementById('togglePassword2').addEventListener('click', function() {
+        const type = konfirmasiInput.type === 'password' ? 'text' : 'password';
+        konfirmasiInput.type = type;
+        this.textContent = type === 'password' ? '👁️' : '🙈';
+    });
 
-        // Show toast notification
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = `
-                <span class="toast-icon">${type === 'success' ? '✓' : '✕'}</span>
-                <span>${message}</span>
-            `;
-            toastContainer.appendChild(toast);
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<span>${type === 'success' ? '✓' : '✕'}</span><span>${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 400);
+        }, 3000);
+    }
 
-            setTimeout(() => toast.classList.add('show'), 10);
+    // Validation functions
+    function validateNama(value) {
+        if (!value.trim()) return { valid: false, message: 'Nama lengkap wajib diisi' };
+        if (value.trim().length < 3) return { valid: false, message: 'Nama minimal 3 karakter' };
+        return { valid: true };
+    }
+    function validateTelepon(value) {
+        if (!value.trim()) return { valid: false, message: 'Nomor telepon wajib diisi' };
+        const phoneRegex = /^(08|\+62|62)[0-9]{8,13}$/;
+        if (!phoneRegex.test(value.replace(/\s/g, ''))) return { valid: false, message: 'Format nomor telepon tidak valid' };
+        return { valid: true };
+    }
+    function validateEmail(value) {
+        if (!value.trim()) return { valid: false, message: 'Email wajib diisi' };
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) return { valid: false, message: 'Format email tidak valid' };
+        return { valid: true };
+    }
+    function validatePassword(value) {
+        if (!value) return { valid: false, message: 'Password wajib diisi' };
+        if (value.length < 6) return { valid: false, message: 'Password minimal 6 karakter' };
+        return { valid: true };
+    }
+    function validateKonfirmasi(password, konfirmasi) {
+        if (!konfirmasi) return { valid: false, message: 'Konfirmasi password wajib diisi' };
+        if (password !== konfirmasi) return { valid: false, message: 'Password tidak cocok' };
+        return { valid: true };
+    }
 
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 400);
-            }, 3000);
+    // Password strength checker
+    function checkPasswordStrength(password) {
+        let strength = 0;
+        if (password.length >= 6) strength++;
+        if (password.length >= 10) strength++;
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^a-zA-Z0-9]/.test(password)) strength++;
+        return strength;
+    }
+    function updatePasswordStrength(password) {
+        if (!password) {
+            passwordStrength.classList.remove('show');
+            strengthText.classList.remove('show');
+            return;
         }
+        passwordStrength.classList.add('show');
+        strengthText.classList.add('show');
+        const strength = checkPasswordStrength(password);
+        let width, color, text;
+        if (strength <= 1) { width = '20%'; color = '#e74c3c'; text = 'Lemah'; }
+        else if (strength <= 2) { width = '40%'; color = '#e67e22'; text = 'Cukup'; }
+        else if (strength <= 3) { width = '60%'; color = '#f1c40f'; text = 'Sedang'; }
+        else if (strength <= 4) { width = '80%'; color = '#2ecc71'; text = 'Kuat'; }
+        else { width = '100%'; color = '#27ae60'; text = 'Sangat Kuat'; }
+        strengthBar.style.width = width;
+        strengthBar.style.backgroundColor = color;
+        strengthText.textContent = `Kekuatan password: ${text}`;
+        strengthText.style.color = color;
+    }
 
-        // Validation functions
-        function validateNama(value) {
-            if (!value.trim()) return { valid: false, message: 'Nama lengkap wajib diisi' };
-            if (value.trim().length < 3) return { valid: false, message: 'Nama minimal 3 karakter' };
-            if (!/^[a-zA-Z\s]+$/.test(value.trim())) return { valid: false, message: 'Nama hanya boleh huruf dan spasi' };
-            return { valid: true };
-        }
+    function setError(input, errorEl, message) {
+        input.classList.add('error');
+        input.classList.remove('success');
+        errorEl.textContent = message;
+        errorEl.classList.add('show');
+    }
+    function setSuccess(input, errorEl) {
+        input.classList.remove('error');
+        input.classList.add('success');
+        errorEl.classList.remove('show');
+    }
 
-        function validateTelepon(value) {
-            if (!value.trim()) return { valid: false, message: 'Nomor telepon wajib diisi' };
-            const phoneRegex = /^(08|\+62|62)[0-9]{8,13}$/;
-            if (!phoneRegex.test(value.replace(/\s/g, ''))) {
-                return { valid: false, message: 'Format nomor telepon tidak valid (contoh: 081234567890)' };
-            }
-            return { valid: true };
-        }
-
-        function validateEmail(value) {
-            if (!value.trim()) return { valid: false, message: 'Email wajib diisi' };
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(value)) return { valid: false, message: 'Format email tidak valid' };
-            return { valid: true };
-        }
-
-        function validatePassword(value) {
-            if (!value) return { valid: false, message: 'Password wajib diisi' };
-            if (value.length < 8) return { valid: false, message: 'Password minimal 8 karakter' };
-            return { valid: true };
-        }
-
-        function validateKonfirmasi(password, konfirmasi) {
-            if (!konfirmasi) return { valid: false, message: 'Konfirmasi password wajib diisi' };
-            if (password !== konfirmasi) return { valid: false, message: 'Password tidak cocok' };
-            return { valid: true };
-        }
-
-        // Password strength checker
-        function checkPasswordStrength(password) {
-            let strength = 0;
-            if (password.length >= 8) strength++;
-            if (password.length >= 12) strength++;
-            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
-            if (/[0-9]/.test(password)) strength++;
-            if (/[^a-zA-Z0-9]/.test(password)) strength++;
-
-            return strength;
-        }
-
-        function updatePasswordStrength(password) {
-            if (!password) {
-                passwordStrength.classList.remove('show');
-                strengthText.classList.remove('show');
-                return;
-            }
-
-            passwordStrength.classList.add('show');
-            strengthText.classList.add('show');
-
-            const strength = checkPasswordStrength(password);
-            let width, color, text;
-
-            if (strength <= 1) {
-                width = '20%';
-                color = '#e74c3c';
-                text = 'Lemah';
-            } else if (strength <= 2) {
-                width = '40%';
-                color = '#e67e22';
-                text = 'Cukup';
-            } else if (strength <= 3) {
-                width = '60%';
-                color = '#f1c40f';
-                text = 'Sedang';
-            } else if (strength <= 4) {
-                width = '80%';
-                color = '#2ecc71';
-                text = 'Kuat';
-            } else {
-                width = '100%';
-                color = '#27ae60';
-                text = 'Sangat Kuat';
-            }
-
-            strengthBar.style.width = width;
-            strengthBar.style.backgroundColor = color;
-            strengthText.textContent = `Kekuatan password: ${text}`;
-            strengthText.style.color = color;
-        }
-
-        // Real-time validation helpers
-        function setError(input, errorEl, message) {
-            input.classList.add('error');
-            input.classList.remove('success');
-            errorEl.textContent = message;
-            errorEl.classList.add('show');
-        }
-
-        function setSuccess(input, errorEl) {
-            input.classList.remove('error');
-            input.classList.add('success');
-            errorEl.classList.remove('show');
-        }
-
-        function clearError(input, errorEl) {
-            input.classList.remove('error');
-            errorEl.classList.remove('show');
-        }
-
-        // Real-time validation events
-        namaInput.addEventListener('blur', () => {
+    // Real-time validation events
+    namaInput.addEventListener('blur', () => {
+        const result = validateNama(namaInput.value);
+        if (!result.valid) setError(namaInput, document.getElementById('namaError'), result.message);
+        else setSuccess(namaInput, document.getElementById('namaError'));
+    });
+    namaInput.addEventListener('input', () => {
+        if (namaInput.classList.contains('error')) {
             const result = validateNama(namaInput.value);
-            if (!result.valid) setError(namaInput, document.getElementById('namaError'), result.message);
-            else setSuccess(namaInput, document.getElementById('namaError'));
-        });
-
-        namaInput.addEventListener('input', () => {
-            if (namaInput.classList.contains('error')) {
-                const result = validateNama(namaInput.value);
-                if (result.valid) setSuccess(namaInput, document.getElementById('namaError'));
-            }
-        });
-
-        teleponInput.addEventListener('blur', () => {
+            if (result.valid) setSuccess(namaInput, document.getElementById('namaError'));
+        }
+    });
+    teleponInput.addEventListener('blur', () => {
+        const result = validateTelepon(teleponInput.value);
+        if (!result.valid) setError(teleponInput, document.getElementById('teleponError'), result.message);
+        else setSuccess(teleponInput, document.getElementById('teleponError'));
+    });
+    teleponInput.addEventListener('input', () => {
+        teleponInput.value = teleponInput.value.replace(/[^0-9+]/g, '');
+        if (teleponInput.classList.contains('error')) {
             const result = validateTelepon(teleponInput.value);
-            if (!result.valid) setError(teleponInput, document.getElementById('teleponError'), result.message);
-            else setSuccess(teleponInput, document.getElementById('teleponError'));
-        });
-
-        teleponInput.addEventListener('input', () => {
-            // Only allow numbers
-            teleponInput.value = teleponInput.value.replace(/[^0-9+]/g, '');
-            if (teleponInput.classList.contains('error')) {
-                const result = validateTelepon(teleponInput.value);
-                if (result.valid) setSuccess(teleponInput, document.getElementById('teleponError'));
-            }
-        });
-
-        emailInput.addEventListener('blur', () => {
+            if (result.valid) setSuccess(teleponInput, document.getElementById('teleponError'));
+        }
+    });
+    emailInput.addEventListener('blur', () => {
+        const result = validateEmail(emailInput.value);
+        if (!result.valid) setError(emailInput, document.getElementById('emailError'), result.message);
+        else setSuccess(emailInput, document.getElementById('emailError'));
+    });
+    emailInput.addEventListener('input', () => {
+        if (emailInput.classList.contains('error')) {
             const result = validateEmail(emailInput.value);
-            if (!result.valid) setError(emailInput, document.getElementById('emailError'), result.message);
-            else setSuccess(emailInput, document.getElementById('emailError'));
-        });
-
-        emailInput.addEventListener('input', () => {
-            if (emailInput.classList.contains('error')) {
-                const result = validateEmail(emailInput.value);
-                if (result.valid) setSuccess(emailInput, document.getElementById('emailError'));
-            }
-        });
-
-        passwordInput.addEventListener('blur', () => {
+            if (result.valid) setSuccess(emailInput, document.getElementById('emailError'));
+        }
+    });
+    passwordInput.addEventListener('blur', () => {
+        const result = validatePassword(passwordInput.value);
+        if (!result.valid) setError(passwordInput, document.getElementById('passwordError'), result.message);
+        else setSuccess(passwordInput, document.getElementById('passwordError'));
+    });
+    passwordInput.addEventListener('input', () => {
+        updatePasswordStrength(passwordInput.value);
+        if (passwordInput.classList.contains('error')) {
             const result = validatePassword(passwordInput.value);
-            if (!result.valid) setError(passwordInput, document.getElementById('passwordError'), result.message);
-            else setSuccess(passwordInput, document.getElementById('passwordError'));
-        });
-
-        passwordInput.addEventListener('input', () => {
-            updatePasswordStrength(passwordInput.value);
-            if (passwordInput.classList.contains('error')) {
-                const result = validatePassword(passwordInput.value);
-                if (result.valid) setSuccess(passwordInput, document.getElementById('passwordError'));
-            }
-            // Also check konfirmasi if it has value
-            if (konfirmasiInput.value) {
-                const result = validateKonfirmasi(passwordInput.value, konfirmasiInput.value);
-                if (!result.valid) setError(konfirmasiInput, document.getElementById('konfirmasiError'), result.message);
-                else setSuccess(konfirmasiInput, document.getElementById('konfirmasiError'));
-            }
-        });
-
-        konfirmasiInput.addEventListener('blur', () => {
+            if (result.valid) setSuccess(passwordInput, document.getElementById('passwordError'));
+        }
+        if (konfirmasiInput.value) {
             const result = validateKonfirmasi(passwordInput.value, konfirmasiInput.value);
             if (!result.valid) setError(konfirmasiInput, document.getElementById('konfirmasiError'), result.message);
             else setSuccess(konfirmasiInput, document.getElementById('konfirmasiError'));
-        });
+        }
+    });
+    konfirmasiInput.addEventListener('blur', () => {
+        const result = validateKonfirmasi(passwordInput.value, konfirmasiInput.value);
+        if (!result.valid) setError(konfirmasiInput, document.getElementById('konfirmasiError'), result.message);
+        else setSuccess(konfirmasiInput, document.getElementById('konfirmasiError'));
+    });
+    konfirmasiInput.addEventListener('input', () => {
+        if (konfirmasiInput.classList.contains('error')) {
+            const result = validateKonfirmasi(passwordInput.value, konfirmasiInput.value);
+            if (result.valid) setSuccess(konfirmasiInput, document.getElementById('konfirmasiError'));
+        }
+    });
+    termsInput.addEventListener('change', () => {
+        document.getElementById('termsError').classList.remove('show');
+        document.getElementById('termsLabel').classList.remove('error-text');
+    });
 
-        konfirmasiInput.addEventListener('input', () => {
-            if (konfirmasiInput.classList.contains('error')) {
-                const result = validateKonfirmasi(passwordInput.value, konfirmasiInput.value);
-                if (result.valid) setSuccess(konfirmasiInput, document.getElementById('konfirmasiError'));
-            }
-        });
+    document.getElementById('syaratLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        showToast('Halaman Syarat dan Ketentuan akan segera hadir!', 'error');
+    });
+    document.getElementById('privasiLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        showToast('Halaman Kebijakan Privasi akan segera hadir!', 'error');
+    });
 
-        termsInput.addEventListener('change', () => {
-            document.getElementById('termsError').classList.remove('show');
-            document.getElementById('termsLabel').classList.remove('error-text');
-        });
+    // Form submission - Firebase Auth
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-        // Terms & privacy links
-        document.getElementById('syaratLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            showToast('Halaman Syarat dan Ketentuan akan segera hadir!', 'error');
-        });
+        const namaResult = validateNama(namaInput.value);
+        const teleponResult = validateTelepon(teleponInput.value);
+        const emailResult = validateEmail(emailInput.value);
+        const passwordResult = validatePassword(passwordInput.value);
+        const konfirmasiResult = validateKonfirmasi(passwordInput.value, konfirmasiInput.value);
 
-        document.getElementById('privasiLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            showToast('Halaman Kebijakan Privasi akan segera hadir!', 'error');
-        });
+        let hasError = false;
 
-        // Form submission
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        if (!namaResult.valid) { setError(namaInput, document.getElementById('namaError'), namaResult.message); hasError = true; }
+        if (!teleponResult.valid) { setError(teleponInput, document.getElementById('teleponError'), teleponResult.message); hasError = true; }
+        if (!emailResult.valid) { setError(emailInput, document.getElementById('emailError'), emailResult.message); hasError = true; }
+        if (!passwordResult.valid) { setError(passwordInput, document.getElementById('passwordError'), passwordResult.message); hasError = true; }
+        if (!konfirmasiResult.valid) { setError(konfirmasiInput, document.getElementById('konfirmasiError'), konfirmasiResult.message); hasError = true; }
+        if (!termsInput.checked) {
+            document.getElementById('termsError').classList.add('show');
+            document.getElementById('termsLabel').classList.add('error-text');
+            hasError = true;
+        }
 
-            // Validate all fields
-            const namaResult = validateNama(namaInput.value);
-            const teleponResult = validateTelepon(teleponInput.value);
-            const emailResult = validateEmail(emailInput.value);
-            const passwordResult = validatePassword(passwordInput.value);
-            const konfirmasiResult = validateKonfirmasi(passwordInput.value, konfirmasiInput.value);
+        if (hasError) {
+            showToast('Mohon periksa kembali data yang anda masukkan', 'error');
+            return;
+        }
 
-            let hasError = false;
+        submitBtn.disabled = true;
+        submitBtn.classList.add('loading');
 
-            if (!namaResult.valid) {
-                setError(namaInput, document.getElementById('namaError'), namaResult.message);
-                hasError = true;
-            }
+        try {
+            // 1. Buat akun di Firebase Auth
+            const userCredential = await createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+            const user = userCredential.user;
 
-            if (!teleponResult.valid) {
-                setError(teleponInput, document.getElementById('teleponError'), teleponResult.message);
-                hasError = true;
-            }
+            // 2. Update display name
+            await updateProfile(user, { displayName: namaInput.value.trim() });
 
-            if (!emailResult.valid) {
-                setError(emailInput, document.getElementById('emailError'), emailResult.message);
-                hasError = true;
-            }
-
-            if (!passwordResult.valid) {
-                setError(passwordInput, document.getElementById('passwordError'), passwordResult.message);
-                hasError = true;
-            }
-
-            if (!konfirmasiResult.valid) {
-                setError(konfirmasiInput, document.getElementById('konfirmasiError'), konfirmasiResult.message);
-                hasError = true;
-            }
-
-            if (!termsInput.checked) {
-                document.getElementById('termsError').classList.add('show');
-                document.getElementById('termsLabel').classList.add('error-text');
-                hasError = true;
-            }
-
-            if (hasError) {
-                showToast('Mohon periksa kembali data yang anda masukkan', 'error');
-                return;
-            }
-
-            // Show loading
-            submitBtn.disabled = true;
-            submitBtn.classList.add('loading');
-
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            // Save user data to localStorage (demo purpose)
-            const userData = {
-                nama: namaInput.value.trim(),
-                telepon: teleponInput.value.trim(),
+            // 3. Simpan data ke Firestore
+            await setDoc(doc(db, 'users', user.uid), {
+                nama_lengkap: namaInput.value.trim(),
+                nomor_telepon: teleponInput.value.trim(),
                 email: emailInput.value.trim(),
-                registeredAt: new Date().toISOString()
-            };
-            localStorage.setItem('panenku_admin_user', JSON.stringify(userData));
+                role: 'admin',
+                createdAt: serverTimestamp(),
+                loginMethod: 'email'
+            });
 
-            showToast('Pendaftaran berhasil! Mengalihkan...', 'success');
+            showToast('Pendaftaran admin berhasil! Silakan login.', 'success');
+            setTimeout(() => window.location.href = 'signin_admin.html', 2000);
 
-            setTimeout(() => {
-                window.location.href = 'profil_admin.html';
-            }, 1500);
-        });
-    </script>
+        } catch (error) {
+            console.error(error);
+            let msg = 'Registrasi gagal';
+            if (error.code === 'auth/email-already-in-use') msg = 'Email sudah terdaftar. Silakan login.';
+            else if (error.code === 'auth/weak-password') msg = 'Password terlalu lemah (min 6 karakter)';
+            else if (error.code === 'auth/invalid-email') msg = 'Format email tidak valid';
+            showToast(msg, 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('loading');
+        }
+    });
+</script>
 </body>
 </html>
